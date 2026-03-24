@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ВиноЩит — Советник виноградаря</title>
+<title>Садовый Щит — Советник виноградаря</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════
@@ -295,6 +295,11 @@ select option{background:#fff;color:var(--dark)}
 ::-webkit-scrollbar-thumb{background:var(--div);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:#b8b8be}
 
+
+/* ── FORECAST NEW ── */
+#fct-weather-strip::-webkit-scrollbar{display:none}
+#weather-picker .close-on-bg{position:absolute;inset:0;z-index:-1}
+
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
 @media(max-width:600px){.wrap{padding:14px 12px}.card{padding:14px}.bbg{grid-template-columns:1fr}.cal-day{grid-template-columns:66px 34px 48px 1fr}.sh{font-size:18px}}
@@ -305,7 +310,7 @@ select option{background:#fff;color:var(--dark)}
   <div class="logo-w">
     <div class="logo-icon">🍇</div>
     <div>
-      <div class="logo-t" id="logo-text">Вино<em>Щит</em></div>
+      <div class="logo-t" id="logo-text">Садовый <em>Щит</em></div>
       <div class="logo-s" id="logo-sub">Советник виноградаря</div>
     </div>
   </div>
@@ -433,76 +438,88 @@ select option{background:#fff;color:var(--dark)}
 <!-- ════ ПРОГНОЗ ════ -->
 <div id="fct" class="tc">
   <div class="sh" data-i="fct-title">Прогноз обработок</div>
-  <div class="ss" data-i="fct-sub">Автоматический · Open-Meteo · Ручной ввод</div>
-  <div class="g2">
-    <div>
-      <div class="card">
-        <div class="ct">📍 <span data-i="fct-loc-t">Местоположение и BBCH</span></div>
-        <div class="field">
-          <label data-i="fct-city-l">Ваш город</label>
-          <div style="display:flex;gap:8px">
-            <input type="text" id="fct-city" placeholder="Ялта, Краснодар..." style="flex:1">
-            <button class="btn btn-g btn-sm" onclick="geocodeCity()" data-i="find-btn">Найти</button>
-          </div>
-          <div class="hint" data-i="fct-coord-hint">Или введите координаты: 44.4952, 34.1663</div>
-          <button class="btn btn-g btn-sm" style="margin-top:6px" onclick="autoLocate()" data-i="locate-btn">📍 Моё местоположение</button>
-          <div id="fct-loc-status" style="font-size:11px;color:var(--light);margin-top:5px"></div>
+  <div class="ss" data-i="fct-sub">Open-Meteo · Биологическая логика · Авторасчёт</div>
+
+  <!-- LOCATION ROW -->
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+      <div style="flex:1;min-width:180px">
+        <label data-i="fct-city-l">Ваш город</label>
+        <div style="display:flex;gap:8px;margin-top:5px">
+          <input type="text" id="fct-city" placeholder="Ялта, Краснодар..." style="flex:1;margin:0">
+          <button class="btn btn-g btn-sm" onclick="geocodeCity()" data-i="find-btn">Найти</button>
         </div>
-        <div class="field">
-          <label data-i="fct-bbch-l">Фенофаза</label>
-          <select id="fct-bbch">
-            <option value="00">00–07 · Покой / набухание</option>
-            <option value="09">09–13 · Зелёный конус</option>
-            <option value="14">14–18 · 4–8 листьев</option>
-            <option value="53">53–55 · Бутонизация</option>
-            <option value="60">60–69 · Цветение</option>
-            <option value="71">71–79 · Развитие ягод</option>
-            <option value="79">79–89 · Созревание</option>
-          </select>
-        </div>
-        <div class="field">
-          <label data-i="fct-src-l">Источник прогноза</label>
-          <select id="fct-source" onchange="toggleFctSource()">
-            <option value="auto" data-i="fct-auto">🤖 Авто — Open-Meteo (бесплатно)</option>
-            <option value="manual" data-i="fct-manual">✍️ Ручной ввод</option>
-          </select>
-          <div class="hint" id="fct-source-hint" data-i="fct-src-hint">Данные с open-meteo.com по координатам. 14 дней.</div>
-        </div>
-        <div id="fct-auto-block">
-          <button class="btn btn-p" onclick="loadForecast()" data-i="load-fct">🌦 Загрузить прогноз погоды</button>
-        </div>
-        <div id="fct-manual-block" style="display:none">
-          <div class="wlinks" style="margin-bottom:10px">
-            <a class="wl" href="https://yandex.ru/pogoda/" target="_blank">Яндекс</a>
-            <a class="wl" href="https://www.gismeteo.ru/" target="_blank">GisMeteo</a>
-            <a class="wl" href="https://www.rp5.ru/" target="_blank">rp5</a>
-          </div>
-          <div id="fct-manual-rows"></div>
-          <button class="btn btn-g btn-sm" style="margin-top:6px" onclick="addManualRow()" data-i="add-row">+ Добавить день</button>
-          <button class="btn btn-p" style="margin-top:10px" onclick="calcForecastManual()" data-i="calc-manual">⚡ Рассчитать</button>
-        </div>
+        <div style="font-size:11px;color:var(--sec);margin-top:4px" data-i="fct-coord-hint">Или координаты: 44.4952, 34.1663</div>
       </div>
-      <div class="card">
-        <div class="ct">📖 <span data-i="legend-t">Легенда</span></div>
-        <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
-          <div style="display:flex;align-items:center;gap:10px"><div style="width:12px;height:12px;border-radius:2px;background:#ff5555;flex-shrink:0"></div><div><strong data-i="leg-spray">Красный — ОБРАБОТКА!</strong> <span data-i="leg-spray-d">За 1 день до дождя</span></div></div>
-          <div style="display:flex;align-items:center;gap:10px"><div style="width:12px;height:12px;border-radius:2px;background:#ff8c00;flex-shrink:0"></div><div><strong data-i="leg-warn">Оранжевый — Внимание.</strong> <span data-i="leg-warn-d">Конец инкубации</span></div></div>
-          <div style="display:flex;align-items:center;gap:10px"><div style="width:12px;height:12px;border-radius:2px;background:#f0c84a;flex-shrink:0"></div><div><strong data-i="leg-watch">Жёлтый — Наблюдение.</strong> <span data-i="leg-watch-d">Инкубация идёт</span></div></div>
-          <div style="display:flex;align-items:center;gap:10px"><div style="width:12px;height:12px;border-radius:2px;background:var(--green);flex-shrink:0"></div><div><strong data-i="leg-safe">Зелёный — Безопасно</strong></div></div>
+      <div style="flex:1;min-width:160px">
+        <label data-i="fct-bbch-l">Фенофаза</label>
+        <select id="fct-bbch" style="margin-top:5px">
+          <option value="00">00–07 Покой</option>
+          <option value="09">09–13 Зелёный конус</option>
+          <option value="14" selected>14–18 4–8 листьев</option>
+          <option value="53">53–55 Бутонизация</option>
+          <option value="60">60–69 Цветение</option>
+          <option value="71">71–79 Ягоды</option>
+          <option value="79">79–89 Созревание</option>
+        </select>
+      </div>
+      <div>
+        <button class="btn btn-p" style="white-space:nowrap;padding:10px 18px" onclick="loadForecastNew()" data-i="load-fct">🌦 Загрузить прогноз</button>
+        <div style="font-size:10px;color:var(--sec);margin-top:4px;text-align:center">
+          <button class="btn btn-g btn-sm" onclick="autoLocate()" style="width:100%" data-i="locate-btn">📍 Моё место</button>
         </div>
       </div>
     </div>
-    <div>
-      <div id="fct-loading" style="display:none" class="card"><div style="text-align:center;padding:30px"><div style="font-size:28px;margin-bottom:8px">⏳</div><div style="font-size:12px;color:var(--light)" data-i="loading">Загружаем...</div></div></div>
-      <div id="fct-empty" class="card" style="text-align:center;padding:48px 20px">
-        <div style="font-size:44px;margin-bottom:12px">🌦</div>
-        <div style="font-family:'Playfair Display',serif;font-size:17px;color:#1e6b33;margin-bottom:6px" data-i="fct-empty-t">Прогноз не загружен</div>
-        <div style="font-size:12px;color:var(--light)" data-i="fct-empty-s">Укажите город и нажмите «Загрузить»</div>
-      </div>
-      <div id="fct-result" style="display:none">
-        <div class="card" style="margin-bottom:14px"><div class="ct">📊 <span data-i="fct-sum-t">Сводка</span></div><div id="fct-summary"></div></div>
-        <div class="card"><div class="ct">📅 <span data-i="fct-cal-t">Календарь — 14 дней</span></div><div id="fct-calendar"></div></div>
-      </div>
+    <div id="fct-loc-status" style="font-size:11px;color:var(--sec);margin-top:8px"></div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="fct-loading" style="display:none" class="card">
+    <div style="text-align:center;padding:28px">
+      <div style="font-size:28px;margin-bottom:8px">⏳</div>
+      <div style="font-size:13px;color:var(--sec)" data-i="loading">Загружаем прогноз...</div>
+    </div>
+  </div>
+
+  <!-- EMPTY -->
+  <div id="fct-empty" class="card" style="text-align:center;padding:44px 20px">
+    <div style="font-size:40px;margin-bottom:10px">🌦</div>
+    <div style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:6px" data-i="fct-empty-t">Прогноз не загружен</div>
+    <div style="font-size:13px;color:var(--sec)" data-i="fct-empty-s">Укажите город и нажмите «Загрузить»</div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="fct-result" style="display:none">
+
+    <!-- WEATHER STRIP — кликабельные иконки -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct">☁️ <span id="fct-city-label">Прогноз погоды</span> · <span style="color:var(--sec);font-weight:400;font-size:12px">нажмите на иконку чтобы изменить</span></div>
+      <div id="fct-weather-strip" style="display:flex;gap:4px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none"></div>
+    </div>
+
+    <!-- MAIN RECOMMENDATION CARD -->
+    <div id="fct-main-card" style="margin-bottom:14px"></div>
+
+    <!-- DISEASE RISK BREAKDOWN -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct">🔬 Риски по болезням</div>
+      <div id="fct-bio-risks"></div>
+    </div>
+
+    <!-- 14-DAY CALENDAR -->
+    <div class="card">
+      <div class="ct" data-i="fct-cal-t">📅 Календарь — 14 дней</div>
+      <div id="fct-calendar"></div>
+    </div>
+
+  </div>
+
+  <!-- WEATHER PICKER MODAL -->
+  <div id="weather-picker" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center">
+    <div style="background:var(--card);border-radius:var(--r3);padding:24px;max-width:360px;width:90%;box-shadow:var(--sh3)">
+      <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px" id="picker-title">Изменить погоду</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="picker-options"></div>
+      <button class="btn btn-g" style="width:100%;margin-top:14px" onclick="closePicker()">Отмена</button>
     </div>
   </div>
 </div>
@@ -512,42 +529,73 @@ select option{background:#fff;color:var(--dark)}
   <div class="sh" data-i="jrn-title">Журнал обработок</div>
   <div class="ss" data-i="jrn-sub">История сезона · Контроль ротации МОА</div>
   <div class="g2">
-    <div class="card">
-      <div class="ct">✏️ <span data-i="jrn-new">Новая запись</span></div>
-      <div class="field"><label data-i="j-date">Дата</label><input type="date" id="jdt"></div>
-      <div class="field"><label data-i="j-bbch">BBCH</label>
-        <select id="jbb">
-          <option value="00-09">00–09 Покой</option>
-          <option value="09-13">09–13 Зелёный конус</option>
-          <option value="14-18">14–18 4–8 листьев</option>
-          <option value="53-55">53–55 Бутонизация</option>
-          <option value="60-69">60–69 Цветение</option>
-          <option value="71-79">71–79 Развитие ягод</option>
-          <option value="79-89">79–89 Созревание</option>
-        </select>
+    <div>
+      <div class="card">
+        <div class="ct" data-i="jrn-new">Новая запись</div>
+        <div class="field">
+          <label data-i="j-date">Дата</label>
+          <input type="date" id="jdt">
+        </div>
+        <div class="field">
+          <label data-i="j-bbch">BBCH</label>
+          <select id="jbb">
+            <option value="00-07">00–07 Покой</option>
+            <option value="09-11">09–11 Зелёный конус</option>
+            <option value="13-14">13–14 3–4 листа</option>
+            <option value="15-18" selected>15–18 5–8 листьев</option>
+            <option value="53-55">53–55 Бутонизация</option>
+            <option value="60-69">60–69 Цветение</option>
+            <option value="71-75">71–75 Ягоды</option>
+            <option value="77-79">77–79 Смыкание</option>
+            <option value="79-83">79–83 Созревание</option>
+            <option value="83-89">83–89 Близко к сбору</option>
+          </select>
+        </div>
+        <div class="field">
+          <label data-i="j-drug">Препарат</label>
+          <input type="text" id="jdr" placeholder="Консенто, Ридомил...">
+        </div>
+        <div class="field">
+          <label data-i="j-drug2">Баковая смесь (+)</label>
+          <input type="text" id="jdr2" placeholder="Необязательно">
+        </div>
+        <div class="field">
+          <div class="tip-w">
+            <label data-i="j-moa">МОА</label>
+            <div class="tip-ic">?</div>
+            <div class="tip-b">МОА = механизм действия. Чередуйте классы, чтобы грибок не привыкал к препарату.</div>
+          </div>
+          <select id="jmo">
+            <option value="">— не указано —</option>
+            <option value="phenylamide">Phenylamide (Ридомил, Металаксил)</option>
+            <option value="qoi">QoI / Стробилурины (Квадрис, Строби)</option>
+            <option value="dmi">DMI / Триазолы (Топаз, Байлетон)</option>
+            <option value="sdhi">SDHI (Луна, Свитч)</option>
+            <option value="phosphonate">Фосфонаты (Альетт, Фосфит)</option>
+            <option value="contact">Контактные (Хлорокись меди, Делан)</option>
+            <option value="multisite">Мультисайт (Манкоцеб, Полирам)</option>
+            <option value="bio">Биопрепарат (Планриз, BioSleep)</option>
+            <option value="other">Другое</option>
+          </select>
+        </div>
+        <div class="field">
+          <label data-i="j-note">Примечание</label>
+          <input type="text" id="jno" placeholder="Погода, дозировка...">
+        </div>
+        <button class="btn btn-p" onclick="addJ()" data-i="j-add">+ Записать</button>
       </div>
-      <div class="field"><label data-i="j-drug">Препарат</label><input type="text" id="jdr" placeholder="напр. Ридомил Голд 0.25%"></div>
-      <div class="field"><label data-i="j-drug2">Баковая смесь (+)</label><input type="text" id="jdr2" placeholder="напр. + Хорус 0.03%"></div>
-      <div class="field"><label data-i="j-moa">МОА</label>
-        <select id="jmo">
-          <option value="copper">Медьсодержащие</option>
-          <option value="phosphonate">Фосфонаты</option>
-          <option value="dithiocarbamate">Дитиокарбаматы</option>
-          <option value="phenylamide">Фениламиды</option>
-          <option value="cam">CAA</option>
-          <option value="strobilurin">Стробилурины</option>
-          <option value="triazole">Триазолы</option>
-          <option value="anilinopyrimidine">Анилинопиримидины</option>
-          <option value="sdhi">SDHI</option>
-          <option value="oxathiapiprolin">Оксатиапипролин</option>
-        </select>
-      </div>
-      <div class="field"><label data-i="j-note">Примечание</label><input type="text" id="jno" placeholder="Погода, причина, результат..."></div>
-      <button class="btn btn-p" onclick="addJ()" data-i="j-add">+ Записать</button>
     </div>
     <div>
-      <div id="rot-w" class="rot-w" style="display:none">⚠️ <strong data-i="rot-warn">Внимание:</strong> <span data-i="rot-warn-d">Последние 2 обработки — один МОА. Смените класс.</span></div>
-      <div id="jl"><div class="empty"><em>📋</em><p style="font-size:13px;font-style:italic" data-i="jrn-empty">Журнал пуст</p></div></div>
+      <div class="al rot-w" id="rot-w" style="display:none">
+        <span class="ali">⚠️</span>
+        <div><strong data-i="rot-warn">Внимание:</strong> <span data-i="rot-warn-d">Последние 2 обработки — один МОА. Смените класс.</span></div>
+      </div>
+      <div class="card">
+        <div class="ct" data-i="jrn-title">Журнал обработок</div>
+        <div id="jl">
+          <p class="empty" style="font-style:italic" data-i="jrn-empty">Журнал пуст</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1057,9 +1105,11 @@ select option{background:#fff;color:var(--dark)}
 </div>
 </div>
 
-<div class="footer"><strong>Andreus Logos</strong>ВиноЩит · Советник виноградаря фенофазной защиты · Для виноградарей</div>
+<div class="footer"><strong>Andreus Logos</strong>Садовый Щит · Советник виноградаря фенофазной защиты · Для виноградарей</div>
 
 <script>
+
+
 // ════ BBCH DATA ════
 var BBCHS=[
   {c:'00-07',e:'🌑',
@@ -1281,6 +1331,230 @@ function renderBbg(){
   });
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// САДОВЫЙ ЩИТ — Goidanich Engine v2.0
+// Немецкая система IPM (3-10 Regel + динамическая инкубация)
+// ═══════════════════════════════════════════════════════════════
+
+// ── Таблица суточного развития милдью по Goidanich ──
+// [minT, maxT, dailyPercent, label]
+var GOIDANICH_TABLE = [
+  [0,   9,   0,  'Развитие остановлено'],
+  [10,  12,  6,  'Очень медленно (10–12°C)'],
+  [13,  14,  8,  'Медленно (13–14°C)'],
+  [15,  17, 10,  'Умеренно (15–17°C)'],
+  [18,  20, 12,  'Умеренно быстро (18–20°C)'],
+  [21,  24, 17,  'Быстро (21–24°C)'],
+  [25,  28, 21,  'Очень быстро (25–28°C)'],
+  [29,  35, 15,  'Жарко — замедление (>28°C)'],
+  [36, 100,  0,  'Остановка (>36°C)']
+];
+
+function goidanichRate(tempC) {
+  for (var i = 0; i < GOIDANICH_TABLE.length; i++) {
+    var row = GOIDANICH_TABLE[i];
+    if (tempC >= row[0] && tempC <= row[1]) return row[2];
+  }
+  return 0;
+}
+
+// ── Проверка триггера 3-10 Regel ──
+// Возвращает true только если ВСЕ условия выполнены
+function is310Trigger(rainMm, tempC, bbch) {
+  var bbchNum = parseBbch(bbch);
+  return (
+    rainMm >= 10 &&          // ≥10 мм осадков (или длительная роса)
+    tempC >= 10 &&            // ≥10°C среднесуточная
+    bbchNum >= 13             // BBCH 13+ (3–5 листьев, побеги ≥10 см)
+  );
+}
+
+// ── Упрощённый триггер (5 мм + роса) ──
+function isSoftTrigger(rainMm, tempC, bbch) {
+  var bbchNum = parseBbch(bbch);
+  return (
+    rainMm >= 5 &&
+    tempC >= 10 &&
+    bbchNum >= 13
+  );
+}
+
+function parseBbch(bbch) {
+  if (!bbch) return 0;
+  var n = parseInt(bbch.toString().split('-')[0]);
+  return isNaN(n) ? 0 : n;
+}
+
+// ── Защитное окно по системе ──
+var PROTECT_WINDOW = { s1: 8, s2: 11, s3: 13, s4: 16 };
+
+// ── Порог срочности обработки ──
+// orange = 80%, red = 95%
+var ORANGE_THRESH = 80;
+var RED_THRESH    = 95;
+
+// ── Оидиум — отдельная логика ──
+// Риск высокий при: T 20–32°C + сухо (осадки <2 мм) + BBCH ≥13
+function oidiumRiskLevel(tempC, rainMm, bbch) {
+  var b = parseBbch(bbch);
+  if (b < 13) return 0;
+  if (tempC >= 20 && tempC <= 32 && rainMm < 2) {
+    if (tempC >= 24 && tempC <= 28) return 3; // оптимум для оидиума
+    return 2;
+  }
+  if (tempC >= 18 && tempC < 20 && rainMm < 5) return 1;
+  return 0;
+}
+
+// ── Ботритис ──
+function botRiskLevel(tempC, rainMm, humid, bbch) {
+  var b = parseBbch(bbch);
+  if (b < 71) return 0; // только от véraison
+  if (rainMm >= 3 && tempC >= 15 && humid >= 80) return 3;
+  if (rainMm >= 1 && tempC >= 12 && humid >= 70) return 2;
+  return 0;
+}
+
+// ════════════════════════════════════════════════
+// Главная функция расчёта: Goidanich Accumulator
+// Принимает массив дней: [{date, rainMm, tempAvg, tempMax, humid}]
+// Начальные данные: lastSprayDate, lastSpraySys, selBbch
+// ════════════════════════════════════════════════
+function calcGoidanich(days, lastSprayDate, lastSpraySys, selBbch) {
+  var today = new Date();
+  var bbchNum = parseBbch(selBbch);
+  var protectDays = PROTECT_WINDOW[lastSpraySys || 's1'] || 10;
+  var daysSinceSpray = lastSprayDate
+    ? Math.round((today - lastSprayDate) / 86400000)
+    : 999;
+  var inProtectWindow = daysSinceSpray < protectDays;
+
+  var incubPct = 0;           // накопленный % инкубации
+  var incubActive = false;    // идёт ли инкубация
+  var infectionDate = null;   // дата триггера
+  var sprayUrgency = 0;       // 0 нет, 1 watch, 2 warn, 3 spray
+  var sprayBy = null;         // дата «обработать до»
+  var reason = [];
+
+  // Симулируем прошедшие дни (последние 14 дн. назад)
+  // В советнике используем входящий массив (уже построен из погоды)
+  for (var i = 0; i < days.length; i++) {
+    var d = days[i];
+    var dt = new Date(d.date);
+    var isPast = dt <= today;
+    var isFuture = dt > today;
+
+    // 3-10 Regel: основной триггер
+    if (!incubActive && is310Trigger(d.rainMm, d.tempAvg, selBbch)) {
+      incubActive = true;
+      incubPct = 0;
+      infectionDate = d.date;
+      reason.push('Триггер 3-10: ' + d.rainMm + ' мм, ' + Math.round(d.tempAvg) + '°C');
+    }
+    // Мягкий триггер (5 мм) — начинаем наблюдение
+    else if (!incubActive && isSoftTrigger(d.rainMm, d.tempAvg, selBbch)) {
+      incubActive = true;
+      incubPct = 0;
+      infectionDate = d.date;
+      reason.push('Мягкий триггер: ' + d.rainMm + ' мм, ' + Math.round(d.tempAvg) + '°C');
+    }
+
+    if (incubActive) {
+      var rate = goidanichRate(d.tempAvg || d.tempMax || 18);
+      incubPct += rate;
+      if (incubPct > 100) incubPct = 100;
+
+      if (!inProtectWindow) {
+        if (incubPct >= RED_THRESH && sprayUrgency < 3) {
+          sprayUrgency = 3;
+          // Обработать за 1–3 дня до этого
+          var sd = new Date(dt);
+          sd.setDate(sd.getDate() - 2);
+          if (sd < today) sd = new Date(today);
+          sprayBy = sd;
+        } else if (incubPct >= ORANGE_THRESH && sprayUrgency < 2) {
+          sprayUrgency = 2;
+          var sd2 = new Date(dt);
+          sd2.setDate(sd2.getDate() - 1);
+          if (sd2 < today) sd2 = new Date(today);
+          if (!sprayBy) sprayBy = sd2;
+        }
+      }
+    }
+
+    // Сброс инкубации после обработки (только прошлые дни)
+    if (isPast && lastSprayDate && Math.abs(dt - lastSprayDate) < 86400000) {
+      incubActive = false;
+      incubPct = 0;
+    }
+  }
+
+  // Итоговый статус для советника
+  var status;
+  if (bbchNum < 13) {
+    status = 'early';
+  } else if (inProtectWindow && daysSinceSpray < protectDays) {
+    status = 'protected';
+  } else if (sprayUrgency >= 3) {
+    status = 'critical';
+  } else if (sprayUrgency >= 2) {
+    status = 'warn';
+  } else if (incubActive && incubPct >= 40) {
+    status = 'watch';
+  } else {
+    status = 'safe';
+  }
+
+  // Оидиум (по последним 3 дням прогноза)
+  var oidRisk = 0;
+  for (var j = 0; j < Math.min(3, days.length); j++) {
+    var od = days[j];
+    oidRisk = Math.max(oidRisk, oidiumRiskLevel(od.tempMax || od.tempAvg, od.rainMm, selBbch));
+  }
+
+  // Выбор системы по немецкой логике
+  var sysId = selectSystem(incubPct, bbchNum, daysSinceSpray, sprayUrgency, inProtectWindow);
+
+  return {
+    status: status,
+    incubPct: Math.round(incubPct),
+    incubActive: incubActive,
+    infectionDate: infectionDate,
+    sprayUrgency: sprayUrgency,
+    sprayBy: sprayBy,
+    inProtectWindow: inProtectWindow,
+    daysSinceSpray: daysSinceSpray,
+    protectDays: protectDays,
+    daysLeftProtect: Math.max(0, protectDays - daysSinceSpray),
+    sysId: sysId,
+    oidRisk: oidRisk,
+    reason: reason
+  };
+}
+
+// ── Система защиты по немецкой IPM логике ──
+function selectSystem(incubPct, bbchNum, daysSinceSpray, urgency, inProtect) {
+  if (bbchNum < 13) return null;
+  if (bbchNum >= 60 && bbchNum <= 69) return 's4'; // цветение — всегда системный
+  if (urgency >= 3 || incubPct >= 90) return 's3'; // трансламинар/куратив
+  if (bbchNum >= 53 && bbchNum <= 59) return 's4'; // перед цветением — системный
+  if (urgency >= 2 || incubPct >= 60) return 's2'; // контакт + фосфонат
+  if (daysSinceSpray >= 10 || incubPct >= 20) return 's2';
+  return 's1'; // чисто контактный
+}
+
+// ── Агротехнический чеклист ──
+var AGRO_CHECKLIST = [
+  { icon:'✂️', text:'Пасынкование и обломка — улучшает вентиляцию куста (−70% риска серой гнили)' },
+  { icon:'🍃', text:'Удалить листья вокруг грозди — воздух сушит ягоды после дождя' },
+  { icon:'🌿', text:'Умеренный азот — избыток = мягкая ткань = идеальная среда для грибка' },
+  { icon:'✂️', text:'Санитарная обрезка больных побегов — немедленно в корзину, не на землю' },
+  { icon:'💧', text:'Полив под корень, не по листу — намокший лист = 8 ч достаточно для заражения' },
+];
+
+
+
 window.onload=function(){
   var now=new Date();
   document.getElementById('hdate').textContent=now.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
@@ -1349,130 +1623,201 @@ function getW(){return wEvs.map(function(id){return {dt:(document.getElementById
 
 // ════ MAIN CALC ════
 function calc(){
-  if(!selBbch){alert('Выберите фенофазу');return;}
+  if(!selBbch){alert(TTXT('Выберите фенофазу','Select phenostage'));return;}
 
-  var ph=BBCHS.find(function(p){ return p.c===selBbch; });
-  var lrv=document.getElementById('lr').value;
-  var hdv=document.getElementById('hd').value;
-  var lm=document.getElementById('lm').value;
-  var evs=getW();
-  var today=new Date();
-  var lr=lrv?new Date(lrv):null;
-  var hd=hdv?new Date(hdv):null;
-  var dsr=lr?Math.round((today-lr)/86400000):999;
-  var upR=evs.filter(function(e){return (e.tp==='rain'||e.tp==='possible')&&new Date(e.dt)>today;});
-  var nrd=upR.length>0?Math.round((new Date(upR[0].dt)-today)/86400000):999;
-  var ip=Math.min(100,dsr<999?Math.round(dsr/10*100):0);
-  var early=(selBbch==='00-07'||selBbch==='09-11');
-  var flow=selBbch==='60-69';
-  var aver=(selBbch==='79-83'||selBbch==='83-89');
+  var ph = BBCHS.find(function(p){ return p.c===selBbch; });
+  var lrv = document.getElementById('lr').value;
+  var hdv = document.getElementById('hd').value;
+  var lm  = document.getElementById('lm').value;
+  var evs = getW();
+  var today = new Date();
+  var lr  = lrv ? new Date(lrv) : null;
+  var hd  = hdv ? new Date(hdv) : null;
 
-  // Risk
-  var rl,rlb,rls;
-  if(early){rl=0;rlb=TTXT('Нет риска','No risk');rls='rb-none';}
-  else if(flow&&upR.length>0){rl=4;rlb=TTXT('Критический','Critical');rls='rb-crit';}
-  else if(flow){rl=3;rlb=TTXT('Высокий','High');rls='rb-high';}
-  else if(ip>=80&&upR.length>0){rl=3;rlb=TTXT('Высокий','High');rls='rb-high';}
-  else if(upR.length>0&&ph.r>=2){rl=2;rlb=TTXT('Средний','Medium');rls='rb-med';}
-  else if(upR.length>0){rl=1;rlb=TTXT('Низкий','Low');rls='rb-low';}
-  else{rl=0;rlb=TTXT('Наблюдение','Watch');rls='rb-none';}
+  // Получить последнюю обработку из журнала
+  var lastSprayDate = null; var lastSpraySys = null;
+  try {
+    var jdata = JSON.parse(localStorage.getItem('vs4') || '[]');
+    if (jdata.length) {
+      jdata.sort(function(a,b){ return new Date(b.dt)-new Date(a.dt); });
+      lastSprayDate = new Date(jdata[0].dt);
+      lastSpraySys  = jdata[0].sys || 's1';
+    }
+  } catch(e){}
+  // Также учитываем LR как последний дождь / потенциальный триггер
+  var triggerDate = lr || new Date(today.getTime() - 7*86400000);
 
-  // Analysis block
-  var bc=ip>=80?'#c43a3a':ip>=50?'#d48a43':'#3d6329';
-  var iday=dsr<999?dsr:0;
-  var ana='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+  // Строим массив дней для Goidanich: прошлые (с LR) + будущие (из ручного прогноза)
+  var gDays = [];
+  // Прошлые 14 дней
+  for (var p = 13; p >= 0; p--) {
+    var pd = new Date(today); pd.setDate(pd.getDate() - p);
+    var pdStr = pd.toISOString().split('T')[0];
+    var isRainDay = lr && Math.abs(pd - lr) < 86400000;
+    gDays.push({
+      date: pdStr,
+      rainMm: isRainDay ? 12 : 0,
+      tempAvg: 18,
+      tempMax: 22,
+      humid: isRainDay ? 85 : 55
+    });
+  }
+  // Будущие дни из ручного ввода
+  for (var fi = 0; fi < evs.length; fi++) {
+    var ev = evs[fi];
+    var isR = (ev.tp === 'rain' || ev.tp === 'possible');
+    gDays.push({
+      date: ev.dt,
+      rainMm: isR ? 12 : 0.2,
+      tempAvg: 18,
+      tempMax: 22,
+      humid: isR ? 85 : 50
+    });
+  }
+
+  // Goidanich расчёт
+  var G = calcGoidanich(gDays, lastSprayDate, lastSpraySys, selBbch);
+
+  // Ближайший дождь из ручного ввода
+  var upR = evs.filter(function(e){ return (e.tp==='rain'||e.tp==='possible') && new Date(e.dt)>today; });
+  var nrd = upR.length > 0 ? Math.round((new Date(upR[0].dt)-today)/86400000) : 999;
+
+  var early = parseBbch(selBbch) < 13;
+  var flow  = selBbch === '60-69';
+  var aver  = selBbch === '79-83' || selBbch === '83-89';
+
+  // ── Цвет и бейдж риска ──
+  var rl, rlb, rls;
+  if (early)             { rl=0; rlb=TTXT('Нет риска','No risk');     rls='rb-none'; }
+  else if (G.status==='critical')  { rl=4; rlb=TTXT('Критический','Critical'); rls='rb-crit'; }
+  else if (G.status==='warn')      { rl=3; rlb=TTXT('Высокий','High');    rls='rb-high'; }
+  else if (G.status==='watch')     { rl=2; rlb=TTXT('Средний','Medium');  rls='rb-med'; }
+  else if (G.status==='protected') { rl=1; rlb=TTXT('Защита действует','Protected'); rls='rb-low'; }
+  else                             { rl=0; rlb=TTXT('Наблюдение','Watch'); rls='rb-none'; }
+
+  // ── Блок анализа ──
+  var pctColor = G.incubPct >= 90 ? '#9b2218' : G.incubPct >= 60 ? '#7a4b00' : '#1e6b33';
+  var ana = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
     +'<span style="font-size:26px">'+ph.e+'</span>'
     +'<div><div style="font-size:9px;color:var(--light);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">'+TTXT('Фенофаза','Phase')+'</div>'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:15px;color:#1e6b33">'+ph.n+'</div></div>'
+    +'<div style="font-size:15px;color:var(--dark);font-weight:700">'+ph.n+'</div></div>'
     +'<div style="margin-left:auto"><span class="rb '+rls+'">'+rlb+'</span></div></div>'
-    +'<div style="font-size:11px;color:var(--light);background:var(--bg);border:1px solid var(--div);padding:8px 12px;border-radius:8px;margin-bottom:12px;line-height:1.5">'+ph.d+'</div>';
+    +'<div style="font-size:11px;color:var(--sec);background:var(--bg);border:1px solid var(--div);padding:8px 12px;border-radius:8px;margin-bottom:12px;line-height:1.5">'+ph.d+'</div>';
 
-  if(!early){
-    ana+='<div style="margin-bottom:12px"><div class="incub-lbl"><span>'+TTXT('Инкубационный таймер','Incubation timer')+'</span><span style="color:'+bc+';font-weight:700">'+TTXT('День','Day')+' '+iday+' '+TTXT('из','of')+' 10</span></div>'
-      +'<div class="incub-tr"><div class="incub-fl" style="width:'+ip+'%;background:'+bc+'"></div></div>'
-      +'<div style="font-size:10px;color:var(--light);margin-top:3px">'+TTXT('На конце таймера (день 8–10) нужен трансламинар или системный препарат','At timer end (day 8–10) use translaminar or systemic')+'</div></div>';
-    if(nrd<999) ana+='<div class="al al-w"><span class="ali">&#127783;</span><div>'+TTXT('Следующий дождь через','Next rain in')+' <strong>'+nrd+' '+TTXT('дн.','d.')+'</strong> ('+upR[0].dt+') — '+TTXT('обрабатывать ДО этой даты','treat BEFORE this date')+'</div></div>';
-    else ana+='<div class="al al-ok"><span class="ali">&#9728;</span><div>'+TTXT('Дождей нет — режим наблюдения','No rain — observation mode')+'</div></div>';
+  if (!early) {
+    // Инкубационный прогресс (Goidanich)
+    var incubLabel = G.incubActive
+      ? TTXT('Инкубация идёт','Incubation active') + ' — ' + G.incubPct + '%'
+      : TTXT('Инкубация не запущена (нет триггера)','No active incubation (no trigger)');
+    ana += '<div style="margin-bottom:12px">'
+      +'<div class="incub-lbl">'
+      +'<span>'+TTXT('Модель Goidanich','Goidanich model')+'</span>'
+      +'<span style="color:'+pctColor+';font-weight:700">'+G.incubPct+'%</span>'
+      +'</div>'
+      +'<div class="incub-tr"><div class="incub-fl" style="width:'+G.incubPct+'%;background:'+pctColor+'"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--light);margin-top:2px">'
+      +'<span>0%</span><span style="color:#7a4b00">80% ⚠️</span><span style="color:#9b2218">95% 🔴</span><span>100%</span>'
+      +'</div>'
+      +'<div style="font-size:10px;color:var(--sec);margin-top:4px">'+incubLabel+'</div>'
+      +'</div>';
+
+    // Защитное окно
+    if (G.inProtectWindow && lastSprayDate) {
+      var spd = lastSprayDate.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU', {day:'numeric',month:'long'});
+      ana += '<div class="al al-ok" style="margin-bottom:8px"><span class="ali">🛡</span>'
+        +'<div>'+TTXT('Защитное окно активно','Protection window active')+': <strong>'+TTXT('осталось','remaining')+' '+G.daysLeftProtect+' '+TTXT('дн.','d.')+'</strong>'
+        +' ('+TTXT('обработка','spray')+' '+spd+', '+TTXT('система','system')+' '+(lastSpraySys||'s1').toUpperCase()+')</div></div>';
+    }
+
+    // Ближайший дождь
+    if (nrd < 999) {
+      var rainCls = nrd <= 2 ? 'al-crit' : nrd <= 5 ? 'al-w' : 'al-info';
+      ana += '<div class="al '+rainCls+'"><span class="ali">🌧</span>'
+        +'<div>'+TTXT('Дождь через','Rain in')+' <strong>'+nrd+' '+TTXT('дн.','d.')+'</strong>'
+        +' — '+TTXT('обработать ДО','spray BEFORE')+' '+upR[0].dt+'</div></div>';
+    } else {
+      ana += '<div class="al al-ok"><span class="ali">☀️</span><div>'+TTXT('Дождей нет — режим наблюдения','No rain — observation mode')+'</div></div>';
+    }
+
+    // Оидиум предупреждение
+    if (G.oidRisk >= 2) {
+      ana += '<div class="al al-w" style="margin-top:8px"><span class="ali">⬜</span>'
+        +'<div><strong>'+TTXT('Риск оидиума!','Powdery mildew risk!')+'</strong> '
+        +TTXT('Жарко и сухо — оптимальные условия. Добавьте в смесь серу или ЙМС.','Hot and dry — optimal conditions. Add sulphur or JMS to mix.')
+        +'</div></div>';
+    }
+
+    // Агротехника
+    var agroHtml = '<div style="margin-top:12px;background:var(--bg);border:1px solid var(--div);border-radius:var(--r2);padding:12px 14px">'
+      +'<div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:8px">'+TTXT('Агротехника (70% успеха)','Agrotechnics (70% of success)')+'</div>';
+    for (var ac=0; ac<AGRO_CHECKLIST.length; ac++) {
+      agroHtml += '<div style="font-size:11px;color:var(--sec);display:flex;gap:7px;margin-bottom:5px">'
+        +'<span style="flex-shrink:0">'+AGRO_CHECKLIST[ac].icon+'</span>'
+        +'<span>'+AGRO_CHECKLIST[ac].text+'</span></div>';
+    }
+    agroHtml += '</div>';
+    ana += agroHtml;
+
   } else {
-    ana+='<div class="al al-ok"><span class="ali">&#9989;</span><div><strong>'+TTXT('Фунгициды не нужны.','No fungicides needed.')+'</strong> '+TTXT('Устьица закрыты — споры милдью не войдут.','Stomata closed — mildew spores cannot enter.')+'</div></div>';
+    ana += '<div class="al al-ok"><span class="ali">✅</span><div><strong>'+TTXT('Фунгициды не нужны.','No fungicides needed.')+'</strong> '+TTXT('Устьица закрыты — споры не войдут.','Stomata closed — spores cannot enter.')+'</div></div>';
   }
-  document.getElementById('ana').innerHTML=ana;
 
-  // ════ DETERMINE SYSTEM ════
-  var sysId=null;
-  if(early) sysId=null;
-  else if(rl===0) sysId=null;
-  else if(flow||rl>=3) sysId='s4';
-  else if(ip>=70) sysId='s3';
-  else if(ip>=20||upR.length>0) sysId='s2';
-  else sysId='s1';
+  document.getElementById('ana').innerHTML = ana;
 
-  // Override if aver
-  if(aver) sysId='s1';
+  // ── Система защиты ──
+  var sysId = G.sysId;
+  if (early) sysId = null;
+  if (aver) sysId = 's1';
 
-  var sb=document.getElementById('sys-block');
-  if(!sysId){
-    if(early){
-      sb.innerHTML='<div style="background:#fff8e8;border:2px solid #d4a843;border-radius:12px;padding:18px 20px;margin-bottom:14px">'
+  var sb = document.getElementById('sys-block');
+  if (!sysId) {
+    if (early) {
+      sb.innerHTML = '<div style="background:#fff8e8;border:2px solid #d4a843;border-radius:12px;padding:18px 20px;margin-bottom:14px">'
         +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#6a4a10;opacity:.8;margin-bottom:4px">'+TTXT('Ранний сезон · BBCH 00–13','Early season · BBCH 00–13')+'</div>'
-        +'<div style="font-family:\'Playfair Display\',serif;font-size:20px;font-weight:700;color:#6a4a10;margin-bottom:8px">'+TTXT('Время для защиты от вредителей','Time for pest protection')+'</div>'
-        +'<div style="font-size:12px;color:#6a4a10;line-height:1.7">'+TTXT('Фунгициды сейчас бесполезны — устьица закрыты. <strong>Но это идеальный момент для акарицидов и инсектицидов:</strong> клещ, листовёртка и другие зимующие вредители ещё уязвимы до начала активного роста.','Fungicides are useless now — stomata are closed. <strong>But this is the perfect time for acaricides and insecticides:</strong> mites and leafworms are still vulnerable before active growth begins.')+'</div>'
-        +'</div>'
-        +'<div class="card" style="margin-bottom:0">'
-        +'<div class="ct">'+TTXT('Рекомендации по вредителям на старте сезона','Pest control recommendations for season start')+'</div>'
-        +'<table class="dt-tbl"><thead><tr>'
-        +'<th>'+TTXT('Препарат / Производитель','Product / Manufacturer')+'</th>'
-        +'<th>'+TTXT('Доза на 10 л','Dose per 10 L')+'</th>'
-        +'<th>'+TTXT('Цель','Target')+'</th>'
-        +'<th>'+TTXT('СО','PHI')+'</th>'
-        +'</tr></thead><tbody>'
-        +'<tr><td><strong>Nissorun (JP)</strong><div class="prod" style="color:#c43a2a">Nisso Chemical</div><div style="font-size:10px;color:var(--light);margin-top:2px">'+TTXT('Яйца клеща — бить сейчас, пока нет имаго','Mite eggs — treat now before adults appear')+'</div></td><td style="font-weight:700;color:#bf8f00">10 мл / 10 л</td><td><span class="moa-tag">'+TTXT('Клещ','Mite')+'</span></td><td><span style="color:#2d5a1a;font-weight:700">45 '+TTXT('дн.','d.')+'</span></td></tr>'
-        +'<tr><td><strong>Envidor</strong><div class="prod" style="color:#0050a0">Bayer</div><div style="font-size:10px;color:var(--light);margin-top:2px">'+TTXT('Действует на все стадии клеща.','Acts on all mite stages.')+'</div></td><td style="font-weight:700;color:#bf8f00">7 мл / 10 л</td><td><span class="moa-tag">'+TTXT('Клещи','Mites')+'</span></td><td><span style="color:#2d5a1a;font-weight:700">14 '+TTXT('дн.','d.')+'</span></td></tr>'
-        +'<tr><td><strong>Aktara</strong><div class="prod" style="color:#e8500a">Syngenta</div><div style="font-size:10px;color:var(--light);margin-top:2px">'+TTXT('Тля, листовёртка, цикадки.','Aphid, leafworm, leafhopper.')+'</div></td><td style="font-weight:700;color:#bf8f00">4 г / 10 л</td><td><span class="moa-tag">'+TTXT('Тля / Листовёртка','Aphid / Leafworm')+'</span></td><td><span style="color:#2d5a1a;font-weight:700">14 '+TTXT('дн.','d.')+'</span></td></tr>'
-        +'</tbody></table>'
-        +'<div class="al al-w" style="margin-top:14px"><span class="ali">&#9888;</span><div><strong>'+TTXT('Важно:','Important:')+'</strong> '+TTXT('Ниссоран несовместим с медьсодержащими. Готовьте отдельный бак или обрабатывайте в разные дни.','Nissorun is incompatible with copper products. Use separate tank or treat on different days.')+'</div></div>'
-        +'<div style="background:linear-gradient(135deg,#f0f7eb,#e8f4e0);border:1px solid #a8d48a;border-radius:8px;padding:12px 15px;margin-top:12px;font-size:12px;color:#2d5a1a">'
-        +'<strong>'+TTXT('Когда переходить к фунгицидам?','When to start fungicides?')+'</strong><br>'
-        +TTXT('Как только раскроется 4-й лист (BBCH 14) — устьица откроются. Вернитесь в советник и выберите BBCH 13–14.','When the 4th leaf opens (BBCH 14) — stomata open. Return to Advisor and select BBCH 13–14.')
+        +'<div style="font-size:20px;font-weight:700;color:#6a4a10;margin-bottom:8px">'+TTXT('Время для защиты от вредителей','Time for pest protection')+'</div>'
+        +'<div style="font-size:12px;color:#6a4a10;line-height:1.7">'+TTXT('Фунгициды сейчас бесполезны — устьица закрыты. Идеальный момент для акарицидов и инсектицидов.','Fungicides are useless now — stomata closed. Perfect time for acaricides and insecticides.')+'</div></div>';
+    } else {
+      sb.innerHTML = '<div class="al al-ok"><span class="ali">👁</span><div><strong>'+TTXT('Режим наблюдения.','Observation mode.')+'</strong> '+TTXT('Следите за прогнозом.','Monitor the forecast.')+'</div></div>';
+    }
+  } else {
+    var sys  = SYSTEMS[sysId];
+    var drugs = DR.filter(function(d){ return d.sys===sysId && d.moa!==lm; });
+    if (!drugs.length) drugs = DR.filter(function(d){ return d.sys===sysId; });
+
+    var timing = '';
+    var sprayDeadline = '';
+    if (G.sprayBy) {
+      sprayDeadline = G.sprayBy.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU',{day:'numeric',month:'long'});
+    } else if (nrd < 999) {
+      var sd = new Date(today); sd.setDate(sd.getDate() + Math.max(0, nrd-1));
+      sprayDeadline = sd.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU',{day:'numeric',month:'long'});
+    }
+
+    var urgCls = G.status==='critical'?'al-crit':G.status==='warn'?'al-w':'al-info';
+    if (sprayDeadline) {
+      timing = '<div class="al '+urgCls+'" style="margin-bottom:14px"><span class="ali">📅</span>'
+        +'<div>'+TTXT('Обработать до: ','Spray before: ')+'<strong>'+sprayDeadline+'</strong>'
+        +(G.incubPct>=80?' &mdash; '+TTXT('инкубация','incubation')+' '+G.incubPct+'%':'')
         +'</div></div>';
     } else {
-      sb.innerHTML='<div class="al al-ok"><span class="ali">&#128065;</span><div><strong>'+TTXT('Режим наблюдения.','Observation mode.')+'</strong> '+TTXT('Следите за прогнозом погоды.','Monitor the weather forecast.')+'</div></div>';
+      timing = '<div class="al" style="background:var(--bg);border:1px solid var(--div);margin-bottom:14px"><span class="ali">☀️</span><div>'+TTXT('Дождей нет — следите за прогнозом','No rain — monitor forecast')+'</div></div>';
     }
-  } else {
-    var sys=SYSTEMS[sysId];
-    var drugs=DR.filter(function(d){return d.sys===sysId&&d.moa!==lm;});
-    if(!drugs.length) drugs=DR.filter(function(d){return d.sys===sysId;});
 
-    var timing='';
-    var sprayDeadline='';
-    if(nrd<999){
-      var sd=new Date(today); sd.setDate(sd.getDate()+Math.max(0,nrd-1));
-      sprayDeadline=sd.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU',{day:'numeric',month:'long'});
-    }
-    if(nrd<3) timing='<div class="al al-crit" style="margin-bottom:14px"><span class="ali">⏰</span><div><strong>'+TTXT('Обработай до: ','Treat before: ')+sprayDeadline+'</strong> &mdash; '+TTXT('дождь через '+nrd+' дн.!','rain in '+nrd+' d.!')+'</div></div>';
-    else if(nrd<7) timing='<div class="al al-w" style="margin-bottom:14px"><span class="ali">📅</span><div>'+TTXT('Рекомендуемая дата обработки: ','Recommended spray date: ')+'<strong>'+sprayDeadline+'</strong></div></div>';
-    else if(nrd<999) timing='<div class="al al-info" style="margin-bottom:14px"><span class="ali">📅</span><div>'+TTXT('Следующий дождь далеко — следите за прогнозом','No rain soon — monitor forecast')+'</div></div>';
-    else timing='<div class="al" style="background:var(--bg);border:1px solid var(--div);margin-bottom:14px"><span class="ali">☀️</span><div>'+TTXT('Дождей нет — режим наблюдения','No rain — observation mode')+'</div></div>';
-
-    var tbl='<table class="dt-tbl"><thead><tr>'
+    // Таблица препаратов
+    var tbl = '<table class="dt-tbl"><thead><tr>'
       +'<th>'+TTXT('Препарат / Производитель','Product / Manufacturer')+'</th>'
       +'<th>'+TTXT('Доза на 10 л','Dose per 10 L')+'</th>'
       +'<th>'+TTXT('МОА','MOA')+'</th>'
       +'<th>'+TTXT('СО','PHI')+'</th>'
       +'</tr></thead><tbody>';
-
-    for(var di=0;di<drugs.length;di++){
+    for (var di=0; di<drugs.length; di++) {
       var d=drugs[di];
-      var rotWarn=d.moa===lm?'<span style="color:#c43a3a;font-size:10px;margin-left:4px">&#9888; '+TTXT('тот же МОА','same MOA')+'</span>':'';
+      var rotWarn=d.moa===lm?'<span style="color:#c43a3a;font-size:10px;margin-left:4px">⚠️ '+TTXT('тот же МОА','same MOA')+'</span>':'';
       var jpBadge=d.jp?'<span class="jp-b">JP</span>':'';
-      var synDot=d.pcls==='syn'?'<span class="syn-dot"></span>':'';
-      var altsHtml='';
-      if(d.alts&&d.alts.length){
-        altsHtml='<div style="margin-top:5px;font-size:10px;color:#bf8f00">'+TTXT('Аналоги: ','Alternatives: ')+'<span style="color:var(--light)">'+d.alts.join(', ')+'</span></div>';
-      }
+      var altsHtml=d.alts&&d.alts.length?'<div style="margin-top:5px;font-size:10px;color:#bf8f00">'+TTXT('Аналоги: ','Alternatives: ')+'<span style="color:var(--light)">'+d.alts.join(', ')+'</span></div>':'';
       tbl+='<tr>'
-        +'<td><div>'+synDot+'<strong>'+d.n+'</strong>'+jpBadge+rotWarn+'</div>'
-        +'<div class="prod" style="color:'+(PCLS_COLOR[d.pcls]||'rgba(255,255,255,0.4)')+'">'+d.prod+'</div>'
+        +'<td><div><strong>'+d.n+'</strong>'+jpBadge+rotWarn+'</div>'
+        +'<div class="dprod" style="color:'+(PCLS_COLOR[d.pcls]||'var(--sec)')+'">'+d.prod+'</div>'
         +altsHtml
         +'<div style="font-size:10px;color:var(--light);margin-top:3px">'+d.nt+'</div></td>'
         +'<td style="font-weight:700;color:#bf8f00;white-space:nowrap">'+(d.d10||'—')+'</td>'
@@ -1480,35 +1825,45 @@ function calc(){
         +'<td><span style="color:#2d5a1a;font-weight:700">'+d.w+' '+TTXT('дн.','d.')+'</span></td>'
         +'</tr>';
     }
-    tbl+='</tbody></table>';
+    tbl += '</tbody></table>';
 
-    var rotNote='';
-    if(lm) rotNote='<div class="al al-w" style="margin-top:12px"><span class="ali">&#128260;</span><div><strong>'+TTXT('Ротация:','Rotation:')+'</strong> '+TTXT('последний применённый класс —','last applied class —')+' '+(MOA_L[lm]||lm)+'. '+TTXT('Выбирайте препарат с другим МОА.','Choose a product with a different MOA.')+'</div></div>';
-
-    var phBox='<div class="ph-strip" style="margin-top:14px"><div class="ph-icon">&#128167;</div><div>'
+    var rotNote = lm ? '<div class="al al-w" style="margin-top:12px"><span class="ali">🔄</span><div><strong>'+TTXT('Ротация:','Rotation:')+'</strong> '+TTXT('последний класс —','last class —')+' '+(MOA_L[lm]||lm)+'. '+TTXT('Возьмите другой МОА.','Choose different MOA.')+'</div></div>' : '';
+    var phBox = '<div class="ph-strip" style="margin-top:14px"><div class="ph-icon">💧</div><div>'
       +'<div class="ph-title">'+TTXT('Подкислите воду: pH 4.0–4.5','Acidify water: pH 4.0–4.5')+'</div>'
-      +'<div class="ph-text">'+TTXT('Лимонная кислота 1–2 г / 10 л воды','Citric acid 1–2 g / 10 L water')+'</div></div></div>';
+      +'<div class="ph-text">'+TTXT('Лимонная кислота 1–2 г / 10 л','Citric acid 1–2 g / 10 L')+'</div></div></div>';
 
-    sb.innerHTML='<div style="background:'+sys.bg+';border:2px solid '+sys.border+';border-radius:12px;padding:18px 20px;margin-bottom:14px">'
+    // Блок «Почему рекомендация?»
+    var whyBox = '';
+    if (G.reason.length) {
+      whyBox = '<div style="background:var(--bg);border:1px solid var(--div);border-radius:var(--r1);padding:10px 12px;margin-top:10px;font-size:11px;color:var(--sec)">'
+        +'<strong style="color:var(--dark)">'+TTXT('Почему эта рекомендация?','Why this recommendation?')+'</strong><br>'
+        + G.reason.join(' · ')
+        + (G.incubPct > 0 ? ' · '+TTXT('Инкубация','Incubation')+' '+G.incubPct+'% (Goidanich)' : '')
+        +'</div>';
+    }
+
+    sb.innerHTML = '<div style="background:'+sys.bg+';border:2px solid '+sys.border+';border-radius:12px;padding:18px 20px;margin-bottom:14px">'
       +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:'+sys.color+';opacity:.7;margin-bottom:4px">'+sys.num+'</div>'
-      +'<div style="font-family:\'Playfair Display\',serif;font-size:21px;font-weight:700;color:'+sys.color+';margin-bottom:6px">'+sys.icon+' '+sys.name+'</div>'
+      +'<div style="font-size:21px;font-weight:700;color:'+sys.color+';margin-bottom:6px">'+sys.icon+' '+sys.name+'</div>'
       +'<div style="font-size:12px;color:'+sys.color+';opacity:.85;margin-bottom:8px;line-height:1.6">'+(LANG==='en'?(sys.logice||sys.logic):sys.logic)+'</div>'
-      +'<div style="font-size:10px;background:rgba(255,255,255,.6);padding:6px 10px;border-radius:6px;color:'+sys.color+';opacity:.8">'+TTXT('Применяется:','Applies:')+'  '+sys.when+'</div>'
+      +'<div style="font-size:10px;background:rgba(255,255,255,.6);padding:6px 10px;border-radius:6px;color:'+sys.color+';opacity:.8">'+TTXT('Применяется: ','Applies: ')+sys.when+'</div>'
       +'</div>'
       +timing
       +'<div class="card" style="margin-bottom:0">'
       +'<div class="ct" style="margin-bottom:12px">'+TTXT('Доступные препараты этой системы','Available products for this system')+'</div>'
-      +tbl+rotNote+phBox
+      +tbl+rotNote+phBox+whyBox
       +'</div>';
   }
 
-  // Harvest
-  if(hd){
-    var dth=Math.round((hd-today)/86400000);
-    var h='<div style="font-size:12px;color:var(--light);margin-bottom:12px">'+TTXT('До сбора:','Until harvest:')+' <strong style="color:#1e6b33;font-size:18px">'+dth+'</strong> '+TTXT('дней','days')+'</div>';
-    var okD=DR.filter(function(d){return d.w<=dth;});
-    for(var oi=0;oi<okD.length;oi++){h+='<div class="hi"><span>'+okD[oi].n+'</span><span class="dt dt-wait">'+TTXT('СО','PHI')+' '+okD[oi].w+' '+TTXT('дн.','d.')+'</span></div>';}
-    if(dth<=7) h+='<div class="al al-crit" style="margin-top:8px"><span class="ali">&#128680;</span><div>'+TTXT('≤7 дней до сбора! Только Каптан (СО 3 дн.) или биопрепараты.','≤7 days to harvest! Only Captan (PHI 3d) or biopesticides.')+'</div></div>';
+  // Сбор урожая
+  if (hd) {
+    var dth = Math.round((hd-today)/86400000);
+    var h = '<div style="font-size:12px;color:var(--sec);margin-bottom:12px">'+TTXT('До сбора:','Until harvest:')+' <strong style="color:#1e6b33;font-size:18px">'+dth+'</strong> '+TTXT('дней','days')+'</div>';
+    var okD = DR.filter(function(d){ return d.w<=dth; });
+    for (var oi=0; oi<okD.length; oi++) {
+      h += '<div class="hi"><span>'+okD[oi].n+'</span><span class="dt dt-w">'+TTXT('СО','PHI')+' '+okD[oi].w+' '+TTXT('дн.','d.')+'</span></div>';
+    }
+    if (dth<=7) h += '<div class="al al-crit" style="margin-top:8px"><span class="ali">🚨</span><div>'+TTXT('≤7 дней до сбора! Только биопрепараты или Каптан.','≤7 days to harvest! Only biopesticides or Captan.')+'</div></div>';
     document.getElementById('hv-c').style.display='block';
     document.getElementById('hbl').innerHTML=h;
   }
@@ -1516,6 +1871,7 @@ function calc(){
   document.getElementById('res-e').style.display='none';
   document.getElementById('res-m').style.display='block';
 }
+
 
 // ════ JOURNAL ════
 function addJ(){
@@ -1684,227 +2040,126 @@ var manualRowCount = 0;
 var fctInitialized = false;
 
 // Called once when tab opens
-function initForecast() {
-  if (fctInitialized) return;
-  fctInitialized = true;
-  if(document.getElementById('fct-manual-rows')){addManualRow();addManualRow();addManualRow();}
-  // If we already have location from header auto-detect, reuse it
-  if (window._geoLat && window._geoLon) {
-    fctLat = window._geoLat;
-    fctLon = window._geoLon;
-    var _fls=document.getElementById('fct-loc-status');if(_fls)_fls.textContent = 'Координаты из автоопределения готовы. Нажмите «Загрузить прогноз».';
-  }
-}
+// ══ WEATHER CODES → icons/labels ══
+var WC_MAP = [
+  {codes:[0],icon:'☀️',label:'Ясно',rain:0,humid:30},
+  {codes:[1,2],icon:'⛅',label:'Облачно',rain:0,humid:50},
+  {codes:[3],icon:'☁️',label:'Пасмурно',rain:0,humid:65},
+  {codes:[45,48],icon:'🌫',label:'Туман',rain:0,humid:90},
+  {codes:[51,53,61,63,80,81],icon:'🌧',label:'Лёгкий дождь',rain:3,humid:90},
+  {codes:[55,65,82,95,96,99],icon:'⛈',label:'Гроза/ливень',rain:8,humid:95},
+  {codes:[71,73,75,77,85,86],icon:'🌨',label:'Снег',rain:2,humid:80},
+  {codes:[56,57,66,67],icon:'🌧',label:'Морось',rain:1,humid:88},
+];
 
-function toggleFctSource() {
-  var src = document.getElementById('fct-source').value;
-  var hint = document.getElementById('fct-source-hint');
-  document.getElementById('fct-auto-block').style.display = src === 'auto' ? '' : 'none';
-  document.getElementById('fct-manual-block').style.display = src === 'manual' ? '' : 'none';
-  if (src === 'manual') hint.textContent = 'Введите данные вручную с любого сайта погоды. Осадки в мм, температура в °C.';
-  else hint.textContent = 'Данные загружаются с open-meteo.com по координатам. 14 дней, осадки + температура.';
+var PICKER_OPTIONS = [
+  {icon:'☀️',label:'Ясно',rain:0,humid:30},
+  {icon:'⛅',label:'Облачно',rain:0,humid:50},
+  {icon:'☁️',label:'Пасмурно',rain:0,humid:65},
+  {icon:'🌫',label:'Туман',rain:0,humid:90},
+  {icon:'🌧',label:'Лёгкий дождь',rain:3,humid:90},
+  {icon:'⛈',label:'Гроза/ливень',rain:8,humid:95},
+];
+
+var fctDays = [];       // [{date,icon,label,rain,humid,tmax,tmin,isOverride}]
+var pickerTargetIdx = -1;
+
+function wcToWeather(code) {
+  for (var i=0; i<WC_MAP.length; i++) {
+    if (WC_MAP[i].codes.indexOf(code) >= 0) return WC_MAP[i];
+  }
+  return WC_MAP[0];
 }
 
 function autoLocate() {
-  var status = document.getElementById('fct-loc-status');
-  if (!navigator.geolocation) { status.textContent = 'Геолокация недоступна в вашем браузере'; return; }
-  status.textContent = '⏳ Определяем координаты...';
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      fctLat = pos.coords.latitude;
-      fctLon = pos.coords.longitude;
-      window._geoLat = fctLat; window._geoLon = fctLon;
-      // Reverse geocode
-      fetch('https://nominatim.openstreetmap.org/reverse?lat=' + fctLat + '&lon=' + fctLon + '&format=json&accept-language=ru')
-        .then(function(r){ return r.json(); })
-        .then(function(d){
-          var city = d.address && (d.address.city || d.address.town || d.address.village || d.address.county) || '';
-          fctCityName = city;
-          if (city) document.getElementById('fct-city').value = city;
-          status.textContent = 'Координаты определены: ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4) + (city ? ' (' + city + ')' : '');
-          document.getElementById('locn').textContent = city ? ('📍 ' + city) : '📍 Определено';
-        })
-        .catch(function(){ status.textContent = 'Координаты: ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4); });
-    },
-    function() { status.textContent = '❌ Не удалось определить местоположение. Введите город вручную.'; }
-  );
+  if (!navigator.geolocation) { alert('Геолокация недоступна'); return; }
+  navigator.geolocation.getCurrentPosition(function(p) {
+    fctLat = p.coords.latitude; fctLon = p.coords.longitude;
+    document.getElementById('fct-loc-status').textContent = '📍 ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4);
+    reverseGeocode(fctLat, fctLon, function(city){
+      if (city) document.getElementById('fct-city').value = city;
+    });
+  }, function(){ document.getElementById('fct-loc-status').textContent = '❌ Не удалось определить местоположение'; });
+}
+
+function reverseGeocode(lat, lon, cb) {
+  fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=json&accept-language=ru')
+    .then(function(r){ return r.json(); })
+    .then(function(d){ cb((d.address&&(d.address.city||d.address.town||d.address.village))||''); })
+    .catch(function(){ cb(''); });
 }
 
 function geocodeCity() {
-  var city = document.getElementById('fct-city').value.trim();
+  var city = (document.getElementById('fct-city').value || '').trim();
   if (!city) return;
   var status = document.getElementById('fct-loc-status');
+  status.textContent = '🔍 Ищем...';
 
-  // Built-in city database — works offline, no CORS
+  // Offline city database
   var CITIES = {
-    // Россия / Крым
-    'ялта':       {lat:44.4952, lon:34.1663, name:'Ялта'},
-    'yalta':      {lat:44.4952, lon:34.1663, name:'Ялта'},
-    'симферополь':{lat:44.9521, lon:34.1024, name:'Симферополь'},
-    'simferopol': {lat:44.9521, lon:34.1024, name:'Симферополь'},
-    'севастополь':{lat:44.6166, lon:33.5254, name:'Севастополь'},
-    'sevastopol': {lat:44.6166, lon:33.5254, name:'Севастополь'},
-    'краснодар':  {lat:45.0355, lon:38.9753, name:'Краснодар'},
-    'krasnodar':  {lat:45.0355, lon:38.9753, name:'Краснодар'},
-    'анапа':      {lat:44.8958, lon:37.3167, name:'Анапа'},
-    'anapa':      {lat:44.8958, lon:37.3167, name:'Анапа'},
-    'геленджик':  {lat:44.5620, lon:38.0773, name:'Геленджик'},
-    'gelendzhik': {lat:44.5620, lon:38.0773, name:'Геленджик'},
-    'сочи':       {lat:43.5992, lon:39.7257, name:'Сочи'},
-    'sochi':      {lat:43.5992, lon:39.7257, name:'Сочи'},
-    'новороссийск':{lat:44.7234, lon:37.7688, name:'Новороссийск'},
-    'новочеркасск':{lat:47.4135, lon:40.0935, name:'Новочеркасск'},
-    'ростов':     {lat:47.2357, lon:39.7015, name:'Ростов-на-Дону'},
-    'ростов-на-дону':{lat:47.2357, lon:39.7015, name:'Ростов-на-Дону'},
-    'rostov':     {lat:47.2357, lon:39.7015, name:'Ростов-на-Дону'},
-    'ставрополь': {lat:45.0448, lon:41.9694, name:'Ставрополь'},
-    'stavropol':  {lat:45.0448, lon:41.9694, name:'Ставрополь'},
-    'волгоград':  {lat:48.7194, lon:44.5018, name:'Волгоград'},
-    'volgograd':  {lat:48.7194, lon:44.5018, name:'Волгоград'},
-    'астрахань':  {lat:46.3497, lon:48.0408, name:'Астрахань'},
-    'москва':     {lat:55.7558, lon:37.6176, name:'Москва'},
-    'moscow':     {lat:55.7558, lon:37.6176, name:'Москва'},
-    'санкт-петербург':{lat:59.9343, lon:30.3351, name:'Санкт-Петербург'},
-    'спб':        {lat:59.9343, lon:30.3351, name:'Санкт-Петербург'},
-    'spb':        {lat:59.9343, lon:30.3351, name:'Санкт-Петербург'},
-    // Украина
-    'одесса':     {lat:46.4825, lon:30.7233, name:'Одесса'},
-    'odessa':     {lat:46.4825, lon:30.7233, name:'Одесса'},
-    'херсон':     {lat:46.6354, lon:32.6169, name:'Херсон'},
-    'николаев':   {lat:46.9659, lon:32.0045, name:'Николаев'},
-    'киев':       {lat:50.4501, lon:30.5234, name:'Киев'},
-    'kyiv':       {lat:50.4501, lon:30.5234, name:'Киев'},
-    'kiev':       {lat:50.4501, lon:30.5234, name:'Киев'},
-    'харьков':    {lat:49.9935, lon:36.2304, name:'Харьков'},
-    'kharkiv':    {lat:49.9935, lon:36.2304, name:'Харьков'},
-    'запорожье':  {lat:47.8388, lon:35.1396, name:'Запорожье'},
-    'мелитополь': {lat:46.8498, lon:35.3682, name:'Мелитополь'},
-    'закарпатье': {lat:48.6208, lon:22.2879, name:'Закарпатье'},
-    // Молдова
-    'кишинев':    {lat:47.0105, lon:28.8638, name:'Кишинёв'},
-    'chisinau':   {lat:47.0105, lon:28.8638, name:'Кишинёв'},
-    'тирасполь':  {lat:46.8403, lon:29.6433, name:'Тирасполь'},
-    // Грузия
-    'тбилиси':    {lat:41.6941, lon:44.8337, name:'Тбилиси'},
-    'tbilisi':    {lat:41.6941, lon:44.8337, name:'Тбилиси'},
-    'кахетия':    {lat:41.6462, lon:45.6987, name:'Кахетия'},
-    'кутаиси':    {lat:42.2679, lon:42.7068, name:'Кутаиси'},
-    // Армения
-    'ереван':     {lat:40.1872, lon:44.5152, name:'Ереван'},
-    'yerevan':    {lat:40.1872, lon:44.5152, name:'Ереван'},
-    // Азербайджан
-    'баку':       {lat:40.4093, lon:49.8671, name:'Баку'},
-    'baku':       {lat:40.4093, lon:49.8671, name:'Баку'},
-    'гянджа':     {lat:40.6828, lon:46.3606, name:'Гянджа'},
-    // Узбекистан / Таджикистан
-    'ташкент':    {lat:41.2995, lon:69.2401, name:'Ташкент'},
-    'tashkent':   {lat:41.2995, lon:69.2401, name:'Ташкент'},
-    'самарканд':  {lat:39.6270, lon:66.9750, name:'Самарканд'},
-    'samarkand':  {lat:39.6270, lon:66.9750, name:'Самарканд'},
-    // Казахстан
-    'алматы':     {lat:43.2551, lon:76.9126, name:'Алматы'},
-    'almaty':     {lat:43.2551, lon:76.9126, name:'Алматы'},
-    // Европа (виноградные регионы)
-    'бордо':      {lat:44.8378, lon:-0.5792, name:'Бордо'},
-    'bordeaux':   {lat:44.8378, lon:-0.5792, name:'Бордо'},
-    'бургундия':  {lat:47.0520, lon:4.3527,  name:'Бургундия'},
-    'burgundy':   {lat:47.0520, lon:4.3527,  name:'Бургундия'},
-    'тоскана':    {lat:43.7711, lon:11.2486, name:'Тоскана'},
-    'tuscany':    {lat:43.7711, lon:11.2486, name:'Тоскана'},
-    'флоренция':  {lat:43.7696, lon:11.2558, name:'Флоренция'},
-    'florence':   {lat:43.7696, lon:11.2558, name:'Флоренция'},
-    'рим':        {lat:41.9028, lon:12.4964, name:'Рим'},
-    'rome':       {lat:41.9028, lon:12.4964, name:'Рим'},
-    'барселона':  {lat:41.3851, lon:2.1734,  name:'Барселона'},
-    'barcelona':  {lat:41.3851, lon:2.1734,  name:'Барселона'},
-    'мадрид':     {lat:40.4168, lon:-3.7038, name:'Мадрид'},
-    'madrid':     {lat:40.4168, lon:-3.7038, name:'Мадрид'},
-    'валенсия':   {lat:39.4699, lon:-0.3763, name:'Валенсия'},
-    'valencia':   {lat:39.4699, lon:-0.3763, name:'Валенсия'},
-    'афины':      {lat:37.9838, lon:23.7275, name:'Афины'},
-    'athens':     {lat:37.9838, lon:23.7275, name:'Афины'},
-    'стамбул':    {lat:41.0082, lon:28.9784, name:'Стамбул'},
-    'istanbul':   {lat:41.0082, lon:28.9784, name:'Стамбул'},
-    'анкара':     {lat:39.9334, lon:32.8597, name:'Анкара'},
-    'ankara':     {lat:39.9334, lon:32.8597, name:'Анкара'},
-    'измир':      {lat:38.4192, lon:27.1287, name:'Измир'},
-    'izmir':      {lat:38.4192, lon:27.1287, name:'Измир'},
-    'берлин':     {lat:52.5200, lon:13.4050, name:'Берлин'},
-    'berlin':     {lat:52.5200, lon:13.4050, name:'Берлин'},
-    'мюнхен':     {lat:48.1351, lon:11.5820, name:'Мюнхен'},
-    'munich':     {lat:48.1351, lon:11.5820, name:'Мюнхен'},
-    'вена':       {lat:48.2082, lon:16.3738, name:'Вена'},
-    'vienna':     {lat:48.2082, lon:16.3738, name:'Вена'},
-    'прага':      {lat:50.0755, lon:14.4378, name:'Прага'},
-    'prague':     {lat:50.0755, lon:14.4378, name:'Прага'},
+    'ялта':[44.4952,34.1663],'yalta':[44.4952,34.1663],
+    'симферополь':[44.9521,34.1024],'simferopol':[44.9521,34.1024],
+    'севастополь':[44.6054,33.5226],'sevastopol':[44.6054,33.5226],
+    'краснодар':[45.0448,38.9760],'krasnodar':[45.0448,38.9760],
+    'анапа':[44.8946,37.3159],'анапа':[44.8946,37.3159],
+    'геленджик':[44.5616,38.0766],'gelendzhik':[44.5616,38.0766],
+    'сочи':[43.5855,39.7203],'sochi':[43.5855,39.7203],
+    'ростов':[47.2357,39.7015],'rostov':[47.2357,39.7015],
+    'одесса':[46.4825,30.7233],'odessa':[46.4825,30.7233],
+    'тбилиси':[41.6941,44.8337],'tbilisi':[41.6941,44.8337],
+    'ереван':[40.1872,44.5152],'yerevan':[40.1872,44.5152],
+    'баку':[40.4093,49.8671],'baku':[40.4093,49.8671],
+    'алматы':[43.2220,76.8512],'almaty':[43.2220,76.8512],
+    'ташкент':[41.2995,69.2401],'tashkent':[41.2995,69.2401],
+    'бордо':[44.8378,-0.5792],'bordeaux':[44.8378,-0.5792],
+    'тоскана':[43.4675,11.2945],'tuscany':[43.4675,11.2945],
+    'кишинёв':[47.0105,28.8638],'chisinau':[47.0105,28.8638],
+    'харьков':[49.9935,36.2304],'kharkiv':[49.9935,36.2304],
+    'киев':[50.4501,30.5234],'kyiv':[50.4501,30.5234],
+    'ставрополь':[45.0428,41.9734],'stavropol':[45.0428,41.9734],
+    'москва':[55.7558,37.6173],'moscow':[55.7558,37.6173],
   };
 
-  // Check coordinate input (lat,lon format)
   var coordMatch = city.match(/^(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)$/);
   if (coordMatch) {
     fctLat = parseFloat(coordMatch[1]);
     fctLon = parseFloat(coordMatch[2]);
-    fctCityName = city;
-    window._geoLat = fctLat; window._geoLon = fctLon;
-    status.textContent = 'Координаты приняты: ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4);
-    status.style.color = 'var(--green2)';
+    status.textContent = '📍 ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4);
     return;
   }
 
-  // Look up in built-in database
   var key = city.toLowerCase().trim();
-  var found = CITIES[key];
-
-  // Partial match if exact not found
-  if (!found) {
-    for (var k in CITIES) {
-      if (k.indexOf(key) === 0 || key.indexOf(k) === 0) {
-        found = CITIES[k];
-        break;
-      }
-    }
-  }
-
-  if (found) {
-    fctLat = found.lat;
-    fctLon = found.lon;
-    fctCityName = found.name;
-    window._geoLat = fctLat; window._geoLon = fctLon;
-    document.getElementById('fct-city').value = found.name;
-    status.textContent = '✅ Найдено: ' + found.name + ' (' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4) + ')';
-    status.style.color = '#2d5a1a';
-    document.getElementById('locn').textContent = '📍 ' + found.name;
+  if (CITIES[key]) {
+    fctLat = CITIES[key][0]; fctLon = CITIES[key][1];
+    status.textContent = '📍 Найдено: ' + city;
     return;
   }
 
-  // Fallback: try Nominatim API (works if site is hosted or CORS allows)
-  status.textContent = '⏳ Поиск...';
   fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(city) + '&format=json&limit=1&accept-language=ru', {mode:'cors'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data || !data.length) {
-        status.innerHTML = '❌ Город не найден в базе.<br><span style="font-size:11px">Введите координаты вручную: <strong>широта, долгота</strong><br>Пример для Ялты: <strong>44.4952, 34.1663</strong><br>Координаты можно найти в <a href="https://yandex.ru/maps" target="_blank" style="color:#bf8f00">Яндекс.Картах</a></span>';
-        status.style.color = '#ff6060';
+        status.textContent = '❌ Город не найден. Введите координаты: 44.49, 34.16';
         return;
       }
       fctLat = parseFloat(data[0].lat);
       fctLon = parseFloat(data[0].lon);
-      fctCityName = data[0].display_name.split(',')[0];
-      window._geoLat = fctLat; window._geoLon = fctLon;
-      document.getElementById('fct-city').value = fctCityName;
-      status.textContent = '✅ ' + fctCityName + ' (' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4) + ')';
-      status.style.color = '#2d5a1a';
-      document.getElementById('locn').textContent = '📍 ' + fctCityName;
+      status.textContent = '📍 ' + (data[0].display_name.split(',')[0]);
     })
     .catch(function(){
-      status.innerHTML = '❌ Город не найден в базе.<br><span style="font-size:11px">Введите координаты вручную: <strong>широта, долгота</strong><br>Пример для Ялты: <strong>44.4952, 34.1663</strong><br>Координаты можно найти в <a href="https://yandex.ru/maps" target="_blank" style="color:#bf8f00">Яндекс.Картах</a></span>';
-      status.style.color = '#ff6060';
+      status.textContent = '❌ Ошибка поиска. Введите координаты вручную.';
     });
 }
 
-function loadForecast() {
+function loadForecastNew() {
   if (!fctLat || !fctLon) {
-    alert('Сначала определите местоположение или введите город');
+    var s = document.getElementById('fct-loc-status');
+    s.textContent = '⚠️ Сначала определите местоположение';
+    s.style.color = 'var(--err)';
+    geocodeCity();
+    setTimeout(function(){
+      if (fctLat && fctLon) loadForecastNew();
+    }, 1500);
     return;
   }
   document.getElementById('fct-empty').style.display = 'none';
@@ -1914,231 +2169,401 @@ function loadForecast() {
   var url = 'https://api.open-meteo.com/v1/forecast'
     + '?latitude=' + fctLat
     + '&longitude=' + fctLon
-    + '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode'
-    + '&forecast_days=14'
-    + '&timezone=auto';
+    + '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min,weathercode,precipitation_probability_max,relativehumidity_2m_max'
+    + '&forecast_days=14&timezone=auto';
 
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(data){
       document.getElementById('fct-loading').style.display = 'none';
-      if (!data || !data.daily) {
-        document.getElementById('fct-empty').style.display = '';
-        document.getElementById('fct-empty').innerHTML = '<div style="padding:30px;text-align:center;color:var(--light)">❌ Не удалось получить данные погоды. Проверьте соединение.</div>';
-        return;
-      }
-      var days = [];
-      var n = data.daily.time.length;
-      for (var i = 0; i < n; i++) {
-        days.push({
-          date: data.daily.time[i],
-          precip: data.daily.precipitation_sum[i] || 0,
-          precipProb: data.daily.precipitation_probability_max[i] || 0,
-          tempMax: data.daily.temperature_2m_max[i] || 0,
-          tempMin: data.daily.temperature_2m_min[i] || 0,
-          wcode: data.daily.weathercode[i] || 0
+      if (!data || !data.daily) { alert('Ошибка загрузки прогноза'); return; }
+      var d = data.daily;
+      fctDays = [];
+      for (var i = 0; i < d.time.length; i++) {
+        var w = wcToWeather(d.weathercode[i]);
+        var rainMm = d.precipitation_sum[i] || 0;
+        var humid = d.relativehumidity_2m_max ? (d.relativehumidity_2m_max[i] || w.humid) : w.humid;
+        fctDays.push({
+          date: d.time[i],
+          icon: w.icon,
+          label: w.label,
+          rain: rainMm,
+          humid: humid,
+          tmax: d.temperature_2m_max[i] || 18,
+          tmin: d.temperature_2m_min[i] || 10,
+          prob: d.precipitation_probability_max ? (d.precipitation_probability_max[i]||0) : 0,
+          isOverride: false
         });
       }
-      renderCalendar(days, fctCityName);
+      var cityLabel = document.getElementById('fct-city').value || (fctLat.toFixed(2) + ', ' + fctLon.toFixed(2));
+      document.getElementById('fct-city-label').textContent = cityLabel;
+      document.getElementById('fct-result').style.display = '';
+      renderWeatherStrip();
+      renderMainRecommendation();
+      renderBioRisks();
+      renderNewCalendar();
     })
-    .catch(function(err){
+    .catch(function(e){
       document.getElementById('fct-loading').style.display = 'none';
       document.getElementById('fct-empty').style.display = '';
-      document.getElementById('fct-empty').innerHTML = '<div style="padding:30px;text-align:center;color:var(--light)">❌ Ошибка загрузки: ' + err.message + '</div>';
+      document.getElementById('fct-empty').style.display='';document.getElementById('fct-loc-status').textContent='❌ Ошибка загрузки прогноза';
     });
 }
 
-// Manual rows
-function addManualRow() {
-  manualRowCount++;
-  var id = manualRowCount;
-  var container = document.getElementById('fct-manual-rows');
-  var d = new Date(); d.setDate(d.getDate() + id);
-  var dateStr = d.toISOString().split('T')[0];
-  var row = document.createElement('div');
-  row.className = 'mr'; row.id = 'mr-' + id;
-  row.innerHTML = '<input type="date" id="mr-date-' + id + '" value="' + dateStr + '">'
-    + '<input type="number" id="mr-rain-' + id + '" min="0" max="100" step="0.1" value="0" placeholder="мм">'
-    + '<input type="number" class="temp" id="mr-tmax-' + id + '" min="-30" max="50" step="1" value="18" placeholder="°C макс">'
-    + '<input type="number" class="temp" id="mr-tmin-' + id + '" min="-30" max="50" step="1" value="10" placeholder="°C мин">'
-    + '<span class="mr-del" onclick="document.getElementById(\'mr-' + id + '\').remove()">✕</span>';
-  if(container) container.appendChild(row);
+// ── WEATHER STRIP ──
+function renderWeatherStrip() {
+  var strip = document.getElementById('fct-weather-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  var today = new Date();
+  for (var i = 0; i < fctDays.length; i++) {
+    var day = fctDays[i];
+    var dt = new Date(day.date + 'T12:00:00');
+    var isToday = (i === 0);
+    var dow = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][dt.getDay()];
+    var dom = dt.getDate();
+    var mon = dt.getMonth()+1;
+    var hasRain = day.rain >= 1.5;
+    var bg = hasRain ? '#fff0ee' : isToday ? '#eef5ff' : 'var(--bg)';
+    var border = hasRain ? '#f5b8b2' : isToday ? '#b2d0f5' : 'var(--div)';
+    var cell = document.createElement('div');
+    cell.style.cssText = 'min-width:54px;text-align:center;cursor:pointer;padding:8px 4px;border-radius:10px;background:'+bg+';border:1px solid '+border+';flex-shrink:0;transition:all .15s;position:relative';
+    cell.innerHTML = '<div style="font-size:9px;font-weight:700;color:var(--sec);margin-bottom:2px">' + (isToday?'СЕГ':dow) + '</div>'
+      + '<div style="font-size:9px;color:var(--light)">' + dom + '.' + (mon<10?'0'+mon:mon) + '</div>'
+      + '<div style="font-size:24px;line-height:1;margin:4px 0">' + day.icon + '</div>'
+      + '<div style="font-size:9px;color:var(--dark);font-weight:600">' + Math.round(day.tmax) + '°</div>'
+      + (hasRain ? '<div style="font-size:8px;color:#9b2218">' + day.rain.toFixed(1) + 'мм</div>' : '<div style="font-size:8px;color:transparent">·</div>')
+      + (day.isOverride ? '<div style="position:absolute;top:2px;right:2px;width:6px;height:6px;background:var(--blue);border-radius:50%"></div>' : '');
+    (function(idx){ cell.onclick = function(){ openPicker(idx); }; })(i);
+    strip.appendChild(cell);
+  }
 }
 
-function calcForecastManual() {
-  var rows = document.getElementById('fct-manual-rows').querySelectorAll('.mr');
-  var days = [];
-  rows.forEach(function(row) {
-    var rid = row.id.replace('mr-', '');
-    var dateEl = document.getElementById('mr-date-' + rid);
-    var rainEl = document.getElementById('mr-rain-' + rid);
-    var tmaxEl = document.getElementById('mr-tmax-' + rid);
-    var tminEl = document.getElementById('mr-tmin-' + rid);
-    if (dateEl && rainEl) {
-      days.push({
-        date: dateEl.value,
-        precip: parseFloat(rainEl.value) || 0,
-        precipProb: parseFloat(rainEl.value) > 0 ? 100 : 0,
-        tempMax: parseFloat(tmaxEl ? tmaxEl.value : 20) || 20,
-        tempMin: parseFloat(tminEl ? tminEl.value : 10) || 10
-      });
+// ── WEATHER PICKER ──
+function openPicker(idx) {
+  pickerTargetIdx = idx;
+  var day = fctDays[idx];
+  var dt = new Date(day.date + 'T12:00:00');
+  document.getElementById('picker-title').textContent = 'Изменить погоду: ' + dt.getDate() + '.' + (dt.getMonth()+2<=12?dt.getMonth()+1:1);
+  var opts = document.getElementById('picker-options');
+  opts.innerHTML = '';
+  for (var i = 0; i < PICKER_OPTIONS.length; i++) {
+    var opt = PICKER_OPTIONS[i];
+    var isCurrent = (day.icon === opt.icon);
+    var btn = document.createElement('div');
+    btn.style.cssText = 'text-align:center;padding:12px 8px;border-radius:10px;cursor:pointer;border:2px solid ' + (isCurrent?'var(--blue)':'var(--div)') + ';background:' + (isCurrent?'#eef5ff':'var(--bg)') + ';transition:all .15s';
+    btn.innerHTML = '<div style="font-size:28px">' + opt.icon + '</div><div style="font-size:10px;font-weight:600;color:var(--dark);margin-top:4px">' + opt.label + '</div>';
+    (function(o){ btn.onclick = function(){ applyWeatherOverride(o); }; })(opt);
+    opts.appendChild(btn);
+  }
+  var picker = document.getElementById('weather-picker');
+  picker.style.display = 'flex';
+}
+
+function applyWeatherOverride(opt) {
+  if (pickerTargetIdx < 0) return;
+  var day = fctDays[pickerTargetIdx];
+  day.icon = opt.icon;
+  day.label = opt.label;
+  day.rain = opt.rain;
+  day.humid = opt.humid;
+  day.isOverride = true;
+  closePicker();
+  renderWeatherStrip();
+  renderMainRecommendation();
+  renderBioRisks();
+  renderNewCalendar();
+}
+
+function closePicker() {
+  document.getElementById('weather-picker').style.display = 'none';
+  pickerTargetIdx = -1;
+}
+
+// ── MAIN RECOMMENDATION ──
+function renderMainRecommendation() {
+  var card = document.getElementById('fct-main-card');
+  if (!card || !fctDays.length) return;
+
+  var bbch = parseInt(document.getElementById('fct-bbch').value) || 14;
+  var today = new Date();
+
+  // Get last spray from journal
+  var lastSpray = null;
+  try {
+    var jdata = JSON.parse(localStorage.getItem('vs4') || '[]');
+    if (jdata.length) {
+      jdata.sort(function(a,b){ return new Date(b.dt) - new Date(a.dt); });
+      lastSpray = new Date(jdata[0].dt);
     }
-  });
-  days.sort(function(a,b){ return a.date.localeCompare(b.date); });
-  if (!days.length) { alert('Добавьте хотя бы один день'); return; }
-  renderCalendar(days, 'Ручной ввод');
+  } catch(e){}
+
+  var daysSinceSpray = lastSpray ? Math.round((today - lastSpray) / 86400000) : 99;
+  // Get last spray system from journal for protection window
+  var lastSpraySys_rmr = null;
+  try {
+    var _jd = JSON.parse(localStorage.getItem('vs4') || '[]');
+    if (_jd.length) {
+      _jd.sort(function(a,b){ return new Date(b.dt)-new Date(a.dt); });
+      lastSpraySys_rmr = _jd[0].sys || 's1';
+    }
+  } catch(e_){}
+  var PROTECT_DAYS = PROTECT_WINDOW[lastSpraySys_rmr || 's1'] || 10;
+
+  // Find next rain day
+  var nextRainIdx = -1;
+  var nextRainDays = 999;
+  for (var i = 0; i < fctDays.length; i++) {
+    if (fctDays[i].rain >= 1.5 || fctDays[i].prob >= 60) {
+      nextRainIdx = i; nextRainDays = i; break;
+    }
+  }
+
+  // Disease pressure
+  var mildewRisk = 0;   // 0-3
+  var oidiumRisk = 0;
+  var botRisk = 0;
+  var riskReasons = [];
+
+  for (var i = 0; i < Math.min(7, fctDays.length); i++) {
+    var d = fctDays[i];
+    var t = d.tmax;
+    var h = d.humid;
+    // Milieu: rain + 15-25°C + humid >80%
+    if (d.rain >= 1.5 && t >= 15 && t <= 28 && h >= 75) { mildewRisk = Math.max(mildewRisk, 3); }
+    else if (d.rain >= 0.5 && t >= 12 && h >= 70) { mildewRisk = Math.max(mildewRisk, 2); }
+    // Oidium: dry + 20-30°C
+    if (d.rain < 1 && t >= 20 && t <= 32 && h < 70) { oidiumRisk = Math.max(oidiumRisk, i < 3 ? 3 : 2); }
+    // Botrytis: humid + warm + rain
+    if (bbch >= 71 && d.rain >= 1.5 && t >= 15 && h >= 80) { botRisk = Math.max(botRisk, 3); }
+  }
+
+  // Overall urgency
+  var protectionExpired = daysSinceSpray >= PROTECT_DAYS;
+  var rainSoon = nextRainDays <= 2;
+  var rainInWeek = nextRainDays <= 7;
+
+  var urgency, urgencyColor, urgencyBg, urgencyBorder;
+  var sprayDateStr = '', protectUntilStr = '', sysRecommend = '', mainReason = '';
+
+  if (bbch <= 11) {
+    // Dormancy - no spray needed
+    urgency = LANG==='en' ? 'No spraying needed' : 'Обработка не нужна';
+    urgencyColor = '#1e6b33'; urgencyBg = '#edf7f0'; urgencyBorder = '#b6d9bf';
+    mainReason = LANG==='en' ? 'Dormant stage — stomata closed, fungus cannot enter.' : 'Покой / зелёный конус — устьица закрыты, грибок не проникнет.';
+    sysRecommend = '';
+  } else if ((protectionExpired || daysSinceSpray > 7) && (rainSoon || mildewRisk >= 3)) {
+    // URGENT
+    urgency = LANG==='en' ? '⚠️ Spray urgently!' : '⚠️ Срочно обработать!';
+    urgencyColor = '#9b2218'; urgencyBg = '#fff0ee'; urgencyBorder = '#f5b8b2';
+    var sprayDate = new Date(today); sprayDate.setDate(sprayDate.getDate() + (nextRainDays > 0 ? nextRainDays - 1 : 0));
+    sprayDateStr = sprayDate.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU', {day:'numeric', month:'long'});
+    var protectDate = new Date(sprayDate); protectDate.setDate(protectDate.getDate() + PROTECT_DAYS);
+    protectUntilStr = protectDate.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU', {day:'numeric', month:'long'});
+    mainReason = LANG==='en'
+      ? 'Rain in ' + nextRainDays + ' days + ' + daysSinceSpray + ' days since last spray + high fungal pressure'
+      : 'Дождь через ' + nextRainDays + ' дн. + прошло ' + daysSinceSpray + ' дн. с последней обработки' + (mildewRisk>=3?' + высокий риск милдью':'');
+    sysRecommend = bbch >= 60 ? 'Система 4 — Системная' : bbch >= 14 ? 'Система 2 — Контакт + Фосфонат' : 'Система 1 — Контактная';
+  } else if (!protectionExpired && !rainSoon) {
+    // PROTECTED
+    urgency = LANG==='en' ? '✅ Protection active' : '✅ Защита действует';
+    urgencyColor = '#1e6b33'; urgencyBg = '#edf7f0'; urgencyBorder = '#b6d9bf';
+    var daysLeft = PROTECT_DAYS - daysSinceSpray;
+    mainReason = LANG==='en'
+      ? 'Last spray ' + daysSinceSpray + ' days ago · ~' + daysLeft + ' days of protection remaining'
+      : 'Последняя обработка ' + daysSinceSpray + ' дн. назад · осталось ~' + daysLeft + ' дней защиты';
+    if (nextRainDays < 999) {
+      mainReason += (LANG==='en' ? ' · Next rain in ' : ' · Дождь через ') + nextRainDays + (LANG==='en' ? ' days' : ' дн.');
+    }
+    sysRecommend = '';
+  } else {
+    // WATCH
+    urgency = LANG==='en' ? '👁 Monitor closely' : '👁 Наблюдать';
+    urgencyColor = '#7a4b00'; urgencyBg = '#fff8ec'; urgencyBorder = '#f5d790';
+    var sprayDate = new Date(today);
+    if (nextRainDays < 999) sprayDate.setDate(sprayDate.getDate() + Math.max(0, nextRainDays - 1));
+    else sprayDate.setDate(sprayDate.getDate() + 5);
+    sprayDateStr = sprayDate.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU', {day:'numeric', month:'long'});
+    var protectDate = new Date(sprayDate); protectDate.setDate(protectDate.getDate() + PROTECT_DAYS);
+    protectUntilStr = protectDate.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU', {day:'numeric', month:'long'});
+    mainReason = LANG==='en'
+      ? 'Incubation period in progress · spray before next rain'
+      : 'Идёт инкубационный период · следите за дождём';
+    sysRecommend = bbch >= 60 ? 'Система 4 — Системная' : 'Система 2 — Контакт + Фосфонат';
+  }
+
+  // Last spray info
+  var lastSprayStr = lastSpray
+    ? lastSpray.toLocaleDateString(LANG==='en'?'en-GB':'ru-RU', {day:'numeric', month:'long'})
+    : (LANG==='en' ? 'Unknown' : 'Нет данных');
+
+  var html = '<div style="background:'+urgencyBg+';border:2px solid '+urgencyBorder+';border-radius:var(--r3);padding:22px 22px 18px">'
+    + '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:'+urgencyColor+';margin-bottom:8px">'+(LANG==='en'?'Recommendation':'Рекомендация')+'</div>'
+    + '<div style="font-size:22px;font-weight:800;color:'+urgencyColor+';letter-spacing:-0.3px;margin-bottom:12px">'+urgency+'</div>';
+
+  if (sprayDateStr) {
+    html += '<div style="background:rgba(0,0,0,.04);border-radius:var(--r1);padding:10px 14px;margin-bottom:10px">'
+      + '<div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:2px">'+(LANG==='en'?'Spray before: ':'Обработать до: ')+'<span style="color:'+urgencyColor+'">'+sprayDateStr+'</span></div>'
+      + (protectUntilStr ? '<div style="font-size:12px;color:var(--sec)">'+(LANG==='en'?'Protection active until ~':'Защита будет действовать до ~')+protectUntilStr+'</div>' : '')
+      + '</div>';
+  }
+
+  html += '<div style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px"><strong style="color:var(--dark)">'+(LANG==='en'?'Reason: ':'Причина: ')+'</strong>'+mainReason+'</div>';
+
+  if (sysRecommend) {
+    html += '<div style="display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--div);border-radius:var(--r1);padding:7px 12px;font-size:12px;font-weight:700;color:var(--dark)">'
+      + '💊 ' + (LANG==='en'?'Recommended system: ':'Рекомендуемая система: ') + sysRecommend + '</div>';
+  }
+
+  // Data footer
+  html += '<div style="margin-top:14px;padding-top:10px;border-top:1px solid '+urgencyBorder+';display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:'+urgencyColor+';opacity:.75">'
+    + '<span>📅 '+(LANG==='en'?'Last spray: ':'Последняя обработка: ')+lastSprayStr+'</span>'
+    + '<span>⏱ '+(LANG==='en'?'Days since: ':'Дней прошло: ')+(daysSinceSpray < 99 ? daysSinceSpray : '—')+'</span>'
+    + '<span>🌧 '+(LANG==='en'?'Next rain: ':'Ближайший дождь: ')+(nextRainDays < 999 ? '+'+nextRainDays+(LANG==='en'?' days':' дн.') : (LANG==='en'?'none':'нет'))+'</span>'
+    + '</div>'
+    + '</div>';
+
+  card.innerHTML = html;
 }
 
-// ── CORE ALGORITHM ──
+// ── BIO RISKS ──
+function renderBioRisks() {
+  var el = document.getElementById('fct-bio-risks');
+  if (!el || !fctDays.length) return;
+
+  var bbch = parseInt(document.getElementById('fct-bbch').value) || 14;
+
+  // Calculate 7-day disease pressure
+  var mRain = 0, mTemp = 0, mHum = 0, oCnt = 0, bCnt = 0, n = Math.min(7, fctDays.length);
+  for (var i = 0; i < n; i++) {
+    var d = fctDays[i];
+    if (d.rain >= 1.5) mRain++;
+    if (d.tmax >= 15 && d.tmax <= 28) mTemp++;
+    if (d.humid >= 75) mHum++;
+    if (d.rain < 1 && d.tmax >= 20 && d.tmax <= 32) oCnt++;
+    if (bbch >= 71 && d.rain >= 1.5 && d.tmax >= 15) bCnt++;
+  }
+
+  var mildewScore = Math.round((mRain/n*40 + mTemp/n*30 + mHum/n*30));
+  var oidiumScore = Math.round(oCnt/n*100);
+  var botScore    = bbch >= 71 ? Math.round(bCnt/n*100) : 0;
+
+  function riskBar(score, label, icon, desc) {
+    var color = score >= 70 ? '#9b2218' : score >= 40 ? '#7a4b00' : '#1e6b33';
+    var bg    = score >= 70 ? '#fff0ee' : score >= 40 ? '#fff8ec' : '#edf7f0';
+    var level = score >= 70 ? (LANG==='en'?'HIGH':'Высокий') : score >= 40 ? (LANG==='en'?'MEDIUM':'Средний') : (LANG==='en'?'LOW':'Низкий');
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:'+bg+';border-radius:var(--r1);border:1px solid '+(score>=70?'#f5b8b2':score>=40?'#f5d790':'#b6d9bf')+'margin-bottom:8px">'
+      + '<div style="font-size:24px;flex-shrink:0">'+icon+'</div>'
+      + '<div style="flex:1">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">'
+      + '<span style="font-size:13px;font-weight:700;color:var(--dark)">'+label+'</span>'
+      + '<span style="font-size:11px;font-weight:700;color:'+color+'">'+level+'</span>'
+      + '</div>'
+      + '<div style="height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden">'
+      + '<div style="height:100%;width:'+score+'%;background:'+color+';border-radius:3px;transition:width .5s"></div>'
+      + '</div>'
+      + '<div style="font-size:11px;color:var(--sec);margin-top:4px">'+desc+'</div>'
+      + '</div></div>';
+  }
+
+  var mDesc = LANG==='en'
+    ? 'Rain days: ' + mRain + '/7 · Favorable temp days: ' + mTemp + '/7 · Humid days: ' + mHum + '/7'
+    : 'Дождливых дней: ' + mRain + '/7 · Благоприятных темп.: ' + mTemp + '/7 · Влажных: ' + mHum + '/7';
+  var oDesc = LANG==='en'
+    ? 'Dry+hot days (20–32°C): ' + oCnt + '/7 · Risk in dry heat without rain'
+    : 'Сухих жарких дней (20–32°C): ' + oCnt + '/7 · Риск в сухую жару без дождей';
+  var bDesc = bbch >= 71
+    ? (LANG==='en' ? 'Berries susceptible after véraison · humid conditions detected' : 'Ягоды уязвимы после véraison · обнаружены влажные условия')
+    : (LANG==='en' ? 'Low risk before véraison' : 'Низкий риск до véraison');
+
+  el.innerHTML = riskBar(mildewScore, LANG==='en'?'Downy mildew':'Милдью', '🍃', mDesc)
+    + riskBar(oidiumScore, LANG==='en'?'Powdery mildew':'Оидиум', '⬜', oDesc)
+    + riskBar(botScore, LANG==='en'?'Botrytis (grey rot)':'Ботритис (серая гниль)', '🟤', bDesc);
+}
+
+// ── NEW CALENDAR ──
+function renderNewCalendar() {
+  var el = document.getElementById('fct-calendar');
+  if (!el || !fctDays.length) return;
+
+  var bbch = parseInt(document.getElementById('fct-bbch').value) || 14;
+  var today = new Date();
+  var DAYS_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  var incubDay = 0;
+  var html = '';
+
+  for (var i = 0; i < fctDays.length; i++) {
+    var day = fctDays[i];
+    var dt = new Date(day.date + 'T12:00:00');
+    var isToday = (i === 0);
+    var dow = LANG==='en' ? ['Su','Mo','Tu','We','Th','Fr','Sa'][dt.getDay()] : DAYS_RU[dt.getDay()];
+    var dom = dt.getDate(), mon = dt.getMonth()+1;
+    var rainDay = day.rain >= 1.5;
+    var sys = getSystem(incubDay, bbch, rainDay);
+
+    // State
+    var state, action, actionColor;
+    if (bbch <= 11) { state='safe'; action=LANG==='en'?'Dormancy':'Покой'; actionColor='var(--sec)'; }
+    else if (rainDay && incubDay < 7) {
+      state='spray'; incubDay=0;
+      action=LANG==='en'?'⚠️ Spray before rain!':'⚠️ Обработать до дождя!'; actionColor='#9b2218';
+    } else if (rainDay) {
+      state='warn'; incubDay=0;
+      action=LANG==='en'?'Infection risk':'Риск заражения'; actionColor='#7a4b00';
+    } else if (incubDay >= 7) {
+      state='watch'; action=LANG==='en'?'Day '+incubDay+' incub.':'День '+incubDay+' инкуб.'; actionColor='#7a4b00';
+    } else if (incubDay > 0) {
+      state='watch'; action=LANG==='en'?'Incubating ('+incubDay+'d)':'Инкубация ('+incubDay+'д)'; actionColor='#bf8f00';
+    } else {
+      state='safe'; action=LANG==='en'?'Protected':'Защищено'; actionColor='var(--green)';
+    }
+    if (rainDay) incubDay = 0; else if (incubDay > 0 || state==='watch') incubDay++;
+
+    var rowBg = state==='spray' ? '#fff0ee' : state==='warn' ? '#fff8f0' : state==='watch' ? '#fffbec' : 'var(--card)';
+    var rowBd = state==='spray' ? '#f5b8b2' : state==='warn' ? '#f5c09a' : state==='watch' ? '#f5e17a' : 'var(--div)';
+
+    html += '<div style="display:grid;grid-template-columns:68px 40px 50px 1fr;border-radius:8px;overflow:hidden;border:1px solid '+rowBd+';margin-bottom:4px;background:'+rowBg+';transition:all .2s">'
+      // Date
+      + '<div style="padding:8px 10px;background:rgba(0,0,0,.03);display:flex;flex-direction:column;justify-content:center">'
+      + '<div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--light);margin-bottom:1px">'+(isToday?(LANG==='en'?'TODAY':'СЕГ'):dow)+'</div>'
+      + '<div style="font-size:12px;font-weight:700;color:var(--dark)">'+dom+'.'+(mon<10?'0'+mon:mon)+'</div>'
+      + '</div>'
+      // Weather icon
+      + '<div style="display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,.015)">'+day.icon+'</div>'
+      // Temp+rain
+      + '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;gap:1px">'
+      + '<span style="font-weight:700;color:var(--dark)">'+Math.round(day.tmax)+'°</span>'
+      + (rainDay ? '<span style="color:#9b2218;font-weight:700">'+day.rain.toFixed(1)+'мм</span>' : '<span style="color:var(--light)">—</span>')
+      + '</div>'
+      // Action
+      + '<div style="display:flex;align-items:center;padding:6px 10px;font-size:12px;color:'+actionColor+';font-weight:'+(state==='spray'?'700':'500')+'">'+action+'</div>'
+      + '</div>';
+  }
+
+  el.innerHTML = html || '<div class="empty"><em>📭</em><p>Нет данных</p></div>';
+}
+
+// getSystem: returns protection system based on incubation day and BBCH
 function getSystem(incubDay, bbch, hasUpcomingRain) {
   if (bbch >= 60 && bbch <= 69) return 's4';
-  if (incubDay >= 7) return 's3';
-  if (hasUpcomingRain || incubDay >= 2) return 's2';
+  if (incubDay >= 90) return 's3';
+  if (hasUpcomingRain || incubDay >= 50) return 's2';
   return 's1';
 }
 
-function renderCalendar(days, cityName) {
-  var bbch = parseInt(document.getElementById('fct-bbch').value);
-  var INCUB_DAYS = 10; // at ~18°C
-  var MIN_RAIN_MM = 1.5; // threshold for infection event
-
-  var SYS_NAMES = {s1:'Система 1 · Контактная', s2:'Система 2 · Контакт+Фосфонат', s3:'Система 3 · Трансламинар', s4:'Система 4 · Системная'};
-  var SYS_COLORS_MAP = {s1:'#1a4a24', s2:'#6a4a10', s3:'#7a3a0a', s4:'#7a0a0a'};
-  var SYS_BG_MAP = {s1:'#eef7f0', s2:'#fff8e8', s3:'#fff0e8', s4:'#fdeaea'};
-
-  var DAYS_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-  var MONTHS_RU = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-
-  // Simulate incubation counter
-  var incubDay = 0;
-  var lastInfectionDate = null;
-  var sprayDates = [];
-  var calRows = [];
-
-  // Pre-scan: find last rain before first forecast day to initialize incub counter
-  // (approximate — start at 0)
-
-  for (var i = 0; i < days.length; i++) {
-    var day = days[i];
-    var d = new Date(day.date);
-    var weekday = DAYS_RU[d.getDay()];
-    var dayNum = d.getDate();
-    var month = MONTHS_RU[d.getMonth()];
-    var isRain = day.precip >= MIN_RAIN_MM;
-    var isWarm = day.tempMax <= 28 && day.tempMin >= 4;
-    var isTempRisk = day.tempMax > 28 || day.tempMin < 4;
-
-    // Infection event
-    if (isRain && bbch >= 14) {
-      if (incubDay === 0) lastInfectionDate = day.date;
-      incubDay = Math.min(incubDay + 1, INCUB_DAYS);
-    } else if (!isRain && incubDay > 0) {
-      incubDay++;
-      if (incubDay > INCUB_DAYS) incubDay = 0;
-    }
-
-    // Look ahead: is there rain in next 2 days?
-    var rainSoon = false;
-    for (var j = i + 1; j <= Math.min(i + 2, days.length - 1); j++) {
-      if (days[j].precip >= MIN_RAIN_MM) { rainSoon = true; break; }
-    }
-
-    // Determine state
-    var state, actionText, system;
-    if (bbch < 14) {
-      state = 'early';
-      actionText = 'Устьица закрыты — милдью не опасно';
-    } else if (isTempRisk) {
-      state = 'temp';
-      actionText = day.tempMax > 28 ? 'Жара >28°C — не опрыскивать серой!' : 'Мороз <4°C — не опрыскивать!';
-    } else if (rainSoon && isWarm) {
-      // Spray recommended tomorrow or today
-      state = 'spray';
-      system = getSystem(incubDay, bbch, true);
-      actionText = '⚠️ ОБРАБОТКА до дождя · ' + SYS_NAMES[system];
-      sprayDates.push({date: day.date, system: system});
-    } else if (incubDay >= 7) {
-      state = 'warn';
-      system = getSystem(incubDay, bbch, false);
-      actionText = 'Конец инкубации (день ' + incubDay + ') · ' + SYS_NAMES[system];
-    } else if (incubDay >= 1) {
-      state = 'watch';
-      actionText = 'Инкубация · день ' + incubDay + ' из ' + INCUB_DAYS;
-    } else {
-      state = 'safe';
-      actionText = 'Наблюдение · риск низкий';
-    }
-
-    // Weather icon
-    var wicon;
-    if (day.precip >= 10) wicon = '🌧';
-    else if (day.precip >= MIN_RAIN_MM) wicon = '🌦';
-    else if (day.precipProb >= 50) wicon = '⛅';
-    else wicon = '☀️';
-
-    calRows.push({
-      date: day.date, weekday: weekday, dayNum: dayNum, month: month,
-      precip: day.precip, tempMax: day.tempMax, tempMin: day.tempMin,
-      wicon: wicon, incubDay: incubDay, incubPct: Math.round(incubDay / INCUB_DAYS * 100),
-      state: state, actionText: actionText, system: system || null
-    });
+// Alias for backward compat (tab sync)
+function loadForecast() { loadForecastNew(); }
+function initForecast() {
+  var bbchSync = {'00-07':'00','09-11':'09','13-14':'14','15-18':'14','53-55':'53','60-69':'60','71-75':'71','77-79':'71','79-83':'79','83-89':'79'};
+  if (selBbch) {
+    var mapped = bbchSync[selBbch] || '14';
+    var sel = document.getElementById('fct-bbch');
+    if (sel) { for (var i=0;i<sel.options.length;i++) { if(sel.options[i].value===mapped){sel.selectedIndex=i;break;} } }
   }
-
-  // Render
-  var calHtml = '';
-  calRows.forEach(function(row) {
-    var incubColor = row.incubPct >= 70 ? '#c43a3a' : row.incubPct >= 40 ? '#d48a43' : '#6db87a';
-    var sysBadge = row.system
-      ? '<span class="sys-badge" style="background:' + SYS_BG_MAP[row.system] + ';color:' + SYS_COLORS_MAP[row.system] + '">' + row.system.toUpperCase() + '</span>'
-      : '';
-    calHtml += '<div class="cal-day state-' + row.state + '">'
-      + '<div class="cal-date"><div class="weekday">' + row.weekday + '</div><div>' + row.dayNum + ' ' + row.month + '</div></div>'
-      + '<div class="cal-weather"><div style="font-size:18px">' + row.wicon + '</div>'
-      + '<div class="cal-rain" style="color:' + (row.precip > 0 ? '#1a4a7a' : 'var(--light)') + '">' + row.precip.toFixed(1) + ' мм</div>'
-      + '<div class="cal-temp">' + Math.round(row.tempMax) + '/' + Math.round(row.tempMin) + '°</div></div>'
-      + '<div class="cal-incub" style="background:transparent">'
-      + (row.state !== 'early' && row.incubDay > 0
-        ? '<div style="font-size:9px;color:' + incubColor + ';font-weight:700">' + row.incubDay + '/' + 10 + ' д</div>'
-          + '<div class="cal-incub-bar"><div class="cal-incub-fill" style="width:' + row.incubPct + '%;background:' + incubColor + '"></div></div>'
-        : '<div style="font-size:9px;color:var(--light)">—</div>')
-      + '</div>'
-      + '<div class="cal-action">' + row.actionText + sysBadge + '</div>'
-      + '</div>';
-  });
-
-  // Summary
-  var sprayCount = sprayDates.length;
-  var nextSpray = sprayDates.length > 0 ? sprayDates[0] : null;
-  var summaryHtml = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">'
-    + '<div style="background:var(--bg);border:1px solid var(--div);border-radius:8px;padding:10px 12px;text-align:center">'
-    + '<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:#1e6b33">' + sprayCount + '</div>'
-    + '<div style="font-size:10px;color:var(--light);text-transform:uppercase;letter-spacing:1px">обработок</div></div>'
-    + '<div style="background:var(--bg);border:1px solid var(--div);border-radius:8px;padding:10px 12px;text-align:center">'
-    + '<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:#1e6b33">' + days.length + '</div>'
-    + '<div style="font-size:10px;color:var(--light);text-transform:uppercase;letter-spacing:1px">дней прогноза</div></div>'
-    + '<div style="background:var(--bg);border:1px solid var(--div);border-radius:8px;padding:10px 12px;text-align:center">'
-    + '<div style="font-family:\'Playfair Display\',serif;font-size:16px;color:#1e6b33">' + (cityName || '—') + '</div>'
-    + '<div style="font-size:10px;color:var(--light);text-transform:uppercase;letter-spacing:1px">местоположение</div></div>'
-    + '</div>';
-
-  if (nextSpray) {
-    var nd = new Date(nextSpray.date);
-    var today = new Date(); today.setHours(0,0,0,0);
-    var daysUntil = Math.round((nd - today) / 86400000);
-    var urgency = daysUntil <= 1 ? 'al-crit' : daysUntil <= 3 ? 'al-w' : 'al-info';
-    summaryHtml += '<div class="al ' + urgency + '"><span class="ali">' + (daysUntil <= 1 ? '🚨' : '📅') + '</span>'
-      + '<div>Ближайшая обработка: <strong>' + nextSpray.date + '</strong>'
-      + (daysUntil === 0 ? ' — <strong>СЕГОДНЯ!</strong>' : daysUntil === 1 ? ' — <strong>ЗАВТРА!</strong>' : ' — через ' + daysUntil + ' дн.')
-      + ' · ' + SYS_NAMES[nextSpray.system] + '</div></div>';
-  } else {
-    summaryHtml += '<div class="al al-ok"><span class="ali">✅</span><div>В ближайшие ' + days.length + ' дней экстренных обработок не требуется. Продолжайте наблюдение.</div></div>';
-  }
-
-  document.getElementById('fct-summary').innerHTML = summaryHtml;
-  document.getElementById('fct-calendar').innerHTML = calHtml;
-  document.getElementById('fct-result').style.display = '';
-  document.getElementById('fct-empty').style.display = 'none';
 }
+
+
+
 
 // ════════════════════════════════════════
 // i18n — LANGUAGE SYSTEM
@@ -2209,7 +2634,7 @@ var I18N = {
     'nav-adv':'🎯 Advisor','nav-fct':'🌦 Forecast','nav-jrn':'📓 Journal',
     'nav-drg':'💊 Products','nav-jadam':'🌿 JADAM','nav-sm':'✨ Shine Muscat',
     'nav-cmp':'⚗️ Compatibility',
-    'logo-sub':'Vineyard Advisor',
+    'logo-sub':'Garden & Vineyard Advisor',
     'locating':'locating...',
     'adv-title':'Input data',
     'crop-label':'Crop',
@@ -2316,6 +2741,8 @@ function smTab(v){
     ta.style.background='var(--bg)';ta.style.border='2px solid var(--div)';
   }
 }
+
+
 </script>
 </body>
 </html>
