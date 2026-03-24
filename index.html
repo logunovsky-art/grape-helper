@@ -1204,6 +1204,10 @@ select option{background:#fff;color:var(--dark)}
 <script>
 
 
+
+
+
+
 // ════ BBCH DATA ════
 var BBCHS=[
   {c:'00-07',e:'🌑',
@@ -1718,6 +1722,68 @@ function getW(){return wEvs.map(function(id){return {dt:(document.getElementById
 // ════ MAIN CALC ════
 function calc(){
   if(!selBbch){alert(TTXT('Выберите фенофазу','Select phenostage'));return;}
+
+  // ── ЧЕРЕШНЯ — отдельная логика ──
+  var cropVal = document.getElementById('crop') ? document.getElementById('crop').value : 'grape';
+  if (cropVal === 'cherry') {
+    document.getElementById('res-e').style.display = 'none';
+    document.getElementById('res-m').style.display = 'block';
+    document.getElementById('hv-c').style.display = 'none';
+    document.getElementById('ana').innerHTML =
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+      +'<span style="font-size:28px">🍒</span>'
+      +'<div><div style="font-size:9px;color:var(--light);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">'+TTXT('Культура','Crop')+'</div>'
+      +'<div style="font-size:15px;font-weight:700;color:var(--dark)">'+TTXT('Черешня — Вишнёвая муха','Sweet Cherry — Cherry Fly')+'</div></div></div>'
+      +'<div style="background:#fff8ec;border:1px solid #f5d790;border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;font-size:13px;color:#7a4b00;line-height:1.7">'
+      +'<strong>🪲 Главная угроза черешни — вишнёвая муха (<em>Rhagoletis cerasi</em>)</strong><br>'
+      +TTXT('Личинки развиваются внутри ягоды — поражённые плоды несъедобны. Ключ: обработать в момент лёта мухи, ДО откладки яиц.','Larvae develop inside the berry — affected fruits are inedible. Key: treat during fly flight, BEFORE egg-laying.')
+      +'</div>';
+
+    document.getElementById('sys-block').innerHTML =
+      // ── Карточка 1: 8-10 дней после цветения ──
+      '<div style="background:#edf7f0;border:2px solid #b6d9bf;border-radius:var(--r3);padding:20px;margin-bottom:12px">'
+      +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#1e6b33;margin-bottom:6px">'+TTXT('Обработка 1 · 8–10 дней после цветения','Treatment 1 · 8–10 days after bloom')+'</div>'
+      +'<div style="font-size:19px;font-weight:700;color:#1e6b33;margin-bottom:8px">🎯 Моспилан</div>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:13px">'
+      +'<tr><td style="padding:5px 0;color:var(--sec);width:110px">'+TTXT('Д.в.:','Active ing.:')+'</td><td style="font-weight:600;color:var(--dark)">'+TTXT('Ацетамиприд 200 г/л','Acetamiprid 200 g/L')+'</td></tr>'
+      +'<tr><td style="padding:5px 0;color:var(--sec)">'+TTXT('Доза:','Dose:')+'</td><td style="font-weight:700;color:#bf8f00">2–3 г / 10 л</td></tr>'
+      +'<tr><td style="padding:5px 0;color:var(--sec)">'+TTXT('СО:','PHI:')+'</td><td style="font-weight:700;color:#1e6b33">7 '+TTXT('дней','days')+'</td></tr>'
+      +'<tr><td style="padding:5px 0;color:var(--sec)">'+TTXT('Цель:','Target:')+'</td><td style="color:var(--mid)">'+TTXT('Имаго вишнёвой мухи в момент лёта','Cherry fly adults during flight period')+'</td></tr>'
+      +'</table>'
+      +'<div style="margin-top:10px;padding:8px 12px;background:rgba(0,0,0,.04);border-radius:var(--r1);font-size:12px;color:var(--sec)">'
+      +'💡 '+TTXT('Момент: жёлтые клеевые ловушки поймали 3–5 мух, или температура стабильно >18°C после цветения.','Timing: yellow sticky traps caught 3–5 flies, or stable temp >18°C after bloom.')
+      +'</div></div>'
+
+      // ── Карточка 2: через 7 дней ──
+      +'<div style="background:#eef5ff;border:2px solid #b2d0f5;border-radius:var(--r3);padding:20px;margin-bottom:12px">'
+      +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#004080;margin-bottom:6px">'+TTXT('Обработка 2 · через 7 дней','Treatment 2 · 7 days later')+'</div>'
+      +'<div style="font-size:19px;font-weight:700;color:#004080;margin-bottom:8px">🎯 Проклейм</div>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:13px">'
+      +'<tr><td style="padding:5px 0;color:var(--sec);width:110px">'+TTXT('Д.в.:','Active ing.:')+'</td><td style="font-weight:600;color:var(--dark)">'+TTXT('Эмамектин бензоат 19 г/кг','Emamectin benzoate 19 g/kg')+'</td></tr>'
+      +'<tr><td style="padding:5px 0;color:var(--sec)">'+TTXT('Доза:','Dose:')+'</td><td style="font-weight:700;color:#bf8f00">2.5 г / 10 л</td></tr>'
+      +'<tr><td style="padding:5px 0;color:var(--sec)">'+TTXT('СО:','PHI:')+'</td><td style="font-weight:700;color:#1e6b33">14 '+TTXT('дней','days')+'</td></tr>'
+      +'<tr><td style="padding:5px 0;color:var(--sec)">'+TTXT('Цель:','Target:')+'</td><td style="color:var(--mid)">'+TTXT('Личинки + повторный лёт мухи','Larvae + second flight wave')+'</td></tr>'
+      +'</table>'
+      +'<div style="margin-top:10px">'
+      +'<div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:6px">'+TTXT('Аналоги (та же группа — ротация!):','Alternatives (same group — rotate!):')+'</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      +'<span style="padding:5px 11px;background:var(--bg);border:1px solid var(--div);border-radius:20px;font-size:12px;font-weight:600;color:var(--dark)">Энжио</span>'
+      +'<span style="padding:5px 11px;background:var(--bg);border:1px solid var(--div);border-radius:20px;font-size:12px;font-weight:600;color:var(--dark)">Актеллик</span>'
+      +'<span style="padding:5px 11px;background:var(--bg);border:1px solid var(--div);border-radius:20px;font-size:12px;font-weight:600;color:var(--dark)">Калипсо</span>'
+      +'</div></div></div>'
+
+      // ── Агро-советы ──
+      +'<div style="background:var(--bg);border:1px solid var(--div);border-radius:var(--r2);padding:14px 16px">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:10px">🌳 '+TTXT('Агротехника против вишнёвой мухи','Cultural practices against cherry fly')+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--sec)">'
+      +'<div>🟡 '+TTXT('Клеевые ловушки (жёлтые) — мониторинг начала лёта за 1–2 недели до обработки','Yellow sticky traps — monitor flight start 1–2 weeks before spray')+'</div>'
+      +'<div>🍂 '+TTXT('Перекопка под деревьями осенью — куколки зимуют в почве, перекопка убивает до 70%','Soil cultivation in autumn — pupae overwinter in soil, cultivation destroys up to 70%')+'</div>'
+      +'<div>🧹 '+TTXT('Сбор и уничтожение поражённых ягод — не оставлять на земле','Collect and destroy damaged berries — never leave on the ground')+'</div>'
+      +'<div>🌡 '+TTXT('Обработка при T° >15°C утром или вечером — не в дождь и не в жару','Spray at T° >15°C in morning or evening — not in rain or heat')+'</div>'
+      +'</div></div>';
+    return; // Выходим из calc() — не нужна логика винограда
+  }
+
 
   var ph = BBCHS.find(function(p){ return p.c===selBbch; });
   var lrv = document.getElementById('lr').value;
@@ -2581,61 +2647,163 @@ function renderNewCalendar() {
   if (!el || !fctDays.length) return;
 
   var bbch = parseInt(document.getElementById('fct-bbch').value) || 14;
-  var today = new Date();
   var DAYS_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-  var incubDay = 0;
+  var today = new Date();
+
+  // Последняя обработка из журнала
+  var lastSprayDate = null; var lastSpraySysK = 's1';
+  try {
+    var jd = JSON.parse(localStorage.getItem('vs4') || '[]');
+    if (jd.length) {
+      jd.sort(function(a,b){ return new Date(b.dt)-new Date(a.dt); });
+      lastSprayDate = new Date(jd[0].dt);
+      lastSpraySysK = jd[0].sys || 's1';
+    }
+  } catch(e){}
+
+  var PROTECT_WIN = PROTECT_WINDOW[lastSpraySysK] || 10;
+  var MIN_INTERVAL = 7; // минимальный интервал между обработками
+
+  // Goidanich accumulator
+  var incubPct = 0;
+  var incubActive = false;
+  var daysSinceLastSpray = lastSprayDate
+    ? Math.round((today - lastSprayDate) / 86400000) : 999;
+
+  var sprayScheduled = []; // дни когда реально нужна обработка
   var html = '';
 
   for (var i = 0; i < fctDays.length; i++) {
     var day = fctDays[i];
     var dt = new Date(day.date + 'T12:00:00');
     var isToday = (i === 0);
-    var dow = LANG==='en' ? ['Su','Mo','Tu','We','Th','Fr','Sa'][dt.getDay()] : DAYS_RU[dt.getDay()];
+    var dow = LANG==='en'
+      ? ['Su','Mo','Tu','We','Th','Fr','Sa'][dt.getDay()]
+      : DAYS_RU[dt.getDay()];
     var dom = dt.getDate(), mon = dt.getMonth()+1;
-    var rainDay = day.rain >= 1.5;
-    var sys = getSystem(incubDay, bbch, rainDay);
 
-    // State
-    var state, action, actionColor;
-    if (bbch <= 11) { state='safe'; action=LANG==='en'?'Dormancy':'Покой'; actionColor='var(--sec)'; }
-    else if (rainDay && incubDay < 7) {
-      state='spray'; incubDay=0;
-      action=LANG==='en'?'⚠️ Spray before rain!':'⚠️ Обработать до дождя!'; actionColor='#9b2218';
-    } else if (rainDay) {
-      state='warn'; incubDay=0;
-      action=LANG==='en'?'Infection risk':'Риск заражения'; actionColor='#7a4b00';
-    } else if (incubDay >= 7) {
-      state='watch'; action=LANG==='en'?'Day '+incubDay+' incub.':'День '+incubDay+' инкуб.'; actionColor='#7a4b00';
-    } else if (incubDay > 0) {
-      state='watch'; action=LANG==='en'?'Incubating ('+incubDay+'d)':'Инкубация ('+incubDay+'д)'; actionColor='#bf8f00';
-    } else {
-      state='safe'; action=LANG==='en'?'Protected':'Защищено'; actionColor='var(--green)';
+    // Дней с последней обработки (реальной или запланированной)
+    var lastActualSpray = sprayScheduled.length > 0
+      ? sprayScheduled[sprayScheduled.length-1].dt
+      : lastSprayDate;
+    var daysSince = lastActualSpray
+      ? Math.round((dt - lastActualSpray) / 86400000) : 999;
+    var inWindow = daysSince < PROTECT_WIN;
+
+    // Триггер 3-10
+    var t = day.tmax || 18;
+    var rMm = day.rain || 0;
+    var triggered = (rMm >= 10 && t >= 10 && bbch >= 13);
+    var softTrig  = (rMm >= 5  && t >= 10 && bbch >= 13);
+
+    if (!incubActive && (triggered || softTrig)) {
+      incubActive = true;
+      incubPct = 0;
     }
-    if (rainDay) incubDay = 0; else if (incubDay > 0 || state==='watch') incubDay++;
 
-    var rowBg = state==='spray' ? '#fff0ee' : state==='warn' ? '#fff8f0' : state==='watch' ? '#fffbec' : 'var(--card)';
-    var rowBd = state==='spray' ? '#f5b8b2' : state==='warn' ? '#f5c09a' : state==='watch' ? '#f5e17a' : 'var(--div)';
+    if (incubActive) {
+      var rate = goidanichRate(t);
+      incubPct = Math.min(100, incubPct + rate);
+    }
 
-    html += '<div style="display:grid;grid-template-columns:68px 40px 50px 1fr;border-radius:8px;overflow:hidden;border:1px solid '+rowBd+';margin-bottom:4px;background:'+rowBg+';transition:all .2s">'
-      // Date
+    // Сброс инкубации после дождя который смыл споры
+    // (только если нет активной инкубации или она только началась)
+    if (rMm >= 1.5 && incubPct < 20) {
+      incubActive = false; incubPct = 0;
+    }
+
+    // Нужна ли обработка?
+    var needSpray = false;
+    var sprayReason = '';
+
+    if (bbch >= 13 && !inWindow) {
+      // Красный: инкубация ≥90% или дождь и инкубация ≥60%
+      if (incubPct >= 90) {
+        needSpray = true;
+        sprayReason = LANG==='en'
+          ? '⚠️ Spray now! Incub '+Math.round(incubPct)+'%'
+          : '⚠️ Обработать! Инкуб. '+Math.round(incubPct)+'%';
+      } else if (incubPct >= 60 && (rMm >= 1.5 || i <= 1)) {
+        needSpray = true;
+        sprayReason = LANG==='en'
+          ? '⚠️ Spray before rain · '+Math.round(incubPct)+'%'
+          : '⚠️ До дождя · '+Math.round(incubPct)+'%';
+      }
+    }
+
+    // Если нужна обработка — соблюдаем минимальный интервал 7 дней
+    if (needSpray && daysSince >= MIN_INTERVAL) {
+      sprayScheduled.push({dt: dt, pct: incubPct});
+      incubActive = false; incubPct = 0; // сброс после обработки
+    } else if (needSpray) {
+      needSpray = false; // слишком рано — ещё в защитном окне
+      sprayReason = LANG==='en'
+        ? 'Protected ·  ' + daysSince + 'd'
+        : 'Защита ещё ' + (PROTECT_WIN - daysSince) + 'дн.';
+    }
+
+    // Визуальное состояние строки
+    var state, action, actionColor;
+    if (bbch <= 11) {
+      state='safe';
+      action = LANG==='en' ? 'Dormancy' : 'Покой';
+      actionColor = 'var(--sec)';
+    } else if (inWindow) {
+      state='safe';
+      action = (LANG==='en' ? 'Protected · ' : 'Защита · ') + (PROTECT_WIN - daysSince) + (LANG==='en'?' d left':' дн.');
+      actionColor = 'var(--green)';
+    } else if (needSpray) {
+      state='spray';
+      action = sprayReason;
+      actionColor = '#9b2218';
+    } else if (incubPct >= 80) {
+      state='warn';
+      action = (LANG==='en' ? 'Incub. ' : 'Инкуб. ') + Math.round(incubPct) + '%';
+      actionColor = '#7a4b00';
+    } else if (incubActive && incubPct >= 40) {
+      state='watch';
+      action = (LANG==='en' ? 'Watch · ' : 'Набл. · ') + Math.round(incubPct) + '%';
+      actionColor = '#bf8f00';
+    } else {
+      state='safe';
+      action = LANG==='en' ? 'Safe' : 'Норма';
+      actionColor = 'var(--green)';
+    }
+
+    var rowBg = state==='spray'?'#fff0ee':state==='warn'?'#fff8f0':state==='watch'?'#fffbec':'var(--card)';
+    var rowBd = state==='spray'?'#f5b8b2':state==='warn'?'#f5c09a':state==='watch'?'#f5e17a':'var(--div)';
+    var rainTxt = rMm >= 1.5 ? '<span style="color:#9b2218;font-weight:700">'+rMm.toFixed(1)+'мм</span>' : '<span style="color:var(--light)">—</span>';
+    var sprayMark = sprayScheduled.length > 0 && sprayScheduled[sprayScheduled.length-1].dt.getTime() === dt.getTime()
+      ? '<span style="font-size:9px;background:#9b2218;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px">💉</span>' : '';
+
+    html += '<div style="display:grid;grid-template-columns:68px 40px 50px 1fr;border-radius:8px;overflow:hidden;border:1px solid '+rowBd+';margin-bottom:4px;background:'+rowBg+'">'
       + '<div style="padding:8px 10px;background:rgba(0,0,0,.03);display:flex;flex-direction:column;justify-content:center">'
       + '<div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--light);margin-bottom:1px">'+(isToday?(LANG==='en'?'TODAY':'СЕГ'):dow)+'</div>'
       + '<div style="font-size:12px;font-weight:700;color:var(--dark)">'+dom+'.'+(mon<10?'0'+mon:mon)+'</div>'
       + '</div>'
-      // Weather icon
       + '<div style="display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,.015)">'+day.icon+'</div>'
-      // Temp+rain
       + '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;gap:1px">'
-      + '<span style="font-weight:700;color:var(--dark)">'+Math.round(day.tmax)+'°</span>'
-      + (rainDay ? '<span style="color:#9b2218;font-weight:700">'+day.rain.toFixed(1)+'мм</span>' : '<span style="color:var(--light)">—</span>')
-      + '</div>'
-      // Action
-      + '<div style="display:flex;align-items:center;padding:6px 10px;font-size:12px;color:'+actionColor+';font-weight:'+(state==='spray'?'700':'500')+'">'+action+'</div>'
+      + '<span style="font-weight:700;color:var(--dark)">'+Math.round(day.tmax||18)+'°</span>'
+      + rainTxt + '</div>'
+      + '<div style="display:flex;align-items:center;padding:6px 10px;font-size:11px;color:'+actionColor+';font-weight:'+(state==='spray'?'700':'500')+'">'+action+sprayMark+'</div>'
       + '</div>';
   }
 
-  el.innerHTML = html || '<div class="empty"><em>📭</em><p>Нет данных</p></div>';
+  // Итоговое число обработок
+  var sprayCount = sprayScheduled.length;
+  var summary = '';
+  if (sprayCount > 0) {
+    var color14 = sprayCount <= 2 ? 'var(--green)' : sprayCount <= 3 ? '#7a4b00' : '#9b2218';
+    summary = '<div style="display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--bg);border:1px solid var(--div);border-radius:var(--r1);margin-bottom:10px;font-size:13px">'
+      + '<span style="font-size:22px">💉</span>'
+      + '<div><strong style="color:'+color14+'">'+sprayCount+' '+TTXT('обработок за 14 дней','sprays in 14 days')+'</strong>'
+      + (sprayCount <= 2 ? ' — <span style="color:var(--green)">'+TTXT('отлично','excellent')+'</span>' : sprayCount <= 3 ? ' — <span style="color:#7a4b00">'+TTXT('допустимо','acceptable')+'</span>' : ' — <span style="color:#9b2218">'+TTXT('пересмотрите агротехнику','review agrotechnics')+'</span>')
+      + '</div></div>';
+  }
+
+  el.innerHTML = summary + (html || '<div class="empty"><em>📭</em><p>Нет данных</p></div>');
 }
+
 
 // getSystem: returns protection system based on incubation day and BBCH
 function getSystem(incubDay, bbch, hasUpcomingRain) {
@@ -2835,6 +3003,7 @@ function smTab(v){
     ta.style.background='var(--bg)';ta.style.border='2px solid var(--div)';
   }
 }
+
 
 
 </script>
