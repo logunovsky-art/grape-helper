@@ -615,6 +615,12 @@ select option{background:#fff;color:var(--dark)}
 
 
 <!-- ════ ПРОГНОЗ ════ -->
+
+<!-- Hidden selects for JS (c1, c2 used in recommendations) -->
+<div style="display:none">
+  <select id="c1"></select>
+  <select id="c2"></select>
+</div>
 <div id="fct" class="tc">
   <div class="sh" data-i="fct-title">Прогноз обработок</div>
   <div class="ss" data-i="fct-sub">Open-Meteo · Биологическая логика · Авторасчёт</div>
@@ -689,6 +695,9 @@ select option{background:#fff;color:var(--dark)}
     <div class="card">
       <div class="ct" data-i="fct-cal-t">📅 Календарь — 14 дней</div>
       <div id="fct-calendar"></div>
+    <!-- Manual rows container (hidden by default) -->
+    <div id="fct-manual-rows" style="display:none"></div>
+
     </div>
 
   </div>
@@ -1389,6 +1398,12 @@ select option{background:#fff;color:var(--dark)}
 </div>
 
 <script>
+
+
+
+
+
+
 
 
 
@@ -2440,10 +2455,10 @@ function deLoadHourly(lat, lon) {
 
 window.onload=function(){
   var now=new Date();
-  document.getElementById('hdate').textContent=now.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('lr').valueAsDate=new Date();
-  var hv=new Date();hv.setMonth(hv.getMonth()+5);document.getElementById('hd').valueAsDate=hv;
-  document.getElementById('jdt').valueAsDate=new Date();
+  setTXT('hdate',now.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}));
+  var _lr=document.getElementById('lr');if(_lr)_lr.valueAsDate=new Date();
+  var hv=new Date();hv.setMonth(hv.getMonth()+5);var _hd=document.getElementById('hd');if(_hd)_hd.valueAsDate=hv;
+  var _jdt=document.getElementById('jdt');if(_jdt)_jdt.valueAsDate=new Date();
 
   renderBbg();
     addW();rdrg();rjrn();
@@ -2451,6 +2466,7 @@ window.onload=function(){
     setTimeout(deUpdate, 500);
   ['c1','c2'].forEach(function(id){
     var s=document.getElementById(id);
+    if(!s) return;
     var fungi=DR.filter(function(d){return d.cat==='fungicide'||d.cat==='acaricide';});
     fungi.forEach(function(d){s.innerHTML+='<option value="'+d.moa+'">'+d.n+'</option>';});
   });
@@ -2458,14 +2474,14 @@ window.onload=function(){
 };
 
 function askLoc(){
-  if(!navigator.geolocation){document.getElementById('locn').textContent='📍 Геолокация недоступна';return;}
+  if(!navigator.geolocation){setTXT('locn','📍 Геолокация недоступна');return;}
   navigator.geolocation.getCurrentPosition(function(p){
     fetch('https://nominatim.openstreetmap.org/reverse?lat='+p.coords.latitude+'&lon='+p.coords.longitude+'&format=json&accept-language=ru')
       .then(function(r){return r.json();}).then(function(d){
         var city=(d.address&&(d.address.city||d.address.town||d.address.village||d.address.county))||'';
-        if(city) document.getElementById('locn').textContent='📍 '+city;
+        if(city) setTXT('locn','📍 '+city);
       }).catch(function(){});
-  },function(){document.getElementById('locn').textContent='📍 Местоположение не определено';});
+  },function(){setTXT('locn','📍 Местоположение не определено');});
 }
 
 function tab(n){
@@ -2542,14 +2558,14 @@ function calc(){
 
   // ── ЧЕРЕШНЯ ──
   if (cropVal === 'cherry') {
-    document.getElementById('res-e').style.display = 'none';
-    document.getElementById('res-m').style.display = 'block';
+    hideEl('res-e');
+    blockEl('res-m');
     hideEl('hv-c');
     var evs_c = getW();
     var today_c = new Date();
     var upR_c = evs_c.filter(function(e){ return (e.tp==='rain'||e.tp==='possible')&&new Date(e.dt)>today_c; });
     var nrd_c = upR_c.length>0 ? Math.round((new Date(upR_c[0].dt)-today_c)/86400000) : 999;
-    document.getElementById('ana').innerHTML =
+    var __anaEl=document.getElementById('ana');if(__anaEl) __anaEl.innerHTML =
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
       +'<span style="font-size:28px">🍒</span>'
       +'<div><div style="font-size:9px;color:var(--light);text-transform:uppercase;margin-bottom:2px">'+TTXT('Культура','Crop')+'</div>'
@@ -2559,7 +2575,7 @@ function calc(){
       +TTXT('личинки внутри ягоды, невидимы снаружи. Обрабатывать ДО откладки яиц.','larvae inside berry, invisible outside. Treat BEFORE egg-laying.')
       +'</div>'
       +(nrd_c<999?'<div class="al al-w"><span class="ali">🌧</span><div>'+TTXT('Дождь через','Rain in')+' <strong>'+nrd_c+' '+TTXT('дн.','d.')+'</strong> — '+TTXT('обработайте ДО','treat BEFORE')+'</div></div>':'<div class="al al-ok"><span class="ali">☀️</span><div>'+TTXT('Дождей нет — плановая обработка','No rain — apply on schedule')+'</div></div>');
-    document.getElementById('sys-block').innerHTML =
+    var __sys_blockEl=document.getElementById('sys-block');if(__sys_blockEl) __sys_blockEl.innerHTML =
       '<div style="background:#edf7f0;border:2px solid #b6d9bf;border-radius:var(--r3);padding:20px;margin-bottom:12px">'
       +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#1e6b33;margin-bottom:6px">'+TTXT('Обработка 1 · 8–10 дней после цветения','Treatment 1 · 8–10 days after bloom')+'</div>'
       +'<div style="font-size:19px;font-weight:700;color:#1e6b33;margin-bottom:8px">🎯 '+TTXT('Моспилан 2–3 г/10 л','Mospilan 2–3 g/10 L')+'</div>'
@@ -2581,20 +2597,20 @@ function calc(){
 
   // ── КЛУБНИКА ──
   if (cropVal === 'strawberry') {
-    document.getElementById('res-e').style.display = 'none';
-    document.getElementById('res-m').style.display = 'block';
+    hideEl('res-e');
+    blockEl('res-m');
     hideEl('hv-c');
     var evs_s = getW();
     var today_s = new Date();
     var upR_s = evs_s.filter(function(e){ return (e.tp==='rain'||e.tp==='possible')&&new Date(e.dt)>today_s; });
     var nrd_s = upR_s.length>0 ? Math.round((new Date(upR_s[0].dt)-today_s)/86400000) : 999;
-    document.getElementById('ana').innerHTML =
+    var __anaEl=document.getElementById('ana');if(__anaEl) __anaEl.innerHTML =
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
       +'<span style="font-size:28px">🍓</span>'
       +'<div><div style="font-size:9px;color:var(--light);text-transform:uppercase;margin-bottom:2px">'+TTXT('Культура','Crop')+'</div>'
       +'<div style="font-size:15px;font-weight:700;color:var(--dark)">'+TTXT('Клубника — Серая гниль и клещ','Strawberry — Botrytis & Mite')+'</div></div></div>'
       +(nrd_s<999?'<div class="al al-crit"><span class="ali">🌧</span><div>'+TTXT('Дождь через','Rain in')+' <strong>'+nrd_s+' '+TTXT('дн.','d.')+'</strong> — '+TTXT('обработайте ДО!','spray BEFORE!')+'</div></div>':'<div class="al al-ok"><span class="ali">☀️</span><div>'+TTXT('Дождей нет — плановые обработки','No rain — apply on schedule')+'</div></div>');
-    document.getElementById('sys-block').innerHTML =
+    var __sys_blockEl=document.getElementById('sys-block');if(__sys_blockEl) __sys_blockEl.innerHTML =
       '<div style="background:#fff0ee;border:2px solid #f5b8b2;border-radius:var(--r3);padding:20px;margin-bottom:12px">'
       +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#9b2218;margin-bottom:8px">'+TTXT('Серая гниль (Botrytis) · 3 шага','Botrytis · 3 steps')+'</div>'
       +'<div style="font-size:13px;color:var(--mid);line-height:2.1">'
@@ -2657,7 +2673,7 @@ function calc(){
   } else {
     ana+='<div class="al al-ok"><span class="ali">&#9989;</span><div><strong>'+TTXT('Фунгициды не нужны.','No fungicides needed.')+'</strong> '+TTXT('Устьица закрыты — споры милдью не войдут.','Stomata closed — mildew spores cannot enter.')+'</div></div>';
   }
-  document.getElementById('ana').innerHTML=ana;
+  var _anaEl2=document.getElementById('ana');if(_anaEl2)_anaEl2.innerHTML=ana;
 
   // ════ DETERMINE SYSTEM ════
   var sysId=null;
@@ -3146,7 +3162,7 @@ function delJ(id){journal=journal.filter(function(e){return e.id!==id;});localSt
 function rjrn(){
   var l=document.getElementById('jl');
   if(!l) return;
-  document.getElementById('rot-w').style.display=(journal.length>=2&&journal[0].mo===journal[1].mo)?'block':'none';
+  var _rotw=document.getElementById('rot-w');if(_rotw)_rotw.style.display=(journal.length>=2&&journal[0].mo===journal[1].mo)?'block':'none';
   if(!journal.length){l.innerHTML='<div class="empty"><em>📋</em><p style="font-size:13px;font-style:italic">Журнал пуст</p></div>';return;}
   l.innerHTML='<div class="card"><div class="card-title">📋 История ('+journal.length+')</div>'
     +journal.map(function(e){
@@ -3491,15 +3507,16 @@ function initForecast() {
   if (window._geoLat && window._geoLon) {
     fctLat = window._geoLat;
     fctLon = window._geoLon;
-    document.getElementById('fct-loc-status').textContent = 'Координаты из автоопределения готовы. Нажмите «Загрузить прогноз».';
+    setTXT('fct-loc-status','Координаты из автоопределения готовы. Нажмите «Загрузить прогноз».');
   }
 }
 
 function toggleFctSource() {
-  var src = document.getElementById('fct-source').value;
+  var _fsEl=document.getElementById('fct-source');if(!_fsEl)return;
+  var src = _fsEl.value;
   var hint = document.getElementById('fct-source-hint');
-  document.getElementById('fct-auto-block').style.display = src === 'auto' ? '' : 'none';
-  document.getElementById('fct-manual-block').style.display = src === 'manual' ? '' : 'none';
+  var _fab=document.getElementById('fct-auto-block');if(_fab)_fab.style.display=src==='auto'?'':'none';
+  var _fmb=document.getElementById('fct-manual-block');if(_fmb)_fmb.style.display=src==='manual'?'':'none';
   if(hint){
     if (src === 'manual') hint.textContent = 'Введите данные вручную с любого сайта погоды. Осадки в мм, температура в °C.';
     else hint.textContent = 'Данные загружаются с open-meteo.com по координатам. 14 дней, осадки + температура.';
@@ -3508,6 +3525,7 @@ function toggleFctSource() {
 
 function autoLocate() {
   var status = document.getElementById('fct-loc-status');
+  if(!status) status = {textContent:'',innerHTML:'',style:{color:''}};
   if (!navigator.geolocation) { status.textContent = 'Геолокация недоступна в вашем браузере'; return; }
   if(status)status.textContent = '⏳ Определяем координаты...';
   navigator.geolocation.getCurrentPosition(
@@ -3523,7 +3541,7 @@ function autoLocate() {
           fctCityName = city;
           if (city) document.getElementById('fct-city').value = city;
           status.textContent = 'Координаты определены: ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4) + (city ? ' (' + city + ')' : '');
-          document.getElementById('locn').textContent = city ? ('📍 ' + city) : '📍 Определено';
+          setTXT('locn', city ? ('📍 ' + city) : '📍 Определено');
         })
         .catch(function(){ status.textContent = 'Координаты: ' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4); });
     },
@@ -3674,7 +3692,7 @@ function geocodeCity() {
     document.getElementById('fct-city').value = found.name;
     status.textContent = '✅ Найдено: ' + found.name + ' (' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4) + ')';
     status.style.color = '#2d5a1a';
-    document.getElementById('locn').textContent = '📍 ' + found.name;
+    setTXT('locn','📍 ' + found.name);
     return;
   }
 
@@ -3695,7 +3713,7 @@ function geocodeCity() {
       document.getElementById('fct-city').value = fctCityName;
       status.textContent = '✅ ' + fctCityName + ' (' + fctLat.toFixed(4) + ', ' + fctLon.toFixed(4) + ')';
       status.style.color = '#2d5a1a';
-      document.getElementById('locn').textContent = '📍 ' + fctCityName;
+      setTXT('locn','📍 ' + fctCityName);
     })
     .catch(function(){
       status.innerHTML = '❌ Город не найден в базе.<br><span style="font-size:11px">Введите координаты вручную: <strong>широта, долгота</strong><br>Пример для Ялты: <strong>44.4952, 34.1663</strong><br>Координаты можно найти в <a href="https://yandex.ru/maps" target="_blank" style="color:var(--gold)">Яндекс.Картах</a></span>';
@@ -3708,9 +3726,9 @@ function loadForecast() {
     alert('Сначала определите местоположение или введите город');
     return;
   }
-  document.getElementById('fct-empty').style.display = 'none';
-  document.getElementById('fct-result').style.display = 'none';
-  document.getElementById('fct-loading').style.display = '';
+  hideEl('fct-empty');
+  hideEl('fct-result');
+  showEl('fct-loading');
 
   var url = 'https://api.open-meteo.com/v1/forecast'
     + '?latitude=' + fctLat
@@ -3722,9 +3740,9 @@ function loadForecast() {
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(data){
-      document.getElementById('fct-loading').style.display = 'none';
+      hideEl('fct-loading');
       if (!data || !data.daily) {
-        document.getElementById('fct-empty').style.display = '';
+        showEl('fct-empty');
         setHTML('fct-empty', '<div style="padding:30px;text-align:center;color:var(--t3)">❌ Не удалось получить данные погоды. Проверьте соединение.</div>');
         return;
       }
@@ -3743,8 +3761,8 @@ function loadForecast() {
       renderNewCalendar();
     })
     .catch(function(err){
-      document.getElementById('fct-loading').style.display = 'none';
-      document.getElementById('fct-empty').style.display = '';
+      hideEl('fct-loading');
+      showEl('fct-empty');
       setHTML('fct-empty', '<div style="padding:30px;text-align:center;color:var(--t3)">❌ Ошибка загрузки: ' + err.message + '</div>');
     });
 }
@@ -3768,7 +3786,7 @@ function addManualRow() {
 }
 
 function calcForecastManual() {
-  var rows = document.getElementById('fct-manual-rows').querySelectorAll('.mr');
+  var _fmrEl=document.getElementById('fct-manual-rows');if(!_fmrEl)return;var rows=_fmrEl.querySelectorAll('.mr');
   var days = [];
   rows.forEach(function(row) {
     var rid = row.id.replace('mr-', '');
@@ -4565,6 +4583,12 @@ window.addEventListener('beforeinstallprompt', function(e) {
 });
 
 // bottom nav sync встроен в tab()
+
+
+
+
+
+
 
 
 
