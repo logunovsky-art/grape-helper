@@ -585,15 +585,16 @@ select option{background:#fff;color:var(--dark)}
   </div>
 </div>
 <div>
-  <!-- ════ DISEASE ENGINE ALERTS ════ -->
-  <div id="de-alerts-adv" style="display:none;margin-bottom:8px"></div>
-
     <div id="res-e" class="card" style="text-align:center;padding:48px 20px">
     <div style="font-size:44px;margin-bottom:12px">🌿</div>
     <div style="font-family:'Playfair Display',serif;font-size:17px;color:#1e6b33;margin-bottom:6px" data-i="adv-empty-t">Заполните данные слева</div>
     <div style="font-size:12px;color:var(--light)" data-i="adv-empty-s">Советник определит систему защиты<br>и покажет список препаратов с дозами</div>
   </div>
-  <div id="res-m" style="display:none">
+  <!-- ════ DISEASE ENGINE ALERTS — показываются сразу ════ -->
+  <div id="de-alerts-adv" style="margin-bottom:8px"></div>
+
+  <div id="de-alerts-adv" style="display:none;margin-bottom:8px"></div>
+<div id="res-m" style="display:none">
     <div class="card"><div class="ct">📊 <span data-i="sit-t">Ситуация</span></div><div id="ana"></div></div>
     <div id="sys-block"></div>
     <div class="card" id="hv-c" style="display:none"><div class="ct">🗓 <span data-i="hv-t">Сроки ожидания</span></div><div id="hbl"></div></div>
@@ -681,6 +682,9 @@ select option{background:#fff;color:var(--dark)}
       <div class="ct">☁️ <span id="fct-city-label">Прогноз погоды</span> · <span style="color:var(--sec);font-weight:400;font-size:12px">нажмите на иконку чтобы изменить</span></div>
       <div id="fct-weather-strip" style="display:flex;gap:4px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none"></div>
     </div>
+
+    <!-- DISEASE ENGINE ALERTS В ПРОГНОЗЕ -->
+    <div id="de-alerts-fct" style="margin-bottom:10px"></div>
 
     <!-- MAIN RECOMMENDATION CARD -->
     <div id="fct-main-card" style="margin-bottom:14px"></div>
@@ -1447,6 +1451,13 @@ select option{background:#fff;color:var(--dark)}
 
 
 
+
+
+
+
+
+
+
 // ═══ ОБРАБОТЧИК ОШИБОК ═══
 window.addEventListener('error', function(e) {
   if (typeof console !== 'undefined' && console.error) {
@@ -1935,7 +1946,7 @@ var AGRO_CHECKLIST = [
 // ═══════════════════════════════════════════════════════════════
 
 var DE_VERSION = 1;
-var deAlerts = [];       // текущие алерты для UI
+var deAlerts = null;     // null = не запускался, [] = запустился, нет угроз
 var deLastCalc = null;   // дата последнего расчёта
 var deHourlyData = [];   // почасовые данные Open-Meteo (влажность)
 
@@ -2343,14 +2354,8 @@ function deCalcBotrytis(days, bbchNum) {
 // ══════════════════════════════════════
 // РЕНДЕР АЛЕРТОВ В UI
 // ══════════════════════════════════════
-function deRenderAlertsAdv() {
-  var el = document.getElementById('de-alerts-adv');
-  if (!el) return;
-  if (!deAlerts || !deAlerts.length) {
-    el.innerHTML = '';
-    el.style.display = 'none';
-    return;
-  }
+function deBuildAlertsHTML() {
+  if (!deAlerts || !deAlerts.length) return '';
   var html = '';
   for (var i = 0; i < deAlerts.length; i++) {
     var a = deAlerts[i];
@@ -2362,8 +2367,24 @@ function deRenderAlertsAdv() {
       + '<div class="de-alert-action">→ ' + a.action + '</div>'
       + '</div></div>';
   }
-  el.innerHTML = html;
-  el.style.display = 'block';
+  return html;
+}
+
+function deRenderAlertsAdv() {
+  // Рендерим в оба контейнера: советник и прогноз
+  var html = deBuildAlertsHTML();
+
+  var elAdv = document.getElementById('de-alerts-adv');
+  if (elAdv) {
+    elAdv.innerHTML = html;
+    elAdv.style.display = html ? 'block' : 'none';
+  }
+
+  var elFct = document.getElementById('de-alerts-fct');
+  if (elFct) {
+    elFct.innerHTML = html;
+    elFct.style.display = html ? 'block' : 'none';
+  }
 }
 
 // Иконка риска для конкретного дня в календаре прогноза
@@ -2388,30 +2409,70 @@ function deRiskIconForDay(dateStr) {
 function deUpdate() {
   var cropEl = document.getElementById('crop');
   var cropVal = cropEl ? cropEl.value : 'grape';
-  var bbchStr = selBbch || '';
+  // Если фенофаза не выбрана — берём среднесезонную (активный рост)
+  var bbchStr = selBbch || '15-18';
 
-  // Данные для расчёта
-  var weatherDays = [];
-  if (fctDays && fctDays.length) {
-    // Используем загруженный прогноз
-    weatherDays = fctDays;
-  }
-
-  // Ручные данные с главной страницы
+  // ── Ручные данные с главной страницы ──
   var lrEl = document.getElementById('lr');
   var manualRainDate = lrEl ? lrEl.value : null;
 
-  // Ручные события (ожидаемые дожди)
-  var manualRainMm = 10; // по умолчанию
+  // Ручные события (ожидаемые дожди из кнопки "+ Добавить день")
+  var manualRainMm = 12;
   var wEventsData = getW ? getW() : [];
+  var futureRainDates = [];
   if (wEventsData && wEventsData.length) {
-    for (var i = 0; i < wEventsData.length; i++) {
-      var we = wEventsData[i];
-      if (we.tp === 'rain' || we.tp === 'possible') {
-        // Добавить как дополнительный дождевой день если совпадает дата
-        manualRainMm = Math.max(manualRainMm, 10);
+    for (var wi = 0; wi < wEventsData.length; wi++) {
+      var we = wEventsData[wi];
+      if ((we.tp === 'rain' || we.tp === 'possible') && we.dt) {
+        futureRainDates.push(we.dt);
       }
     }
+  }
+
+  // ── Данные погоды ──
+  var weatherDays = [];
+
+  if (fctDays && fctDays.length) {
+    // Используем загруженный прогноз Open-Meteo
+    weatherDays = fctDays;
+  } else if (manualRainDate) {
+    // Прогноз не загружен, но есть дата дождя — строим минимальный массив
+    // Используем температуру из поля или среднесезонную СКОРРЕКТИРОВАННУЮ
+    // Правило: для расчёта инкубации нужна T за несколько дней
+    // Берём консервативный сценарий: T=15°C (работает для большинства сезонов)
+    var today2 = new Date();
+    for (var di2 = -7; di2 <= 6; di2++) {
+      var d2 = new Date(today2);
+      d2.setDate(d2.getDate() + di2);
+      var ds2 = d2.toISOString().split('T')[0];
+      var rain2 = 0;
+      if (ds2 === manualRainDate) rain2 = manualRainMm;
+      for (var fri2 = 0; fri2 < futureRainDates.length; fri2++) {
+        if (futureRainDates[fri2] === ds2) { rain2 = manualRainMm; break; }
+      }
+      weatherDays.push({
+        date: ds2, icon: rain2>0?'r':'s',
+        rain: rain2, humid: rain2>0?88:58,
+        tmax: 18, tmin: 12, // консервативные T — движок не переоценит риск
+        prob: rain2>0?90:10, isOverride: false
+      });
+    }
+  } else {
+    // Нет ни прогноза, ни даты дождя — показываем подсказку
+    var el2 = document.getElementById('de-alerts-adv');
+    if (el2 && selBbch && selBbch !== '' && parseBbch(selBbch) >= 14) {
+      el2.innerHTML = '<div class="de-alert de-alert-low" style="border-style:dashed">'
+        + '<span class="de-alert-icon">📡</span>'
+        + '<div class="de-alert-body">'
+        + '<div class="de-alert-title">' + TTXT('Прогноз не загружен','Forecast not loaded') + '</div>'
+        + '<div class="de-alert-what">' + TTXT('Для анализа болезней загрузите прогноз погоды в разделе Прогноз','Load weather forecast in Forecast tab for disease analysis') + '</div>'
+        + '</div></div>';
+      el2.style.display = 'block';
+    } else if (el2) {
+      el2.innerHTML = '';
+      el2.style.display = 'none';
+    }
+    return; // Нет данных для расчёта
   }
 
   // Запустить движок
@@ -2463,7 +2524,9 @@ window.onload=function(){
   renderBbg();
     addW();rdrg();rjrn();
     // Disease engine
-    setTimeout(deUpdate, 500);
+    // Немедленный расчёт при загрузке (+ повтор после возможной геолокации)
+    deUpdate();
+    setTimeout(deUpdate, 2000); // повтор когда может прийти геолокация
   ['c1','c2'].forEach(function(id){
     var s=document.getElementById(id);
     if(!s) return;
@@ -2471,6 +2534,16 @@ window.onload=function(){
     fungi.forEach(function(d){s.innerHTML+='<option value="'+d.moa+'">'+d.n+'</option>';});
   });
   askLoc();
+  // Запустить движок при загрузке
+  setTimeout(function() {
+    try {
+      var cached = JSON.parse(localStorage.getItem('de_alerts')||'null');
+      if (cached && cached.alerts) {
+        deAlerts = cached.alerts;
+      }
+    } catch(e) {}
+    deUpdate();
+  }, 300);
 };
 
 function askLoc(){
@@ -4583,6 +4656,13 @@ window.addEventListener('beforeinstallprompt', function(e) {
 });
 
 // bottom nav sync встроен в tab()
+
+
+
+
+
+
+
 
 
 
