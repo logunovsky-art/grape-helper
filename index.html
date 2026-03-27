@@ -460,6 +460,24 @@ select option{background:#fff;color:var(--dark)}
 .de-alert-low .de-alert-title,
 .de-alert-low .de-alert-action { color:#1e6b33; }
 
+
+/* ── PREP ADVISOR ── */
+.pa-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.pa-tab{padding:7px 14px;border-radius:20px;border:1.5px solid var(--div);background:var(--bg);
+  color:var(--sec);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent}
+.pa-tab.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.pa-hint{font-size:12px;color:var(--light);padding:10px 14px;background:var(--bg);
+  border:1px solid var(--div);border-radius:var(--r1);margin-bottom:12px;line-height:1.6}
+.pa-group-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--light);margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--div)}
+.pa-status{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.pa-status-optimal{color:#1e6b33;font-weight:700}
+.pa-status-possible{color:#7a4b00}
+.pa-status-deadline{color:#9b2218;font-weight:700}
+.pa-status-forbidden{color:var(--light)}
+.dc.pa-forbidden{opacity:.5}
+
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
 @media(max-width:600px){.wrap{padding:14px 12px}.card{padding:14px}.bbg{grid-template-columns:1fr}.cal-day{grid-template-columns:66px 34px 48px 1fr}.sh{font-size:18px}}
@@ -581,6 +599,25 @@ select option{background:#fff;color:var(--dark)}
       <div id="wlist"></div>
       <button class="btn btn-g btn-sm" style="margin-top:6px" onclick="addW()" data-i="add-rain">+ Добавить день</button>
     </div>
+
+    <!-- ════ БЫСТРЫЙ ВВОД ПРОГНОЗА ════ -->
+    <div style="margin-top:14px;margin-bottom:6px">
+      <div class="tip-w" style="margin-bottom:6px">
+        <label style="margin:0;font-size:13px;font-weight:600">🌧 Ожидаемые дожди — отметь дни</label>
+        <span class="tip-ic">?</span>
+        <div class="tip-b">Отметь дни с ожидаемым дождём. Движок болезней будет использовать ручной ввод с приоритетом над автопрогнозом.</div>
+      </div>
+      <div id="de-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <span style="font-size:12px;color:var(--sec);white-space:nowrap">Темп. 🌡</span>
+        <input type="range" id="de-temp-slider" min="4" max="35" value="18"
+          oninput="deOnTempSlider(this.value)"
+          style="flex:1;accent-color:var(--blue)">
+        <span id="de-temp-val" style="font-size:13px;font-weight:700;color:var(--dark);min-width:36px;text-align:right">+18°C</span>
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:3px" id="de-manual-status"></div>
+    </div>
+
     <button class="btn btn-p" onclick="calc()">⚡ <span data-i="calc-btn">Рассчитать рекомендацию</span></button>
   </div>
 </div>
@@ -796,6 +833,15 @@ select option{background:#fff;color:var(--dark)}
 <div id="drg" class="tc">
   <div class="sh" data-i="drg-title">База препаратов</div>
   <div class="ss" data-i="drg-sub">Фунгициды · Инсектициды · Акарициды · Поиск по д.в.</div>
+  <!-- PREP ADVISOR TABS -->
+  <div class="pa-tabs">
+    <div class="pa-tab on"  onclick="paSetMode('smart')" id="pa-tab-smart">⭐ Сейчас</div>
+    <div class="pa-tab" onclick="paSetMode('phases')" id="pa-tab-phases">📅 По фазам</div>
+    <div class="pa-tab" onclick="paSetMode('all')"   id="pa-tab-all">📋 Все</div>
+  </div>
+  <div id="pa-hint" class="pa-hint" style="display:none">
+    💡 Укажите <strong>дату сбора</strong> на главной — покажем что можно применять сейчас
+  </div>
   <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
     <div class="sw" style="flex:1;min-width:200px;margin-bottom:0">
       <span class="si">🔍</span>
@@ -1458,6 +1504,12 @@ select option{background:#fff;color:var(--dark)}
 
 
 
+
+
+
+
+
+
 // ═══ ОБРАБОТЧИК ОШИБОК ═══
 window.addEventListener('error', function(e) {
   if (typeof console !== 'undefined' && console.error) {
@@ -1636,6 +1688,7 @@ var DR=[
 {id:'bio_bw',n:'BioSleep BW',ai:'Beauveria bassiana (штамм Bb-147)',prod:'Бионоватик',pcls:'bio',cat:'bioinsecticide',moa:'biocontrol',sys:null,t:['leafworm','vine_moth','aphid','thrips'],w:0,d10:'30–50 мл / 10 л',jp:false,nt:'СО = 0 дней. Кишечно-контактный. Виноградная и гроздевая листовёртка, тля, трипс, виноградная пестрянка. Применять вечером или ночью. Не совмещать с фунгицидами за 5 дней до и после.',alts:[]},
 {id:'bio_bt',n:'BioSleep BT',ai:'Bacillus thuringiensis ssp. toumanoffi',prod:'Бионоватик',pcls:'bio',cat:'bioinsecticide',moa:'biocontrol',sys:null,t:['leafworm','vine_moth'],w:0,d10:'10–20 г / 10 л',jp:false,nt:'СО = 0 дней. Кишечный. Специально против гусениц чешуекрылых — листовёртка, гроздевая листовёртка. Органик-сертификат USDA NOP, ЕС 848/2018.',alts:['BioSleep BW']},
 {id:'bio_mt',n:'BioSleep MT',ai:'Metarhizium sp. (штамм Mm-109)',prod:'Бионоватик',pcls:'bio',cat:'bioinsecticide',moa:'biocontrol',sys:null,t:['beetle','leafhopper','thrips'],w:0,d10:'30–50 мл / 10 л',jp:false,nt:'СО = 0 дней. Контактный. Почвенные вредители, скосари, цикадки. Применять при влажности >70%.',alts:[]},
+{id:'delan',n:'Делан ВГ',ai:'дитианон 700 г/кг',prod:'Syngenta',pcls:'syn',cat:'fungicide',moa:'multisite',sys:'s1',t:['mildew','anthracnose'],w:60,d10:'10 г / 10 л',jp:false,nt:'Защитный, многосайтовый. СО 60 дней — только в начале сезона.',alts:['Антракол','Фолпан']}
 ];
 
 // ════ INSECTICIDES / ACARICIDES (Japan + Russia) ════
@@ -1939,176 +1992,247 @@ var AGRO_CHECKLIST = [
 
 
 
-// ════ DISEASE ENGINE ════
+
 // ═══════════════════════════════════════════════════════════════
-// DISEASE ENGINE v1.0 — Садовый Щит
-// Научные модели: Baldacci 1947, Goidanich 1957, Lalancette 1988, Magarey 2005
+// DISEASE ENGINE v2.0 — Садовый Щит
+// Модели: Baldacci 1947, Goidanich 1957, Lalancette 1988, Magarey 2005
 // ═══════════════════════════════════════════════════════════════
 
-var DE_VERSION = 1;
-var deAlerts = null;     // null = не запускался, [] = запустился, нет угроз
-var deLastCalc = null;   // дата последнего расчёта
-var deHourlyData = [];   // почасовые данные Open-Meteo (влажность)
+var DE_VERSION = 2;
+var deAlerts = [];
+var deHourlyData = [];
 
-// ── Пороги инкубации ──
-var DE_WARN_PCT  = 60;   // жёлтый — наблюдение
-var DE_ALERT_PCT = 80;   // оранжевый — обработай сегодня
-var DE_CRIT_PCT  = 100;  // красный — симптомы скоро
+// Пороги инкубации
+var DE_WARN_PCT  = 60;
+var DE_ALERT_PCT = 80;
+var DE_CRIT_PCT  = 100;
 
-// ══════════════════════════════════════
-// 1. ПРАВИЛО 3-10 (Baldacci, 1947)
-// ══════════════════════════════════════
+// Таблица Гоиданича: [T_min, T_max, %/день]
+var DE_GOID_TABLE = [
+  [0,  9,  0],
+  [10, 12, 5],
+  [13, 14, 8],
+  [15, 17,12],
+  [18, 20,18],
+  [21, 24,25],
+  [25, 27,20],
+  [28, 30,14],
+  [31, 99, 5],
+];
+
+// ── Модель 1: Правило 3-10 (Baldacci, 1947) ──
 function de310Check(rainMm, tempC, bbchStr) {
-  var b = parseBbch(bbchStr);
+  var b = parseBbch ? parseBbch(bbchStr) : parseInt((bbchStr||'0').split('-')[0]);
   return (rainMm >= 10 && tempC >= 10 && b >= 14);
 }
 
-// ══════════════════════════════════════
-// 2. ИНДЕКС ГОИДАНИЧА (Goidanich, 1957)
-// Суточная скорость инкубации % в день
-// ══════════════════════════════════════
-var DE_GOID_TABLE = [
-  [0,  9,  0],
-  [10, 12, 6],
-  [13, 14, 8],
-  [15, 17,10],
-  [18, 20,12],
-  [21, 24,17],
-  [25, 28,20],
-  [29, 30,12],
-];
-
-function deGoidRate(tempC) {
+// ── Модель 2: Гоиданич — суточная скорость инкубации ──
+function deGoidRate(tempC, rh) {
+  var rate = 0;
   for (var i = 0; i < DE_GOID_TABLE.length; i++) {
     var row = DE_GOID_TABLE[i];
-    if (tempC >= row[0] && tempC <= row[1]) return row[2];
+    if (tempC >= row[0] && tempC <= row[1]) { rate = row[2]; break; }
   }
-  return 0;
+  // Поправка на влажность
+  var rhMult = (rh >= 90) ? 1.0 : (rh >= 70) ? 0.7 : 0.3;
+  return rate * rhMult;
 }
 
-// ══════════════════════════════════════
-// 3. LALANCETTE (1988) — спороношение
-// Ночная влажность (эмулируем через дневные данные)
-// ══════════════════════════════════════
-function deLalancetteCheck(day) {
-  // Если есть почасовые данные — используем их
-  if (deHourlyData && deHourlyData.length) {
-    return deLalancetteHourly(day.date);
-  }
-  // Иначе эмуляция по дневным: дождь >0 или влажность >80% при T 10-30
-  var t = day.tmax || 18;
-  var h = day.humid || 60;
-  var r = day.rain || 0;
-  return ((h >= 80 || r > 0) && t >= 10 && t <= 30);
-}
-
+// ── Модель 3: Lalancette — ночное спороношение ──
 function deLalancetteHourly(dateStr) {
-  // Найти часы для этой даты, проверить 3+ часа подряд с RH>=80 или rain>0 при T 10-30
-  var hours = deHourlyData.filter(function(h) {
-    return h.date === dateStr;
-  });
+  var hours = [];
+  for (var i = 0; i < deHourlyData.length; i++) {
+    if (deHourlyData[i].date === dateStr) hours.push(deHourlyData[i]);
+  }
   if (!hours.length) return false;
   var consecutive = 0, maxConsec = 0;
-  for (var i = 0; i < hours.length; i++) {
-    var h = hours[i];
-    // ночные часы: 20-24 и 0-8
+  for (var j = 0; j < hours.length; j++) {
+    var h = hours[j];
     var hr = parseInt((h.time || '00').split(':')[0]);
     var isNight = (hr >= 20 || hr <= 8);
     if (isNight && (h.rh >= 80 || h.rain > 0) && h.temp >= 10 && h.temp <= 30) {
       consecutive++;
       if (consecutive > maxConsec) maxConsec = consecutive;
-    } else {
-      consecutive = 0;
-    }
+    } else { consecutive = 0; }
   }
-  return (maxConsec >= 3);
+  return maxConsec;
 }
 
-// ══════════════════════════════════════
-// 4. MAGAREY (2005) — мин. время увлажнения
-// W_min = f(T), T_opt=21, W_min_opt=2ч
-// ══════════════════════════════════════
+function deLalancetteCheck(day) {
+  if (deHourlyData && deHourlyData.length) {
+    var wet = deLalancetteHourly(day.date);
+    return wet >= 3 ? wet : 0;
+  }
+  // Эмуляция по дневным данным
+  var t = day.tmax || 18;
+  var h = day.humid || 60;
+  var r = day.rain || 0;
+  if ((h >= 80 || r > 0) && t >= 10 && t <= 30) return 4; // условно
+  return 0;
+}
+
+// ── Модель 4: Magarey — минимальное время увлажнения ──
 function deMagareyWmin(tempC) {
   var T_min = 4, T_opt = 21, T_max = 30.2;
   if (tempC <= T_min || tempC >= T_max) return 999;
-  // Параболическая аппроксимация
-  if (tempC <= T_opt) {
-    return 2 + (T_opt - tempC) / (T_opt - T_min) * 6;
-  } else {
-    return 2 + (tempC - T_opt) / (T_max - T_opt) * 8;
-  }
+  return 2 * ((T_opt - T_min) * (T_max - T_opt)) / ((tempC - T_min) * (T_max - tempC));
 }
 
 function deMagareyCheck(day) {
-  var wMin = deMagareyWmin((day.tmax + day.tmin) / 2 || 18);
-  // Эмуляция по дневным: если дождь > 0 — считаем увлажнение пропорционально
-  var wActual = (day.rain > 0) ? Math.min(12, 2 + day.rain * 0.5) : 0;
-  if (day.humid >= 90) wActual = Math.max(wActual, 4);
-  if (day.humid >= 95) wActual = Math.max(wActual, 6);
-  return (wActual >= wMin);
+  var avgT = ((day.tmax||18) + (day.tmin||10)) / 2;
+  var wMin = deMagareyWmin(avgT);
+  var wActual = 0;
+  if (day.rain > 0) wActual = Math.min(12, 2 + day.rain * 0.5);
+  if ((day.humid||60) >= 90) wActual = Math.max(wActual, 4);
+  if ((day.humid||60) >= 95) wActual = Math.max(wActual, 6);
+  return wActual >= wMin;
 }
 
-// ══════════════════════════════════════
-// ГЛАВНАЯ ФУНКЦИЯ РАСЧЁТА
-// ══════════════════════════════════════
+// ── Ручной ввод прогноза (быстрый ввод на главной) ──
+function deLoadManualForecast() {
+  try {
+    var saved = localStorage.getItem('de_manual_forecast');
+    return saved ? JSON.parse(saved) : { rainDays: [], temp: 18 };
+  } catch(e) { return { rainDays: [], temp: 18 }; }
+}
+
+function deSaveManualForecast(data) {
+  try { localStorage.setItem('de_manual_forecast', JSON.stringify(data)); } catch(e) {}
+}
+
+// Рендер чипов быстрого ввода
+function deRenderChips() {
+  var el = document.getElementById('de-chips');
+  if (!el) return;
+  var manual = deLoadManualForecast();
+  var today = new Date();
+  var DOW_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  var html = '';
+  for (var i = 0; i < 14; i++) {
+    var d = new Date(today); d.setDate(d.getDate() + i);
+    var ds = d.toISOString().split('T')[0];
+    var isRain = manual.rainDays.indexOf(ds) >= 0;
+    var dow = DOW_RU[d.getDay()];
+    var day = d.getDate();
+    var mon = d.getMonth() + 1;
+    var bg    = isRain ? '#dbeafe' : 'var(--bg)';
+    var border= isRain ? '#3b82f6' : 'var(--div)';
+    var color = isRain ? '#1d4ed8' : 'var(--sec)';
+    var icon  = isRain ? '🌧' : '';
+    html += '<button onclick="deToggleRainDay(\'' + ds + '\')" '
+      + 'style="padding:5px 10px;border-radius:20px;border:1.5px solid ' + border + ';'
+      + 'background:' + bg + ';color:' + color + ';font-size:11px;font-weight:600;'
+      + 'cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s">'
+      + icon + dow + ' ' + day + '.' + (mon<10?'0'+mon:mon)
+      + '</button>';
+  }
+  el.innerHTML = html;
+
+  // Температурный слайдер
+  var slider = document.getElementById('de-temp-slider');
+  var valEl  = document.getElementById('de-temp-val');
+  if (slider) slider.value = manual.temp || 18;
+  if (valEl)  valEl.textContent = '+' + (manual.temp || 18) + '°C';
+
+  // Статус
+  var statusEl = document.getElementById('de-manual-status');
+  if (statusEl) {
+    if (manual.rainDays.length > 0) {
+      statusEl.textContent = '✅ Отмечено ' + manual.rainDays.length + ' дн. с дождём · +' + (manual.temp||18) + '°C — используется движком';
+      statusEl.style.color = '#1d4ed8';
+    } else {
+      statusEl.textContent = 'Нет ручных данных — используется прогноз Open-Meteo';
+      statusEl.style.color = 'var(--light)';
+    }
+  }
+}
+
+function deToggleRainDay(dateStr) {
+  var manual = deLoadManualForecast();
+  var idx = manual.rainDays.indexOf(dateStr);
+  if (idx >= 0) manual.rainDays.splice(idx, 1);
+  else manual.rainDays.push(dateStr);
+  deSaveManualForecast(manual);
+  deRenderChips();
+  deUpdate();
+}
+
+function deOnTempSlider(val) {
+  var v = parseInt(val);
+  var valEl = document.getElementById('de-temp-val');
+  if (valEl) valEl.textContent = '+' + v + '°C';
+  var manual = deLoadManualForecast();
+  manual.temp = v;
+  deSaveManualForecast(manual);
+  deUpdate();
+}
+
+// ── Основной расчёт алертов ──
 function deCalcAlerts(cropVal, bbchStr, weatherDays, manualRainDate, manualRainMm) {
   deAlerts = [];
-  var bbchNum = parseBbch(bbchStr || '');
-  var today = new Date();
-  today.setHours(0,0,0,0);
+  var bbchNum = parseBbch ? parseBbch(bbchStr || '') : parseInt((bbchStr||'0').split('-')[0]) || 0;
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  // Быстрый ввод — приоритет
+  var manual = deLoadManualForecast();
+  var manualTemp = manual.temp || 18;
 
   // Объединить ручные данные с прогнозом
   var days = [];
   for (var i = 0; i < weatherDays.length; i++) {
     var d = weatherDays[i];
     var dt = new Date(d.date + 'T00:00:00');
-    var rainMm = d.rain || 0;
-    var tempAvg = ((d.tmax||18) + (d.tmin||10)) / 2;
+    var ds = d.date;
 
-    // Ручной ввод имеет приоритет для конкретной даты
-    if (manualRainDate) {
-      var mrd = new Date(manualRainDate + 'T00:00:00');
-      if (Math.abs(dt - mrd) < 86400000) {
-        rainMm = Math.max(rainMm, manualRainMm || 10);
-      }
-    }
+    // Ручной приоритет по дождю
+    var rainMm = d.rain || 0;
+    if (manual.rainDays.indexOf(ds) >= 0) rainMm = Math.max(rainMm, 12);
+    if (manualRainDate && ds === manualRainDate) rainMm = Math.max(rainMm, manualRainMm || 10);
+
+    // Ручной приоритет по температуре (если есть отмеченные дни)
+    var tempAvg = ((d.tmax||18) + (d.tmin||10)) / 2;
+    if (manual.rainDays.length > 0) tempAvg = manualTemp;
 
     days.push({
-      date: d.date,
-      dt: dt,
-      isPast: dt <= today,
-      rainMm: rainMm,
+      date:    ds,
+      dt:      dt,
+      isPast:  dt <= today,
+      rainMm:  rainMm,
       tempAvg: tempAvg,
-      tmax: d.tmax || 18,
-      tmin: d.tmin || 10,
-      humid: d.humid || 60,
-      rain: d.rain || 0,
+      tmax:    manual.rainDays.indexOf(ds) >= 0 ? (manualTemp + 3) : (d.tmax || 18),
+      tmin:    manual.rainDays.indexOf(ds) >= 0 ? (manualTemp - 4) : (d.tmin || 10),
+      humid:   d.humid || 60,
+      rain:    rainMm,
     });
   }
 
-  // ── ВИНОГРАД: милдью + оидиум ──
+  // Если нет данных прогноза — строим синтетический ряд из ручных данных
+  if (!days.length) {
+    var month = today.getMonth();
+    var seasonT = [6,7,9,13,18,23,26,26,22,17,12,8];
+    var baseT = manual.rainDays.length > 0 ? manualTemp : (seasonT[month] || 18);
+    for (var di = -7; di <= 6; di++) {
+      var dd = new Date(today); dd.setDate(dd.getDate() + di);
+      var dds = dd.toISOString().split('T')[0];
+      var r = manual.rainDays.indexOf(dds) >= 0 ? 12 : 0;
+      if (manualRainDate && dds === manualRainDate) r = Math.max(r, manualRainMm || 10);
+      days.push({ date:dds, dt:dd, isPast:dd<=today, rainMm:r, tempAvg:baseT, tmax:baseT+3, tmin:baseT-4, humid:r>0?88:55, rain:r });
+    }
+  }
+
+  // Расчёт по культуре
   if (cropVal === 'grape') {
     deCalcMildew(days, bbchStr, bbchNum);
     deCalcOidium(days, bbchNum);
-  }
-  // ── ЧЕРЕШНЯ: монилиоз ──
-  else if (cropVal === 'cherry') {
+  } else if (cropVal === 'cherry') {
     deCalcMonilia(days, bbchNum);
-  }
-  // ── КЛУБНИКА: серая гниль ──
-  else if (cropVal === 'strawberry') {
+  } else if (cropVal === 'strawberry') {
     deCalcBotrytis(days, bbchNum);
   }
 
-  // Сохранить в localStorage
+  // Сохранить
   try {
-    localStorage.setItem('de_alerts', JSON.stringify({
-      v: DE_VERSION,
-      ts: Date.now(),
-      crop: cropVal,
-      bbch: bbchStr,
-      alerts: deAlerts
-    }));
+    localStorage.setItem('de_alerts', JSON.stringify({ v:DE_VERSION, ts:Date.now(), crop:cropVal, bbch:bbchStr, alerts:deAlerts }));
   } catch(e) {}
 
   return deAlerts;
@@ -2116,380 +2240,314 @@ function deCalcAlerts(cropVal, bbchStr, weatherDays, manualRainDate, manualRainM
 
 // ── Милдью (виноград) ──
 function deCalcMildew(days, bbchStr, bbchNum) {
-  if (bbchNum < 14) return; // устьица закрыты
+  if (bbchNum < 14) return;
 
   var incubPct = 0;
   var incubActive = false;
   var infectionDate = null;
   var infectionRain = 0;
   var infectionTemp = 0;
-  var lalancetteNights = 0;
+  var lalancetteWetHours = 0;
+
+  // Восстановить накопленную инкубацию из localStorage
+  try {
+    var saved = localStorage.getItem('de_incubation_total');
+    var savedDate = localStorage.getItem('de_infection_date');
+    var lastCalc = localStorage.getItem('de_last_calc');
+    if (saved && savedDate) {
+      incubPct = parseFloat(saved) || 0;
+      incubActive = incubPct > 0;
+      infectionDate = savedDate;
+      // Не пересчитывать чаще раза в сутки
+      var todayStr = new Date().toISOString().split('T')[0];
+      if (lastCalc === todayStr) {
+        // Только рендерить, не пересчитывать Гоиданича
+      }
+    }
+  } catch(e) {}
 
   for (var i = 0; i < days.length; i++) {
     var d = days[i];
 
-    // Правило 3-10
-    if (!incubActive && de310Check(d.rainMm, d.tempAvg, bbchStr)) {
-      incubActive = true;
-      incubPct = 0;
-      infectionDate = d.date;
-      infectionRain = d.rainMm;
-      infectionTemp = d.tempAvg;
+    // Правило 3-10 — сбрасываем если новое заражение
+    if (de310Check(d.rainMm, d.tempAvg, bbchStr)) {
+      if (!incubActive) {
+        incubActive = true;
+        incubPct = 0;
+        infectionDate = d.date;
+        infectionRain = d.rainMm;
+        infectionTemp = d.tempAvg;
+      }
     }
 
     // Гоиданич — накопление
-    if (incubActive) {
-      var rate = deGoidRate(d.tempAvg);
+    if (incubActive && d.isPast) {
+      var rate = deGoidRate(d.tempAvg, d.humid);
       incubPct = Math.min(100, incubPct + rate);
     }
 
-    // Lalancette — спороношение
-    if (deLalancetteCheck(d) && bbchNum >= 14) {
-      lalancetteNights++;
-    }
-
-    // Magarey — добавочный вес к риску
-    var magareyOk = deMagareyCheck(d) && bbchNum >= 14;
-
-    // Алерты по накоплению
-    if (incubActive && d.isPast) {
-      if (incubPct >= DE_CRIT_PCT) {
-        // Уже критично
-      } else if (incubPct >= DE_ALERT_PCT) {
-        // Уже предупреждение
-      }
-    }
+    // Lalancette
+    var wetH = deLalancetteCheck(d);
+    if (wetH > 0 && bbchNum >= 14) lalancetteWetHours = Math.max(lalancetteWetHours, wetH);
   }
 
-  // Финальное состояние → алерт
-  if (incubActive) {
-    var daysAgo = infectionDate
-      ? Math.round((new Date() - new Date(infectionDate)) / 86400000)
-      : 0;
+  // Сохранить накопление
+  try {
+    localStorage.setItem('de_incubation_total', String(incubPct));
+    if (infectionDate) localStorage.setItem('de_infection_date', infectionDate);
+    localStorage.setItem('de_last_calc', new Date().toISOString().split('T')[0]);
+  } catch(e) {}
 
+  var daysAgo = infectionDate ? Math.round((new Date() - new Date(infectionDate)) / 86400000) : 0;
+  var infDateFmt = infectionDate ? (new Date(infectionDate).toLocaleDateString('ru-RU',{day:'numeric',month:'long'})) : '';
+
+  if (incubActive) {
     if (incubPct >= DE_CRIT_PCT) {
       deAlerts.push({
-        level: 'critical',
-        icon: '🔴',
-        disease: LANG === 'en' ? 'Downy mildew' : 'Милдью',
-        what: LANG === 'en'
+        level:'critical', icon:'🔴',
+        disease: LANG==='en' ? 'Downy mildew — URGENT' : 'Милдью — срочно',
+        what: LANG==='en'
           ? 'Incubation 100% — symptoms within 24h'
           : 'Инкубация 100% — симптомы через 24 ч',
-        action: LANG === 'en'
+        action: LANG==='en'
           ? 'Emergency spray with phosphonate NOW'
           : 'Срочная обработка фосфонатами СЕЙЧАС',
-        pct: Math.round(incubPct),
-        source: '3-10 + Goidanich'
+        pct: Math.round(incubPct), source:'Goidanich'
       });
     } else if (incubPct >= DE_ALERT_PCT) {
       deAlerts.push({
-        level: 'high',
-        icon: '🟠',
-        disease: LANG === 'en' ? 'Downy mildew' : 'Милдью',
-        what: LANG === 'en'
-          ? 'Incubation ' + Math.round(incubPct) + '% — ' + daysAgo + ' days after infection'
-          : 'Инкубация ' + Math.round(incubPct) + '% · ' + daysAgo + ' дн. после заражения',
-        action: LANG === 'en'
-          ? 'Spray today — symptoms close'
-          : 'Обработай сегодня — симптомы близко',
-        pct: Math.round(incubPct),
-        source: 'Goidanich'
+        level:'high', icon:'🟠',
+        disease: LANG==='en' ? 'Downy mildew — incubation 80%' : 'Милдью — инкубация 80%',
+        what: LANG==='en'
+          ? daysAgo + ' days accumulation since ' + infDateFmt
+          : daysAgo + ' дн. накопления после заражения ' + infDateFmt,
+        action: LANG==='en'
+          ? 'Last chance — spray TODAY'
+          : 'Последний шанс — обработай сегодня',
+        pct: Math.round(incubPct), source:'Goidanich'
       });
     } else if (incubPct >= DE_WARN_PCT) {
       deAlerts.push({
-        level: 'medium',
-        icon: '🟡',
-        disease: LANG === 'en' ? 'Downy mildew' : 'Милдью',
-        what: LANG === 'en'
-          ? 'Incubation ' + Math.round(incubPct) + '% — monitor daily'
-          : 'Инкубация ' + Math.round(incubPct) + '% · следи ежедневно',
-        action: LANG === 'en'
+        level:'medium', icon:'🟡',
+        disease: LANG==='en' ? 'Downy mildew — monitoring' : 'Милдью — наблюдение',
+        what: LANG==='en'
+          ? 'Incubation ' + Math.round(incubPct) + '% · ' + daysAgo + ' days after infection'
+          : 'Инкубация ' + Math.round(incubPct) + '% · ' + daysAgo + ' дн. после заражения',
+        action: LANG==='en'
           ? 'Plan spray before next rain'
           : 'Планируй обработку до следующего дождя',
-        pct: Math.round(incubPct),
-        source: 'Goidanich'
+        pct: Math.round(incubPct), source:'Goidanich'
       });
     } else if (incubPct > 0) {
       deAlerts.push({
-        level: 'low',
-        icon: '🟢',
-        disease: LANG === 'en' ? 'Downy mildew' : 'Милдью',
-        what: LANG === 'en'
-          ? 'Incubation ' + Math.round(incubPct) + '% · 3-10 rule triggered: ' + Math.round(infectionRain) + 'mm, +' + Math.round(infectionTemp) + '°C'
-          : 'Инкубация ' + Math.round(incubPct) + '% · правило 3-10: ' + Math.round(infectionRain) + ' мм, +' + Math.round(infectionTemp) + '°C',
-        action: LANG === 'en' ? 'Protection active — watch forecast' : 'Защита действует · следи за прогнозом',
-        pct: Math.round(incubPct),
-        source: '3-10'
+        level:'critical', icon:'🔴',
+        disease: LANG==='en' ? 'Downy mildew — 3-10 triggered' : 'Милдью — правило 3-10',
+        what: LANG==='en'
+          ? '3-10 rule: rain ' + Math.round(infectionRain) + 'mm, +' + Math.round(infectionTemp) + '°C, incubation ' + Math.round(incubPct) + '%'
+          : 'Правило 3-10: дождь ' + Math.round(infectionRain) + 'мм при +' + Math.round(infectionTemp) + '°C, BBCH ' + bbchStr,
+        action: LANG==='en'
+          ? 'Spray phosphonate before next rain'
+          : 'Обработай фосфонатами до следующего дождя',
+        pct: Math.round(incubPct), source:'3-10'
       });
     }
+  } else {
+    // Нет инфекции — зелёный статус
+    deAlerts.push({
+      level:'none', icon:'🟢',
+      disease: LANG==='en' ? 'Downy mildew — low risk' : 'Милдью — риск низкий',
+      what: LANG==='en'
+        ? 'No infection conditions detected'
+        : 'Условий для заражения нет',
+      action: LANG==='en'
+        ? 'Routine spray schedule'
+        : 'Плановая обработка по расписанию',
+      pct: null, source:'none'
+    });
   }
 
-  // Lalancette — спороношение (отдельный алерт)
-  if (lalancetteNights >= 2 && bbchNum >= 14) {
+  // Спороношение Lalancette
+  if (lalancetteWetHours >= 3 && bbchNum >= 14) {
+    var lastNightDays = [];
+    for (var li = 0; li < days.length && li < 3; li++) {
+      if (deLalancetteCheck(days[li]) >= 3) {
+        lastNightDays.push(days[li].tmax || 18);
+      }
+    }
+    var avgLalT = lastNightDays.length ? Math.round(lastNightDays.reduce(function(a,b){return a+b;},0)/lastNightDays.length) : 16;
     deAlerts.push({
-      level: 'medium',
-      icon: '🟡',
-      disease: LANG === 'en' ? 'Sporulation active' : 'Спороношение активно',
-      what: LANG === 'en'
-        ? lalancetteNights + ' nights with wet conditions (≥80% RH)'
-        : lalancetteNights + ' ночи с влажными условиями (≥80% влажность)',
-      action: LANG === 'en'
-        ? 'Inspect leaves in the morning'
-        : 'Утром осмотри листья',
-      pct: null,
-      source: 'Lalancette'
+      level:'medium', icon:'🟡',
+      disease: LANG==='en' ? 'Sporulation active' : 'Спороношение активно',
+      what: LANG==='en'
+        ? lalancetteWetHours + 'h wet conditions at night (+' + avgLalT + '°C)'
+        : 'Ночью ' + lalancetteWetHours + 'ч влажности при +' + avgLalT + '°C',
+      action: LANG==='en'
+        ? 'Check underside of leaves in the morning'
+        : 'Утром осмотри нижнюю сторону листьев',
+      pct: null, source:'Lalancette'
     });
   }
 }
 
-// ── Оидиум (виноград) ──
+// ── Оидиум ──
 function deCalcOidium(days, bbchNum) {
   if (bbchNum < 14) return;
-
-  var oidRiskDays = 0;
-  var maxT = 0;
-
+  var oidDays = 0, maxT = 0;
   for (var i = 0; i < days.length && i < 7; i++) {
     var d = days[i];
     var t = d.tmax || d.tempAvg || 18;
-    if (t >= 24 && t <= 32 && (d.rainMm || 0) < 1 && (d.humid || 60) < 70) {
-      oidRiskDays++;
-      if (t > maxT) maxT = t;
+    if (t >= 24 && t <= 32 && (d.rainMm||0) < 1 && (d.humid||60) < 70) {
+      oidDays++; if (t > maxT) maxT = t;
     }
   }
-
-  if (oidRiskDays >= 3) {
+  if (oidDays >= 3) {
     deAlerts.push({
-      level: 'high',
-      icon: '⬜',
-      disease: LANG === 'en' ? 'Powdery mildew' : 'Оидиум',
-      what: LANG === 'en'
-        ? oidRiskDays + ' days hot+dry (max ' + Math.round(maxT) + '°C) — optimal for Erysiphe'
-        : oidRiskDays + ' дн. жарко+сухо (макс. ' + Math.round(maxT) + '°C) — оптимум Erysiphe',
-      action: LANG === 'en'
-        ? 'Add sulphur (Thiovit) or Topaz to next spray'
-        : 'Добавь серу (Тиовит) или Топаз в следующую обработку',
-      pct: null,
-      source: 'T+humidity'
-    });
-  } else if (oidRiskDays >= 1) {
-    deAlerts.push({
-      level: 'low',
-      icon: '⬜',
-      disease: LANG === 'en' ? 'Powdery mildew' : 'Оидиум',
-      what: LANG === 'en'
-        ? 'Moderate conditions (' + oidRiskDays + ' hot+dry days)'
-        : 'Умеренные условия (' + oidRiskDays + ' жарких сухих дня)',
-      action: LANG === 'en' ? 'Monitor — consider sulphur' : 'Мониторинг · рассмотри серу',
-      pct: null,
-      source: 'T+humidity'
+      level:'high', icon:'⬜',
+      disease: LANG==='en' ? 'Powdery mildew' : 'Оидиум',
+      what: LANG==='en'
+        ? oidDays + ' days hot+dry (max +' + Math.round(maxT) + '°C) — optimal for Erysiphe'
+        : oidDays + ' дн. жарко+сухо (макс. +' + Math.round(maxT) + '°C) — оптимум Erysiphe',
+      action: LANG==='en'
+        ? 'Add sulphur (Thiovit) or Topaz'
+        : 'Добавь серу (Тиовит) или Топаз',
+      pct: null, source:'T+humidity'
     });
   }
 }
 
 // ── Монилиоз черешни ──
 function deCalcMonilia(days, bbchNum) {
-  // Риск при цветении BBCH 60-69: T 15-25°C + дождь + влажность
-  var riskDays = 0;
+  var riskDays = 0, wetHoursMax = 0;
   for (var i = 0; i < days.length; i++) {
     var d = days[i];
     var t = d.tempAvg || 18;
-    if (t >= 15 && t <= 25 && d.rainMm >= 1 && (d.humid || 60) >= 70) {
+    var wet = deLalancetteCheck(d);
+    if (t >= 15 && t <= 25 && d.rainMm >= 1 && (d.humid||60) >= 70) {
       riskDays++;
+      if (wet > wetHoursMax) wetHoursMax = wet;
     }
   }
-
-  if (riskDays === 0) return;
-
+  if (!riskDays) return;
   var isFlowering = (bbchNum >= 60 && bbchNum <= 69);
-  var level = isFlowering ? (riskDays >= 3 ? 'high' : 'medium') : 'low';
-  var icon = level === 'high' ? '🔴' : level === 'medium' ? '🟠' : '🟡';
-
+  var hasWet4 = (wetHoursMax >= 4 || riskDays >= 2);
+  var level = (isFlowering && hasWet4) ? 'critical' : isFlowering ? 'high' : 'medium';
+  var icon  = level==='critical' ? '🔴' : level==='high' ? '🟠' : '🟡';
   deAlerts.push({
-    level: level,
-    icon: icon,
-    disease: LANG === 'en' ? 'Monilinia (cherry)' : 'Монилиоз (черешня)',
-    what: LANG === 'en'
-      ? riskDays + ' days: T ' + 15 + '–25°C + rain' + (isFlowering ? ' — FLOWERING STAGE' : '')
-      : riskDays + ' дн.: T 15–25°C + дождь' + (isFlowering ? ' — ЦВЕТЕНИЕ' : ''),
-    action: LANG === 'en'
-      ? 'Spray Chorus (cyprodinil) before rain'
-      : 'Обработай Хорусом (ципродинил) до дождя',
-    pct: null,
-    source: 'Monilinia model'
+    level: level, icon: icon,
+    disease: LANG==='en' ? 'Monilinia (cherry)' : 'Монилиоз (черешня)',
+    what: LANG==='en'
+      ? riskDays + ' days T 15–25°C + rain' + (isFlowering ? ' — FLOWERING' : '')
+      : riskDays + ' дн. T 15–25°C + дождь' + (isFlowering ? ' — ЦВЕТЕНИЕ' : ''),
+    action: LANG==='en'
+      ? 'Spray Chorus before flower opening'
+      : 'Обработай Хорусом до раскрытия цветков',
+    pct: null, source:'Monilinia'
   });
 }
 
-// ── Серая гниль клубники (Botrytis) ──
+// ── Серая гниль клубники ──
 function deCalcBotrytis(days, bbchNum) {
   var riskDays = 0;
   for (var i = 0; i < days.length; i++) {
     var d = days[i];
     var t = d.tempAvg || 18;
-    if (t >= 15 && t <= 25 && (d.humid || 60) >= 85) {
-      riskDays++;
-    }
+    var wet = deLalancetteCheck(d);
+    if (t >= 15 && t <= 25 && (d.humid||60) >= 90 && wet >= 6) riskDays++;
+    else if (t >= 15 && t <= 25 && (d.humid||60) >= 85) riskDays += 0.5;
   }
-
-  if (riskDays === 0) return;
-
+  riskDays = Math.round(riskDays);
+  if (!riskDays) return;
   var level = riskDays >= 4 ? 'high' : riskDays >= 2 ? 'medium' : 'low';
-  var icon = level === 'high' ? '🔴' : level === 'medium' ? '🟠' : '🟡';
-
+  var icon  = level==='high' ? '🔴' : level==='medium' ? '🟠' : '🟡';
   deAlerts.push({
-    level: level,
-    icon: icon,
-    disease: LANG === 'en' ? 'Botrytis (grey mould)' : 'Серая гниль (Botrytis)',
-    what: LANG === 'en'
+    level: level, icon: icon,
+    disease: LANG==='en' ? 'Botrytis (grey mould)' : 'Серая гниль (Botrytis)',
+    what: LANG==='en'
       ? riskDays + ' days with RH≥85% at 15–25°C'
       : riskDays + ' дней RH≥85% при 15–25°C',
-    action: LANG === 'en'
-      ? 'Improve ventilation, spray Switch (fludioxonil+cyprodinil)'
-      : 'Улучши вентиляцию, обработай Свитчем (флудиоксонил)',
-    pct: null,
-    source: 'Botrytis model'
+    action: LANG==='en'
+      ? 'Improve ventilation, spray Switch'
+      : 'Улучши вентиляцию, обработай Свитчем',
+    pct: null, source:'Botrytis'
   });
 }
 
-// ══════════════════════════════════════
-// РЕНДЕР АЛЕРТОВ В UI
-// ══════════════════════════════════════
+// ── Построить HTML алертов ──
 function deBuildAlertsHTML() {
   if (!deAlerts || !deAlerts.length) return '';
   var html = '';
   for (var i = 0; i < deAlerts.length; i++) {
     var a = deAlerts[i];
-    html += '<div class="de-alert de-alert-' + a.level + '">'
-      + '<span class="de-alert-icon">' + a.icon + '</span>'
-      + '<div class="de-alert-body">'
-      + '<div class="de-alert-title">' + a.disease + (a.pct !== null ? ' — ' + a.pct + '%' : '') + '</div>'
-      + '<div class="de-alert-what">' + a.what + '</div>'
-      + '<div class="de-alert-action">→ ' + a.action + '</div>'
-      + '</div></div>';
+    if (a.level === 'none') {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:#f0f9f3;border:1px solid #b6d9bf;margin-bottom:6px">'
+        + '<span style="font-size:16px">🟢</span>'
+        + '<div><div style="font-size:12px;font-weight:700;color:#1e6b33">' + a.disease + '</div>'
+        + '<div style="font-size:11px;color:var(--sec)">' + a.what + '</div></div></div>';
+      continue;
+    }
+    var bg     = a.level==='critical'?'#fff0ee':a.level==='high'?'#fff4ec':a.level==='medium'?'#fffbec':'#f0f9f3';
+    var border = a.level==='critical'?'#f5b8b2':a.level==='high'?'#f5ccaa':a.level==='medium'?'#f5e27a':'#b6d9bf';
+    var tc     = a.level==='critical'?'#9b2218':a.level==='high'?'#7a3000':a.level==='medium'?'#7a4b00':'#1e6b33';
+    html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:12px;padding:11px 14px;margin-bottom:8px">'
+      + '<div style="display:flex;align-items:flex-start;gap:10px">'
+      + '<span style="font-size:20px;line-height:1.2;flex-shrink:0">' + a.icon + '</span>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:13px;font-weight:700;color:' + tc + ';margin-bottom:2px">'
+      + a.disease + (a.pct !== null ? ' — ' + a.pct + '%' : '') + '</div>'
+      + '<div style="font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:4px">' + a.what + '</div>'
+      + '<div style="font-size:12px;font-weight:600;color:' + tc + '">\u2192 ' + a.action + '</div>'
+      + '</div></div></div>';
   }
   return html;
 }
 
 function deRenderAlertsAdv() {
-  // Рендерим в оба контейнера: советник и прогноз
   var html = deBuildAlertsHTML();
-
   var elAdv = document.getElementById('de-alerts-adv');
-  if (elAdv) {
-    elAdv.innerHTML = html;
-    elAdv.style.display = html ? 'block' : 'none';
-  }
-
+  if (elAdv) { elAdv.innerHTML = html; elAdv.style.display = html ? 'block' : 'none'; }
   var elFct = document.getElementById('de-alerts-fct');
-  if (elFct) {
-    elFct.innerHTML = html;
-    elFct.style.display = html ? 'block' : 'none';
-  }
+  if (elFct) { elFct.innerHTML = html; elFct.style.display = html ? 'block' : 'none'; }
 }
 
-// Иконка риска для конкретного дня в календаре прогноза
+// Иконка риска для дня в календаре прогноза
 function deRiskIconForDay(dateStr) {
   if (!deAlerts || !deAlerts.length) return '';
-  // Упрощённо: если есть активные алерты — показываем уровень
   var maxLevel = 'none';
   for (var i = 0; i < deAlerts.length; i++) {
     var a = deAlerts[i];
-    if (a.level === 'critical' || a.level === 'high') { maxLevel = 'high'; break; }
-    if (a.level === 'medium') maxLevel = 'medium';
-    else if (maxLevel === 'none' && a.level === 'low') maxLevel = 'low';
+    if (a.level==='critical'||a.level==='high') { maxLevel='high'; break; }
+    if (a.level==='medium') maxLevel='medium';
+    else if (maxLevel==='none' && a.level==='low') maxLevel='low';
   }
-  if (maxLevel === 'none') return '';
-  var icon = maxLevel === 'high' ? '🔴' : maxLevel === 'medium' ? '🟡' : '🟢';
-  return '<span style="font-size:8px;position:absolute;bottom:2px;right:2px" title="Disease risk">' + icon + '</span>';
+  if (maxLevel==='none') return '';
+  var icon = maxLevel==='high'?'🔴':maxLevel==='medium'?'🟡':'🟢';
+  return '<span style="font-size:9px;position:absolute;bottom:2px;right:2px" title="Риск болезней">' + icon + '</span>';
 }
 
-// ══════════════════════════════════════
-// ТОЧКА ВХОДА — вызывается при изменениях
-// ══════════════════════════════════════
+// ── Точка входа ──
 function deUpdate() {
   var cropEl = document.getElementById('crop');
   var cropVal = cropEl ? cropEl.value : 'grape';
-  // Если фенофаза не выбрана — берём среднесезонную (активный рост)
   var bbchStr = selBbch || '15-18';
 
-  // ── Ручные данные с главной страницы ──
   var lrEl = document.getElementById('lr');
   var manualRainDate = lrEl ? lrEl.value : null;
-
-  // Ручные события (ожидаемые дожди из кнопки "+ Добавить день")
   var manualRainMm = 12;
-  var wEventsData = getW ? getW() : [];
-  var futureRainDates = [];
-  if (wEventsData && wEventsData.length) {
-    for (var wi = 0; wi < wEventsData.length; wi++) {
-      var we = wEventsData[wi];
-      if ((we.tp === 'rain' || we.tp === 'possible') && we.dt) {
-        futureRainDates.push(we.dt);
-      }
-    }
-  }
 
-  // ── Данные погоды ──
-  var weatherDays = [];
+  var weatherDays = (fctDays && fctDays.length) ? fctDays : [];
 
-  if (fctDays && fctDays.length) {
-    // Используем загруженный прогноз Open-Meteo
-    weatherDays = fctDays;
-  } else if (manualRainDate) {
-    // Прогноз не загружен, но есть дата дождя — строим минимальный массив
-    // Используем температуру из поля или среднесезонную СКОРРЕКТИРОВАННУЮ
-    // Правило: для расчёта инкубации нужна T за несколько дней
-    // Берём консервативный сценарий: T=15°C (работает для большинства сезонов)
-    var today2 = new Date();
-    for (var di2 = -7; di2 <= 6; di2++) {
-      var d2 = new Date(today2);
-      d2.setDate(d2.getDate() + di2);
-      var ds2 = d2.toISOString().split('T')[0];
-      var rain2 = 0;
-      if (ds2 === manualRainDate) rain2 = manualRainMm;
-      for (var fri2 = 0; fri2 < futureRainDates.length; fri2++) {
-        if (futureRainDates[fri2] === ds2) { rain2 = manualRainMm; break; }
-      }
-      weatherDays.push({
-        date: ds2, icon: rain2>0?'r':'s',
-        rain: rain2, humid: rain2>0?88:58,
-        tmax: 18, tmin: 12, // консервативные T — движок не переоценит риск
-        prob: rain2>0?90:10, isOverride: false
-      });
-    }
-  } else {
-    // Нет ни прогноза, ни даты дождя — показываем подсказку
-    var el2 = document.getElementById('de-alerts-adv');
-    if (el2 && selBbch && selBbch !== '' && parseBbch(selBbch) >= 14) {
-      el2.innerHTML = '<div class="de-alert de-alert-low" style="border-style:dashed">'
-        + '<span class="de-alert-icon">📡</span>'
-        + '<div class="de-alert-body">'
-        + '<div class="de-alert-title">' + TTXT('Прогноз не загружен','Forecast not loaded') + '</div>'
-        + '<div class="de-alert-what">' + TTXT('Для анализа болезней загрузите прогноз погоды в разделе Прогноз','Load weather forecast in Forecast tab for disease analysis') + '</div>'
-        + '</div></div>';
-      el2.style.display = 'block';
-    } else if (el2) {
-      el2.innerHTML = '';
-      el2.style.display = 'none';
-    }
-    return; // Нет данных для расчёта
-  }
-
-  // Запустить движок
   deCalcAlerts(cropVal, bbchStr, weatherDays, manualRainDate, manualRainMm);
-
-  // Обновить UI
   deRenderAlertsAdv();
+  deRenderChips();
 }
 
-// Загрузить почасовые данные Open-Meteo (вызывается после loadForecastNew)
+// Загрузка почасовых данных
 function deLoadHourly(lat, lon) {
   if (!lat || !lon) return;
   var url = 'https://api.open-meteo.com/v1/forecast'
     + '?latitude=' + lat + '&longitude=' + lon
     + '&hourly=relative_humidity_2m,precipitation,temperature_2m'
     + '&forecast_days=7&timezone=auto';
-
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(data) {
@@ -2501,18 +2559,276 @@ function deLoadHourly(lat, lon) {
         deHourlyData.push({
           date: parts[0],
           time: parts[1] || '00:00',
-          rh:   h.relative_humidity_2m ? (h.relative_humidity_2m[i] || 0) : 0,
-          rain: h.precipitation ? (h.precipitation[i] || 0) : 0,
-          temp: h.temperature_2m ? (h.temperature_2m[i] || 18) : 18
+          rh:   h.relative_humidity_2m ? (h.relative_humidity_2m[i]||0) : 0,
+          rain: h.precipitation ? (h.precipitation[i]||0) : 0,
+          temp: h.temperature_2m ? (h.temperature_2m[i]||18) : 18
         });
       }
-      // Пересчитать с почасовыми данными
       deUpdate();
     })
     .catch(function(){});
 }
 
 
+
+
+
+// ═══════════════════════════════════════════════════════════════
+// PREP ADVISOR v1.0 — Умный календарь препаратов
+// Интеграция с rdrg(), BBCH-статус, СО-статус, сортировка
+// ═══════════════════════════════════════════════════════════════
+
+var PA_MODE = 'smart'; // 'smart' | 'phases' | 'all'
+
+// BBCH диапазоны по МОА (оптимальный и допустимый)
+var PA_BBCH = {
+  copper:            { opt:[9,53],  pos:[9,69]  },
+  phosphonate:       { opt:[14,69], pos:[14,79] },
+  phenylamide:       { opt:[14,55], pos:[14,69] },
+  cam:               { opt:[53,75], pos:[14,79] },
+  strobilurin:       { opt:[53,71], pos:[14,79] },
+  sdhi:              { opt:[60,71], pos:[53,79] },
+  triazole:          { opt:[60,79], pos:[14,83] },
+  anilinopyrimidine: { opt:[60,79], pos:[53,83] },
+  oxathiapiprolin:   { opt:[14,83], pos:[9,89]  },
+  biofungicide:      { opt:[60,89], pos:[14,89] },
+  bioinsecticide:    { opt:[60,89], pos:[14,89] },
+  dithiocarbamate:   { opt:[14,55], pos:[9,69]  },
+  multisite:         { opt:[9,79],  pos:[9,89]  },
+};
+
+// Группы BBCH для режима "По фазам"
+var PA_PHASES = [
+  { key:'early',    label:'BBCH 09–53: Ранняя защита',        min:9,  max:52 },
+  { key:'flower',   label:'BBCH 53–69: Бутонизация-цветение', min:53, max:68 },
+  { key:'post',     label:'BBCH 69–79: После цветения',       min:69, max:78 },
+  { key:'prehvst',  label:'BBCH 79+: Перед сбором',           min:79, max:99 },
+];
+
+function paFormatDate(d) {
+  if (!d) return '—';
+  return d.toLocaleDateString('ru-RU', { day:'numeric', month:'long' });
+}
+
+// Получить BBCH-статус препарата
+function paBBCHStatus(prep, bbchNum) {
+  var ranges = PA_BBCH[prep.moa];
+  if (!ranges) ranges = { opt:[9,89], pos:[9,89] };
+  if (bbchNum >= ranges.opt[0] && bbchNum <= ranges.opt[1]) return 'optimal';
+  if (bbchNum >= ranges.pos[0] && bbchNum <= ranges.pos[1]) return 'possible';
+  return 'off_season';
+}
+
+// Получить СО-статус препарата
+function paHarvestStatus(prep, harvestDate, today) {
+  if (!harvestDate) return { status:'unknown', label:'' };
+  today = today || new Date(); today.setHours(0,0,0,0);
+  var daysToHarvest = Math.floor((harvestDate - today) / 86400000);
+  if (daysToHarvest < 0) return { status:'unknown', label:'' };
+  if (daysToHarvest < prep.w) {
+    return { status:'forbidden', label:'🚫 Нельзя — СО ' + prep.w + 'д не выйдет до сбора', days:0 };
+  }
+  var lastApply = new Date(harvestDate);
+  lastApply.setDate(lastApply.getDate() - prep.w);
+  var daysUntil = Math.floor((lastApply - today) / 86400000);
+  if (daysUntil <= 0) {
+    return { status:'forbidden', label:'🚫 Нельзя — последний день применения прошёл', days:0 };
+  }
+  if (daysUntil <= 14) {
+    return {
+      status:'last_chance',
+      label:'⚠️ Последний шанс — до ' + paFormatDate(lastApply) + ' (' + daysUntil + ' дн.)',
+      days: daysUntil
+    };
+  }
+  return {
+    status:'available',
+    label:'✅ Можно до ' + paFormatDate(lastApply) + ' (' + daysUntil + ' дн.)',
+    days: daysUntil
+  };
+}
+
+// Смешанный статус: BBCH + СО → итоговый
+function paCombinedStatus(prep, bbchNum, harvestDate) {
+  var bs = paBBCHStatus(prep, bbchNum);
+  var hs = paHarvestStatus(prep, harvestDate);
+  return { bbch: bs, harvest: hs };
+}
+
+// Строка статуса под карточкой
+function paStatusLine(st) {
+  var hs = st.harvest; var bs = st.bbch;
+  if (hs.status === 'forbidden') {
+    return '<div class="pa-status pa-status-forbidden">' + hs.label + '</div>';
+  }
+  var bbchLabel = '';
+  var bbchCls = '';
+  if (bs === 'optimal') {
+    bbchLabel = '⭐ Оптимально сейчас';
+    bbchCls = 'pa-status-optimal';
+  } else if (bs === 'possible') {
+    bbchLabel = '✅ Допустимо';
+    bbchCls = 'pa-status-possible';
+  } else {
+    bbchLabel = '📅 Не сезон';
+    bbchCls = 'pa-status-forbidden';
+  }
+  var harvestLabel = hs.label || '';
+  var harvestCls = hs.status === 'last_chance' ? 'pa-status-deadline' : 'pa-status-possible';
+  var html = '<div class="pa-status"><span class="' + bbchCls + '">' + bbchLabel + '</span>';
+  if (harvestLabel) html += '<span style="color:var(--div)">·</span><span class="' + harvestCls + '">' + harvestLabel + '</span>';
+  html += '</div>';
+  return html;
+}
+
+// Сортировка препаратов для режима "Сейчас"
+function paSortPreps(preps, bbchNum, harvestDate) {
+  var ORDER = { optimal:0, possible:1, off_season:2 };
+  var HS_ORDER = { last_chance:0, available:1, unknown:2, forbidden:3 };
+  return preps.map(function(p) {
+    var st = paCombinedStatus(p, bbchNum, harvestDate);
+    return { prep:p, st:st };
+  }).sort(function(a, b) {
+    var bA = ORDER[a.st.bbch]||0, bB = ORDER[b.st.bbch]||0;
+    var hA = HS_ORDER[a.st.harvest.status]||2;
+    var hB = HS_ORDER[b.st.harvest.status]||2;
+    // forbidden всегда в конец
+    if (a.st.harvest.status==='forbidden' && b.st.harvest.status!=='forbidden') return 1;
+    if (b.st.harvest.status==='forbidden' && a.st.harvest.status!=='forbidden') return -1;
+    // BBCH статус — основной приоритет
+    if (bA !== bB) return bA - bB;
+    // last_chance перед available
+    if (hA !== hB) return hA - hB;
+    // Среди last_chance: ближайший дедлайн первым
+    if (a.st.harvest.status === 'last_chance' && b.st.harvest.status === 'last_chance') {
+      var dA = a.st.harvest.days || 999, dB = b.st.harvest.days || 999;
+      return dA - dB;
+    }
+    // Среди available: меньший СО первым (более гибкий — можно применять ближе к сбору)
+    if (a.st.harvest.status === 'available' && b.st.harvest.status === 'available') {
+      return a.prep.w - b.prep.w;
+    }
+    return 0;
+  });
+}
+
+function paSetMode(mode) {
+  PA_MODE = mode;
+  // Обновить табы
+  ['smart','phases','all'].forEach(function(m) {
+    var el = document.getElementById('pa-tab-' + m);
+    if (el) el.classList.toggle('on', m === mode);
+  });
+  rdrg();
+}
+
+// Получить BBCH как число
+function paGetBBCH() {
+  var b = selBbch || '';
+  if (!b) return 0;
+  var parsed = parseBbch ? parseBbch(b) : parseInt(b.split('-')[0]) || 0;
+  return parsed;
+}
+
+// Получить дату сбора
+function paGetHarvestDate() {
+  var hdEl = document.getElementById('hd');
+  if (!hdEl || !hdEl.value) return null;
+  var d = new Date(hdEl.value + 'T00:00:00');
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// Построить HTML одной карточки препарата (расширенная версия)
+function paRenderCard(dd, statusLine, isForbidden) {
+  var altsRow = dd.alts && dd.alts.length
+    ? '<div style="margin-top:5px;font-size:10px"><span style="color:var(--gold2)">'
+      + TTXT('Аналоги: ','Alts: ')
+      + '</span><span style="color:var(--t3)">' + dd.alts.join(', ') + '</span></div>'
+    : '';
+  var cls = 'dc ' + dd.pcls + (isForbidden ? ' pa-forbidden' : '');
+  return '<div class="' + cls + '">'
+    + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'
+    + '<div><div class="dn">' + dd.n + (dd.jp ? ' JP' : '') + '</div>'
+    + '<div class="dai">' + dd.ai + '</div>'
+    + '<div class="dprod" style="color:' + (PCLS_COLOR[dd.pcls]||'var(--t3)') + '">' + dd.prod + '</div>'
+    + altsRow + '</div>'
+    + '<div style="text-align:right;flex-shrink:0">'
+    + '<div style="font-size:15px;font-weight:700;color:var(--gold2)">' + (dd.d10||'—') + '</div>'
+    + '<div style="font-size:9px;color:var(--t3)">' + TTXT('на 10 л','per 10 L') + '</div></div></div>'
+    + '<div class="dtags" style="margin-top:8px">'
+    + '<span class="dt dt-moa">' + TTXT('МОА:','MOA:') + ' ' + (MOA_L[dd.moa]||dd.moa) + '</span>'
+    + '<span class="dt dt-wait">' + TTXT('СО:','PHI:') + ' ' + dd.w + ' ' + TTXT('дн.','d.') + '</span>'
+    + '</div>'
+    + '<div class="dnote">' + dd.nt + '</div>'
+    + statusLine
+    + '</div>';
+}
+
+// Рендер в режиме "Сейчас"
+function paRenderSmart(dr, dl) {
+  var bbchNum = paGetBBCH();
+  var harvestDate = paGetHarvestDate();
+
+  // Подсказка если нет данных
+  var hintEl = document.getElementById('pa-hint');
+  if (hintEl) hintEl.style.display = (!harvestDate && !bbchNum) ? 'block' : 'none';
+
+  var sorted = paSortPreps(dr, bbchNum, harvestDate);
+
+  var gridStart = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px">';
+  var html = gridStart;
+  var inForbidden = false;
+
+  for (var i = 0; i < sorted.length; i++) {
+    var item = sorted[i];
+    var dd = item.prep;
+    var st = item.st;
+    var isForbidden = st.harvest.status === 'forbidden';
+
+    // Разделитель перед блоком "нельзя"
+    if (isForbidden && !inForbidden) {
+      html += '</div>';
+      html += '<div class="pa-group-hdr" style="margin-top:16px">🚫 Нельзя применять — СО не выйдет до сбора</div>';
+      html += gridStart;
+      inForbidden = true;
+    }
+
+    var sl = '';
+    if (bbchNum || harvestDate) {
+      sl = paStatusLine(st);
+    }
+    html += paRenderCard(dd, sl, isForbidden);
+  }
+  html += '</div>';
+  dl.innerHTML = html;
+}
+
+// Рендер в режиме "По фазам"
+function paRenderPhases(dr, dl) {
+  var html = '';
+  for (var pi = 0; pi < PA_PHASES.length; pi++) {
+    var phase = PA_PHASES[pi];
+    var inPhase = dr.filter(function(d) {
+      var ranges = PA_BBCH[d.moa] || { opt:[9,89], pos:[9,89] };
+      // Попадает в диапазон если optimal или possible пересекается с фазой
+      return ranges.pos[0] <= phase.max && ranges.pos[1] >= phase.min;
+    });
+    if (!inPhase.length) continue;
+    html += '<div class="pa-group-hdr">' + phase.label + '</div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:4px">';
+    for (var di = 0; di < inPhase.length; di++) {
+      var dd = inPhase[di];
+      var bbchMid = Math.round((phase.min + phase.max) / 2);
+      var bs = paBBCHStatus(dd, bbchMid);
+      var sl = '';
+      var optLabel = (bs === 'optimal') ? '<div class="pa-status pa-status-optimal">⭐ Оптимально для этой фазы</div>' : '';
+      html += paRenderCard(dd, optLabel + sl, false);
+    }
+    html += '</div>';
+  }
+  if (!html) html = '<div class="empty"><p>Ничего не найдено</p></div>';
+  dl.innerHTML = html;
+}
 
 window.onload=function(){
   var now=new Date();
@@ -3379,6 +3695,17 @@ function rdrg(){
 
   if(!dr.length){dl.innerHTML='<div class="empty"><em>&#128269;</em><p style="font-size:13px">'+TTXT('Ничего не найдено','Nothing found')+'</p></div>';return;}
 
+  // ── PREP ADVISOR MODE ──
+  if (PA_MODE === 'smart') {
+    paRenderSmart(dr, dl);
+    return;
+  }
+  if (PA_MODE === 'phases') {
+    paRenderPhases(dr, dl);
+    return;
+  }
+
+  // ── Режим ALL — стандартный вид ──
   var w=document.createElement('div');
   w.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px';
   var wHtml='';
@@ -4656,6 +4983,12 @@ window.addEventListener('beforeinstallprompt', function(e) {
 });
 
 // bottom nav sync встроен в tab()
+
+
+
+
+
+
 
 
 
