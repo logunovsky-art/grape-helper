@@ -481,32 +481,6 @@ select option{background:#fff;color:var(--dark)}
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
 @media(max-width:600px){.wrap{padding:14px 12px}.card{padding:14px}.bbg{grid-template-columns:1fr}.cal-day{grid-template-columns:66px 34px 48px 1fr}.sh{font-size:18px}}
-
-/* PWA Guide */
-.pwa-guide{background:#E8F5E9;border-radius:16px;padding:20px;margin:16px 0}
-.pwa-guide h3{color:#2E7D32;margin:0 0 16px 0;font-size:16px}
-.pwa-guide .install-box{background:white;border-radius:12px;padding:16px;margin-bottom:12px}
-.pwa-guide .install-box h4{color:#2E7D32;margin:0 0 12px 0;font-size:14px}
-.pwa-guide ol{margin:0;padding-left:20px}
-.pwa-guide li{margin-bottom:8px;line-height:1.4;font-size:13px}
-.pwa-guide .benefits{background:white;border-radius:12px;padding:14px;margin-top:12px}
-.pwa-guide .benefits p{margin:6px 0;color:#2E7D32;font-size:13px}
-/* Scientific Models */
-.scientific-models{background:#FFF3E0;border-radius:16px;padding:16px;margin-top:12px}
-.scientific-models h3{color:#E65100;margin:0 0 14px 0;font-size:15px}
-.model-card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid #FF9800}
-.model-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700;font-size:13px}
-.status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.status-badge.critical,.status-badge.high{background:#FFEBEE;color:#C62828}
-.status-badge.warning,.status-badge.moderate{background:#FFF3E0;color:#E65100}
-.status-badge.medium{background:#FFFDE7;color:#F9A825}
-.status-badge.low,.status-badge.ok{background:#E8F5E9;color:#2E7D32}
-.inc-progress{height:10px;background:#E0E0E0;border-radius:6px;overflow:hidden;margin:10px 0}
-.inc-bar{height:100%;background:linear-gradient(90deg,#4CAF50,#8BC34A);border-radius:6px;transition:width .5s;width:0%}
-.inc-text{text-align:right;font-size:12px;color:#666}
-/* Export */
-.export-btn{background:#2E7D32;color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;margin:8px 0;display:inline-block}
-.export-btn:active{background:#1B5E20}
 </style>
 </head>
 <body>
@@ -664,32 +638,6 @@ select option{background:#fff;color:var(--dark)}
   </div>
 
 
-
-  <!-- ════ НАУЧНЫЕ МОДЕЛИ ПРОГНОЗИРОВАНИЯ ════ -->
-  <div class="scientific-models" id="sci-models" style="display:none">
-    <h3>🔬 Научные модели прогнозирования</h3>
-
-    <div class="model-card" id="rule310-result">
-      <div class="model-header"><span>🍇 Правило 3-10</span><span class="status-badge ok">—</span></div>
-      <p>Нажмите «Рассчитать» для анализа</p>
-    </div>
-
-    <div class="model-card">
-      <div class="model-header">
-        <span>🌿 Индекс Гоиданича (1957)</span>
-        <span class="status-badge ok" id="inc-status">—</span>
-      </div>
-      <div class="inc-progress"><div class="inc-bar" id="inc-bar"></div></div>
-      <div class="inc-text" id="inc-percent">Накопление: 0%</div>
-      <div id="inc-rec" style="margin-top:10px;font-size:13px"></div>
-    </div>
-
-    <div class="model-card" id="spor-result">
-      <div class="model-header"><span>🍄 Спороношение (Lalancette, 1988)</span><span class="status-badge ok">—</span></div>
-      <p>Нажмите «Рассчитать» для анализа</p>
-    </div>
-  </div>
-
   <!-- ═ DONATE ═ -->
   <div style="margin-top:12px;text-align:center;padding:14px;background:#fff8ec;border:1px solid #f5d790;border-radius:var(--r2)">
     <div style="font-size:12px;color:#7a4b00;margin-bottom:8px">☕ <strong>Садовый Щит</strong> — бесплатный. Помог саду? Поддержите развитие.</div>
@@ -809,9 +757,6 @@ select option{background:#fff;color:var(--dark)}
 <div id="jrn" class="tc">
   <div class="sh" data-i="jrn-title">Журнал обработок</div>
   <div class="ss" data-i="jrn-sub">История сезона · Контроль ротации МОА</div>
-  <div style="margin-bottom:12px">
-    <button class="export-btn" onclick="exportJournalLocal()">📥 Экспорт журнала в CSV</button>
-  </div>
   <div class="g2">
     <div>
       <div class="card">
@@ -1469,16 +1414,102 @@ select option{background:#fff;color:var(--dark)}
         </div>
       </div>
       <div style="background:var(--bg);border:1px solid var(--div);border-radius:var(--r2);padding:16px">
-        <div style="display:flex;align-items:flex-start;gap:12px
-</div></div></div></div></div></div>
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:22px;flex-shrink:0">🇯🇵</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px">Отчёт Яманаси H29 — CPPU и сахаристость</div>
+            <div style="font-size:11px;font-style:italic;color:var(--sec);background:rgba(0,0,0,.04);border-radius:6px;padding:8px 10px;margin-bottom:8px;line-height:1.6">
+              «CPPU 加用により果粒肥大効果が認められるが、糖度は低下する傾向»<br>
+              <span style="color:var(--mid)">«CPPU увеличивает размер ягод, однако наблюдается тенденция к снижению сахаристости (Brix)»</span>
+            </div>
+            <a href="https://www.pref.yamanashi.jp/documents/79558/h29houkoku04.pdf" target="_blank"
+               style="display:inline-flex;align-items:center;gap:5px;color:var(--blue);font-size:12px;font-weight:600;text-decoration:none">
+              📄 Открыть PDF источника →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 13px;background:#eef5ff;border:1px solid #b2d0f5;border-radius:var(--r1);font-size:11px;color:#004080;line-height:1.6">
+      <strong>⚠️ Важно:</strong> CPPU увеличивает размер ягод, но при концентрации выше 5 ppm или при высоких температурах воздуха может снижать Brix и аромат. Протокол A (CPPU 5→3.5 ppm) — баланс между размером и вкусом согласно данным Яманаси.
+    </div>
+  </div>
+
+</div>
+
+
 
 <div class="disc">
   <strong>⚠️ Отказ от ответственности</strong> — Инструмент носит информационный характер. Не является официальным агрономическим предписанием. Применение СЗР — в соответствии с законодательством вашей страны. Регистрации проверяйте на официальных ресурсах.
 </div>
+</div>
 
-<div class="footer"><strong>Andreus Logos</strong> · Садовый Щит · Советник виноградаря фенофазной защиты · Для виноградарей Крыма и юга России</div>
+<div class="footer"><strong>Andreus Logos</strong>Садовый Щит · Советник виноградаря фенофазной защиты · Для ви
+</div>
 
 <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ═══ ОБРАБОТЧИК ОШИБОК ═══
 window.addEventListener('error', function(e) {
   if (typeof console !== 'undefined' && console.error) {
@@ -3153,8 +3184,6 @@ function calc(){
   blockEl('res-m');
   // Disease engine
   deUpdate();
-  // Научные модели
-  showScientificModels();
 }
 
 
@@ -5001,307 +5030,7 @@ window.addEventListener('beforeinstallprompt', function(e) {
 
 
 
-
-// ═══ SERVICE WORKER ═══
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/grape-helper/service-worker.js')
-      .catch(function(){});
-  });
-}
-
-// ═══ INDEXEDDB — локальное хранилище обработок ═══
-var IDB_NAME = 'GrapeHelperDB';
-var IDB_VERSION = 1;
-var idb = null;
-
-function initDB() {
-  return new Promise(function(resolve, reject) {
-    if (!window.indexedDB) { resolve(null); return; }
-    var request = indexedDB.open(IDB_NAME, IDB_VERSION);
-    request.onerror = function(){ reject(request.error); };
-    request.onsuccess = function(){ idb = request.result; resolve(idb); };
-    request.onupgradeneeded = function(event) {
-      var db2 = event.target.result;
-      if (!db2.objectStoreNames.contains('treatments')) {
-        var store = db2.createObjectStore('treatments', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('date', 'date');
-        store.createIndex('moa', 'moa');
-      }
-      if (!db2.objectStoreNames.contains('settings')) {
-        db2.createObjectStore('settings', { keyPath: 'key' });
-      }
-    };
-  });
-}
-
-function saveTreatmentLocal(treatment) {
-  if (!idb) return;
-  var tx = idb.transaction('treatments', 'readwrite');
-  tx.objectStore('treatments').add(Object.assign({}, treatment, { createdAt: new Date().toISOString() }));
-}
-
-function getTreatmentsLocal(callback) {
-  if (!idb) { callback([]); return; }
-  var tx = idb.transaction('treatments', 'readonly');
-  var request = tx.objectStore('treatments').getAll();
-  request.onsuccess = function(){ callback(request.result || []); };
-  request.onerror = function(){ callback([]); };
-}
-
-function getRecentMOAsLocal(limit, callback) {
-  limit = limit || 3;
-  getTreatmentsLocal(function(treatments) {
-    var sorted = treatments.sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
-    callback(sorted.slice(0, limit).map(function(t){ return t.moa; }).filter(Boolean));
-  });
-}
-
-function checkMOARotationLocal(newMOA, callback) {
-  getRecentMOAsLocal(2, function(recent) {
-    if (recent.length >= 2 && recent[0] === recent[1] && recent[1] === newMOA) {
-      callback({ warning: true,
-        message: '⚠️ Последние 2 обработки — ' + newMOA + '. Смените группу!',
-        alternatives: getAlternativeMOAsLocal(newMOA) });
-    } else {
-      callback({ warning: false });
-    }
-  });
-}
-
-function getAlternativeMOAsLocal(currentMOA) {
-  var groups = {
-    'Медьсодержащие': ['Фосфонаты', 'Мультисайт', 'Биопрепарат'],
-    'Фосфонаты': ['Медьсодержащие', 'CAA', 'Биопрепарат'],
-    'Дитиокарбаматы': ['Фениламиды', 'Триазолы', 'Биопрепарат'],
-    'CAA': ['Фосфонаты', 'Стробилурины', 'Биопрепарат'],
-    'Стробилурины': ['CAA', 'Триазолы', 'SDHI'],
-    'Триазолы': ['Стробилурины', 'Анилинопиримидины', 'Биопрепарат'],
-    'SDHI': ['Триазолы', 'Оксатиапипролин', 'Биопрепарат']
-  };
-  return groups[currentMOA] || ['Медьсодержащие', 'Биопрепарат', 'Мультисайт'];
-}
-
-function exportJournalLocal() {
-  // Экспортировать журнал обработок из localStorage (vs4) в CSV
-  var treatments = [];
-  try {
-    var saved = JSON.parse(localStorage.getItem('vs4') || '[]');
-    treatments = saved;
-  } catch(e) {}
-  var headers = ['Дата', 'BBCH', 'Препарат', 'Препарат 2', 'МОА', 'Примечание'];
-  var rows = treatments.map(function(t) {
-    return [t.dt||'', t.bb||'', t.dr||'', t.dr2||'', t.mo||'', t.no||''];
-  });
-  var csv = [headers].concat(rows).map(function(row) {
-    return row.map(function(cell) {
-      return '"' + String(cell).replace(/"/g, '""') + '"';
-    }).join(',');
-  }).join('\n');
-  var bom = '\uFEFF'; // BOM для корректного отображения кириллицы в Excel
-  var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
-  var url = URL.createObjectURL(blob);
-  var link = document.createElement('a');
-  link.href = url;
-  link.download = 'grape-journal-' + new Date().toISOString().slice(0,10) + '.csv';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-// Инициализировать IndexedDB при загрузке
-if (window.indexedDB) { initDB().catch(function(){}); }
-
-// ═══ НАУЧНЫЕ МОДЕЛИ UI ═══
-function showScientificModels() {
-  var modelsDiv = document.getElementById('sci-models');
-  if (!modelsDiv) return;
-  modelsDiv.style.display = 'block';
-
-  // Данные из текущего состояния
-  var bbch = parseBbch ? parseBbch(selBbch || '15-18') : 16;
-  var lrEl = document.getElementById('lr');
-  var dsr = 0;
-  if (lrEl && lrEl.value) {
-    dsr = Math.round((new Date() - new Date(lrEl.value + 'T00:00:00')) / 86400000);
-  }
-  var manual = deLoadManualForecast ? deLoadManualForecast() : { temp: 18, rainDays: [] };
-  var temp = manual.temp || 18;
-  var hasRainYesterday = manual.rainDays && manual.rainDays.length > 0;
-  var precip = hasRainYesterday ? 12 : 0;
-
-  // 1. Правило 3-10
-  var r310El = document.getElementById('rule310-result');
-  if (r310El) {
-    var r310 = de310Check(precip, temp, selBbch || '15-18');
-    var status310 = r310 ? 'critical' : (precip > 0 ? 'warning' : 'ok');
-    var icon310 = r310 ? '🔴🔴🔴' : (precip > 0 ? '⚠️' : '✅');
-    var title310 = r310
-      ? 'УСЛОВИЯ ДЛЯ ИНФЕКЦИИ ВЫПОЛНЕНЫ!'
-      : 'Условия не выполнены';
-    var rec310 = r310
-      ? '🚨 СРОЧНАЯ ОБРАБОТКА до дождя!'
-      : 'Мониторинг штатно';
-    r310El.innerHTML = '<div class="model-header"><span>🍇 Правило 3-10 (Baldacci, 1947)</span><span class="status-badge ' + status310 + '">' + icon310 + '</span></div>'
-      + '<p><strong>' + title310 + '</strong></p>'
-      + '<p>T=' + temp + '°C, Осадки=' + precip + 'мм, BBCH ' + (selBbch || '15-18') + '</p>'
-      + '<p><strong>' + rec310 + '</strong></p>';
-  }
-
-  // 2. Гоиданич — накопленная инкубация из DE движка
-  var incubPct = 0;
-  try { incubPct = parseFloat(localStorage.getItem('de_incubation_total') || '0') || 0; } catch(e) {}
-  var incLevel = incubPct >= 100 ? 'critical' : incubPct >= 80 ? 'warning' : incubPct >= 50 ? 'medium' : incubPct >= 20 ? 'low' : 'ok';
-  var incText = incubPct >= 100 ? '🔴 ОЖИДАЕТСЯ ПОЯВЛЕНИЕ СИМПТОМОВ!'
-    : incubPct >= 80 ? '🟠 КРИТИЧЕСКИЙ ПЕРИОД!'
-    : incubPct >= 50 ? '🟡 Средняя инкубация'
-    : incubPct >= 20 ? '🟢 Ранняя стадия'
-    : '✅ Инфекция минимальна';
-  var incRec = incubPct >= 80 ? '⚠️ Обработайте СРОЧНО!' : incubPct >= 50 ? '👀 Усильте мониторинг' : '✅ Под контролем';
-  var incStatusEl = document.getElementById('inc-status');
-  var incBarEl = document.getElementById('inc-bar');
-  var incPctEl = document.getElementById('inc-percent');
-  var incRecEl = document.getElementById('inc-rec');
-  if (incStatusEl) { incStatusEl.textContent = incText; incStatusEl.className = 'status-badge ' + incLevel; }
-  if (incBarEl) incBarEl.style.width = Math.round(incubPct) + '%';
-  if (incPctEl) incPctEl.textContent = 'Накопление: ' + Math.round(incubPct) + '%';
-  if (incRecEl) incRecEl.innerHTML = '<strong>' + incRec + '</strong>';
-
-  // 3. Спороношение Lalancette
-  var sporEl = document.getElementById('spor-result');
-  if (sporEl) {
-    var wetH = hasRainYesterday ? 6 : 0;
-    if (deHourlyData && deHourlyData.length) {
-      // Использовать реальные данные если есть
-      var yesterday2 = new Date(); yesterday2.setDate(yesterday2.getDate()-1);
-      var yd2 = yesterday2.toISOString().split('T')[0];
-      var ywet = deLalancetteCheck ? deLalancetteCheck({date:yd2, tmax:temp, humid:hasRainYesterday?88:55, rain:precip}) : 0;
-      if (ywet) wetH = ywet;
-    }
-    var sporStatus = wetH >= 6 ? 'high' : wetH >= 3 ? 'moderate' : 'ok';
-    var sporIcon = wetH >= 6 ? '🔴' : wetH >= 3 ? '🟠' : '✅';
-    var sporMsg = wetH >= 6 ? '🔴 Высокая интенсивность (' + wetH + ' влажных часов)'
-      : wetH >= 3 ? '🟠 Умеренные условия (' + wetH + 'ч влажности)'
-      : '✅ Спороношение маловероятно';
-    var sporRec = wetH >= 3 ? '🔬 Утром осмотри нижнюю сторону листьев' : 'Мониторинг штатно';
-    sporEl.innerHTML = '<div class="model-header"><span>🍄 Модель спороношения (Lalancette, 1988)</span><span class="status-badge ' + sporStatus + '">' + sporIcon + '</span></div>'
-      + '<p>' + sporMsg + '</p>'
-      + '<p><strong>' + sporRec + '</strong></p>';
-  }
-}
-
-function bnMore() {
-  overlay.style.display = 'block';
-  sheet.style.display = 'block';
-  // Анимация появления
-  setTimeout(function(){ sheet.style.transform = 'translateY(0)'; }, 10);
-}
-
-function closeMore() {
-  var sheet = document.getElementById('more-sheet');
-  var overlay = document.getElementById('more-overlay');
-  if(!sheet || !overlay) return;
-  sheet.style.transform = 'translateY(100%)';
-  setTimeout(function(){
-    sheet.style.display = 'none';
-    overlay.style.display = 'none';
-  }, 300);
-}
-
-function showPwaInstall() {
-  var banner = document.getElementById('pwa-banner');
-  if(banner) banner.style.display = 'block';
-}
-
-function closePwaBanner() {
-  var banner = document.getElementById('pwa-banner');
-  if(banner) banner.style.display = 'none';
-  localStorage.setItem('pwa-dismissed', '1');
-}
-
-function installPwa() {
-  if(_deferredPrompt) {
-    _deferredPrompt.prompt();
-    _deferredPrompt.userChoice.then(function(){ _deferredPrompt = null; closePwaBanner(); });
-    return;
-  }
-  // Fallback — показать инструкцию в баннере
-  var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent || '');
-  var banner = document.getElementById('pwa-banner');
-  try {
-    var hint = banner ? banner.querySelector('.pwa-text span') : null;
-    if (hint) {
-      hint.textContent = isIos
-        ? 'Нажмите «Поделиться» (□↑) → «На экран «Домой»'
-        : 'Нажмите меню браузера (⋮) → Добавить на главный экран';
-    }
-  } catch(e_){}
-  if (banner) banner.style.display = 'block';
-}
-
-// Перехватить событие установки PWA
-window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault();
-  _deferredPrompt = e;
-  // Показать баннер если не было отклонено ранее
-  if(!localStorage.getItem('pwa-dismissed')) {
-    setTimeout(showPwaInstall, 3000);
-  }
-});
-
-// bottom nav sync встроен в tab()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
-
 
 <!-- ════ НИЖНЯЯ НАВИГАЦИЯ (мобильная) ════ -->
 <nav class="bottom-nav" id="bottom-nav">
