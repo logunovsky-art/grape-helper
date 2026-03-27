@@ -58,9 +58,9 @@ a{text-decoration:none}
 .donate-btn{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f5a623,#f0832a);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;text-decoration:none;transition:all .2s;box-shadow:0 2px 8px rgba(245,166,35,.35);white-space:nowrap}
 .donate-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,.5)}
 .donate-txt{display:inline}
-
+@media(max-width:480px){.donate-txt{display:none}}
 /* ── HEADER ── */
-.hdr{background:rgba(255,255,255,0.98);border-bottom:1px solid var(--div);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200}
+.hdr{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--div);padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;height:52px}
 .logo-w{display:flex;align-items:center;gap:10px;padding:10px 0}
 .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#248a3d,#30a14e);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .logo-t{font-size:18px;font-weight:700;color:#1d1d1f;letter-spacing:-0.3px}
@@ -77,34 +77,14 @@ a{text-decoration:none}
 .lang-btn:hover:not(.on){color:var(--dark)}
 
 /* ── NAV ── */
-.nav{
-  background:#f8faf8;
-  border-bottom:1px solid #d0e8d0;
-  display:flex;
-  padding:0;
-  overflow-x:auto;
-  gap:0;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-}
+.nav{background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--div);display:flex;padding:0 12px;overflow-x:auto;gap:2px;scrollbar-width:none;position:sticky;top:52px;z-index:100}
 .nav::-webkit-scrollbar{display:none}
-.ni{
-  padding:12px 16px;
-  cursor:pointer;
-  font-size:13px;
-  font-weight:600;
-  color:var(--sec);
-  border-bottom:3px solid transparent;
-  transition:color .15s,border-color .15s;
-  white-space:nowrap;
-  flex-shrink:0;
-  -webkit-tap-highlight-color:transparent;
-}
-.ni:hover{color:var(--dark);background:rgba(0,0,0,0.03)}
-.ni.on{color:var(--blue);border-bottom-color:var(--blue);background:rgba(48,161,78,0.06)}
+.ni{padding:11px 14px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--sec);border-bottom:2px solid transparent;transition:all var(--dur) var(--ease);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.ni:hover{color:var(--dark)}
+.ni.on{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* ── LAYOUT ── */
-.wrap{max-width:1180px;margin:0 auto;padding:22px 16px;padding-top:20px}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 16px}
 .tc{display:none}.tc.on{display:block;animation:fadeIn .2s var(--ease) both}
 .g2{display:grid;grid-template-columns:360px 1fr;gap:16px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
@@ -359,8 +339,83 @@ select option{background:#fff;color:var(--dark)}
 }
 
 /* Скрыть старую верхнюю навигацию на мобильном */
+@media(max-width:700px){
+  .nav { display: none !important; }
+  .hdr { padding-top: var(--safe-top); }
+  .wrap { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px); }
+}
 
+/* ── НИЖНЯЯ НАВИГАЦИЯ ── */
+.bottom-nav {
+  display: none; /* показываем только на мобильном */
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--div);
+  z-index: 300;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+@media(max-width:700px){
+  .bottom-nav { display: flex; }
+}
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 8px 4px;
+  position: relative;
+  transition: all .15s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+  border: none; background: none;
+}
+.bn-item:active { transform: scale(0.9); }
+.bn-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform .2s var(--ease);
+}
+.bn-item.on .bn-icon { transform: scale(1.15); }
+.bn-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--light);
+  transition: color .15s;
+  line-height: 1;
+}
+.bn-item.on .bn-label { color: var(--blue); }
+.bn-dot {
+  position: absolute;
+  top: 6px; right: calc(50% - 16px);
+  width: 8px; height: 8px;
+  background: var(--blue);
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: none;
+}
 
+/* ── PWA INSTALL BANNER ── */
+.pwa-banner {
+  display: none;
+  position: fixed;
+  bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px);
+  left: 12px; right: 12px;
+  background: #1d1d1f;
+  color: #f5f5f7;
+  border-radius: var(--r2);
+  padding: 14px 16px;
+  z-index: 400;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: slideUp .3s var(--ease);
+}
 @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
 .pwa-banner-inner { display:flex; align-items:center; gap:12px; }
 .pwa-icon { font-size:32px; flex-shrink:0; }
@@ -371,7 +426,14 @@ select option{background:#fff;color:var(--dark)}
 .pwa-btn-close { background:rgba(255,255,255,.1); color:#f5f5f7; border:none; border-radius:var(--r1); padding:9px 14px; font-family:inherit; font-size:13px; cursor:pointer; }
 
 /* ── MOBILE CARD IMPROVEMENTS ── */
-
+@media(max-width:700px){
+  .g2 { grid-template-columns: 1fr; gap: 12px; }
+  .sh { font-size: 20px; }
+  .card { border-radius: 16px; }
+  .hdr { height: 48px; }
+  /* Убрать hover эффекты на мобильном */
+  .card:hover { box-shadow: var(--sh1); transform: none; }
+}
 
 /* ── DISEASE ENGINE ALERTS ── */
 #de-alerts-adv { margin-bottom: 10px; }
@@ -417,20 +479,6 @@ select option{background:#fff;color:var(--dark)}
 .dc.pa-forbidden{opacity:.5}
 
 /* ── RESPONSIVE ── */
-
-
-
-@media(max-width:700px){
-  .hdr{height:48px;padding-top:var(--safe-top)}
-  .wrap{padding:14px 12px;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 70px)}
-  .bottom-nav{display:flex !important}
-  .g2{grid-template-columns:1fr;gap:12px}
-  .sh{font-size:20px}
-  .card{border-radius:16px}
-  .card:hover{box-shadow:var(--sh1);transform:none}
-  .nav{top:48px}
-}
-
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
 @media(max-width:600px){.wrap{padding:14px 12px}.card{padding:14px}.bbg{grid-template-columns:1fr}.cal-day{grid-template-columns:66px 34px 48px 1fr}.sh{font-size:18px}}
 
@@ -602,11 +650,13 @@ select option{background:#fff;color:var(--dark)}
 <div>
     <div id="res-e" class="card" style="text-align:center;padding:48px 20px">
     <div style="font-size:44px;margin-bottom:12px">🌿</div>
-    <div style="font-family:'Playfair Display',serif;font-size:17px;color:#1e6b33;margin-bottom:6px" data-i="adv-empty-t">Заполните данные</div>
+    <div style="font-family:'Playfair Display',serif;font-size:17px;color:#1e6b33;margin-bottom:6px" data-i="adv-empty-t">Заполните данные слева</div>
     <div style="font-size:12px;color:var(--light)" data-i="adv-empty-s">Советник определит систему защиты<br>и покажет список препаратов с дозами</div>
   </div>
   <!-- ════ DISEASE ENGINE ALERTS — показываются сразу ════ -->
   <div id="de-alerts-adv" style="margin-bottom:8px"></div>
+
+  <div id="de-alerts-adv" style="display:none;margin-bottom:8px"></div>
 <div id="res-m" style="display:none">
     <div class="card"><div class="ct">📊 <span data-i="sit-t">Ситуация</span></div><div id="ana"></div></div>
     <div id="sys-block"></div>
@@ -1420,9 +1470,8 @@ select option{background:#fff;color:var(--dark)}
       </div>
       <div style="background:var(--bg);border:1px solid var(--div);border-radius:var(--r2);padding:16px">
         <div style="display:flex;align-items:flex-start;gap:12px
-</div></div></div></div></div>
+</div></div></div></div></div></div>
 
-</div>
 <div class="disc">
   <strong>⚠️ Отказ от ответственности</strong> — Инструмент носит информационный характер. Не является официальным агрономическим предписанием. Применение СЗР — в соответствии с законодательством вашей страны. Регистрации проверяйте на официальных ресурсах.
 </div>
@@ -1430,8 +1479,6 @@ select option{background:#fff;color:var(--dark)}
 <div class="footer"><strong>Andreus Logos</strong> · Садовый Щит · Советник виноградаря фенофазной защиты · Для виноградарей Крыма и юга России</div>
 
 <script>
-// ═══ ОБРАБОТЧИК ОШИБОК ═══
-windo
 // ═══ ОБРАБОТЧИК ОШИБОК ═══
 window.addEventListener('error', function(e) {
   if (typeof console !== 'undefined' && console.error) {
@@ -2727,70 +2774,27 @@ function paRenderSmart(dr, dl) {
 
 // Рендер в режиме "По фазам"
 function paRenderPhases(dr, dl) {
-  // Получить дату сбора для расчёта СО-статуса
-  var harvestDate = paGetHarvestDate();
   var html = '';
-
   for (var pi = 0; pi < PA_PHASES.length; pi++) {
     var phase = PA_PHASES[pi];
-
-    // Препараты для этой фазы
     var inPhase = dr.filter(function(d) {
       var ranges = PA_BBCH[d.moa] || { opt:[9,89], pos:[9,89] };
+      // Попадает в диапазон если optimal или possible пересекается с фазой
       return ranges.pos[0] <= phase.max && ranges.pos[1] >= phase.min;
     });
     if (!inPhase.length) continue;
-
-    var bbchMid = Math.round((phase.min + phase.max) / 2);
-
-    // СОРТИРОВКА: ближе к сбору → меньше СО в приоритете
-    // Для поздних фаз (post, prehvst) — сортируем по w ASC
-    // Для ранних (early, flower) — по w DESC (системные важнее)
-    var isLatePhase = (phase.key === 'post' || phase.key === 'prehvst');
-    inPhase = inPhase.slice().sort(function(a, b) {
-      var bsA = paBBCHStatus(a, bbchMid);
-      var bsB = paBBCHStatus(b, bbchMid);
-      var bbchOrder = { optimal:0, possible:1, off_season:2 };
-      // Сначала оптимальные
-      if (bbchOrder[bsA] !== bbchOrder[bsB]) return bbchOrder[bsA] - bbchOrder[bsB];
-      // Потом: для поздних фаз — меньший СО первым; для ранних — не важно
-      return isLatePhase ? (a.w - b.w) : (a.n.localeCompare(b.n, 'ru'));
-    });
-
-    // Заголовок фазы с пояснением
-    var phaseNote = isLatePhase
-      ? ' <span style="font-size:11px;color:var(--sec);font-weight:400">· сортировка по СО ↑</span>'
-      : '';
-    html += '<div class="pa-group-hdr">' + phase.label + phaseNote + '</div>';
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:16px">';
-
+    html += '<div class="pa-group-hdr">' + phase.label + '</div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:4px">';
     for (var di = 0; di < inPhase.length; di++) {
       var dd = inPhase[di];
+      var bbchMid = Math.round((phase.min + phase.max) / 2);
       var bs = paBBCHStatus(dd, bbchMid);
-      var hs = paHarvestStatus(dd, harvestDate);
-      var isForbidden = hs.status === 'forbidden';
-
-      // Строка статуса: BBCH-статус + СО-статус
       var sl = '';
-      if (bs === 'optimal') {
-        sl = '<div class="pa-status pa-status-optimal">⭐ Оптимально для фазы';
-        if (hs.label) sl += ' · <span class="' + (hs.status==='last_chance'?'pa-status-deadline':'') + '">' + hs.label + '</span>';
-        sl += '</div>';
-      } else if (bs === 'possible') {
-        sl = '<div class="pa-status">';
-        sl += '<span class="pa-status-possible">✅ Допустимо</span>';
-        if (hs.label) sl += '<span style="color:var(--div)">·</span><span class="' + (hs.status==='last_chance'?'pa-status-deadline':'pa-status-possible') + '">' + hs.label + '</span>';
-        sl += '</div>';
-      }
-      if (isForbidden) {
-        sl = '<div class="pa-status pa-status-forbidden">' + hs.label + '</div>';
-      }
-
-      html += paRenderCard(dd, sl, isForbidden);
+      var optLabel = (bs === 'optimal') ? '<div class="pa-status pa-status-optimal">⭐ Оптимально для этой фазы</div>' : '';
+      html += paRenderCard(dd, optLabel + sl, false);
     }
     html += '</div>';
   }
-
   if (!html) html = '<div class="empty"><p>Ничего не найдено</p></div>';
   dl.innerHTML = html;
 }
@@ -3647,11 +3651,7 @@ function rdrg(){
   var dr=DR.slice();
   if(cfv==='contact') dr=dr.filter(function(d){return d.sys==='s1'||d.sys==='s2';});
   else if(cfv==='systemic') dr=dr.filter(function(d){return d.sys==='s3'||d.sys==='s4';});
-  else if(cfv!=='all' && ['fungicide','insecticide','acaricide','biofungicide','bioinsecticide'].indexOf(cfv)>=0) {
-    dr=dr.filter(function(d){return d.cat===cfv;});
-  } else if(cfv!=='all') {
-    dr=dr.filter(function(d){return (d.t||[]).indexOf(cfv)>=0;});
-  }
+  else if(cfv!=='all') dr=dr.filter(function(d){return (d.t||[]).indexOf(cfv)>=0;});
   if(q) dr=dr.filter(function(d){return d.n.toLowerCase().indexOf(q)>=0||d.ai.toLowerCase().indexOf(q)>=0;});
 
   // Sort
