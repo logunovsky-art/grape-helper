@@ -9,15 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Садовый Щит">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="data:application/json,{
-  &quot;name&quot;:&quot;Садовый Щит&quot;,
-  &quot;short_name&quot;:&quot;СадЩит&quot;,
-  &quot;start_url&quot;:&quot;.&quot;,
-  &quot;display&quot;:&quot;standalone&quot;,
-  &quot;background_color&quot;:&quot;#f5f5f7&quot;,
-  &quot;theme_color&quot;:&quot;#30a14e&quot;,
-  &quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2330a14e'/><text y='72' font-size='60' text-anchor='middle' x='50'>🍇</text></svg>&quot;,&quot;sizes&quot;:&quot;any&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]
-}">
+<link rel="manifest" href="manifest.json">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════
@@ -51,16 +44,16 @@ a{text-decoration:none}
 .donate-btn{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f5a623,#f0832a);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;text-decoration:none;transition:all .2s;letter-spacing:.2px;box-shadow:0 2px 8px rgba(245,166,35,.35);white-space:nowrap}
 .donate-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,.5)}
 .donate-txt{display:inline}
-@media(max-width:480px){.donate-txt{display:none}}
+
 
 
 /* ── DONATE ── */
 .donate-btn{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f5a623,#f0832a);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;text-decoration:none;transition:all .2s;box-shadow:0 2px 8px rgba(245,166,35,.35);white-space:nowrap}
 .donate-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,.5)}
 .donate-txt{display:inline}
-@media(max-width:480px){.donate-txt{display:none}}
+
 /* ── HEADER ── */
-.hdr{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--div);padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;height:52px}
+.hdr{background:rgba(255,255,255,0.98);border-bottom:1px solid var(--div);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200}
 .logo-w{display:flex;align-items:center;gap:10px;padding:10px 0}
 .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#248a3d,#30a14e);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .logo-t{font-size:18px;font-weight:700;color:#1d1d1f;letter-spacing:-0.3px}
@@ -77,14 +70,39 @@ a{text-decoration:none}
 .lang-btn:hover:not(.on){color:var(--dark)}
 
 /* ── NAV ── */
-.nav{background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--div);display:flex;padding:0 12px;overflow-x:auto;gap:2px;scrollbar-width:none;position:sticky;top:52px;z-index:100}
+.nav{
+  background:#fff;
+  border-bottom:2px solid #e8f0e8;
+  display:flex;
+  padding:0;
+  overflow-x:auto;
+  gap:0;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  position:sticky;
+  top:52px;
+  z-index:100;
+}
 .nav::-webkit-scrollbar{display:none}
-.ni{padding:11px 14px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--sec);border-bottom:2px solid transparent;transition:all var(--dur) var(--ease);display:flex;align-items:center;gap:5px;white-space:nowrap}
-.ni:hover{color:var(--dark)}
+.ni{
+  padding:11px 14px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.3px;
+  color:var(--sec);
+  border-bottom:3px solid transparent;
+  transition:color .15s,border-color .15s;
+  white-space:nowrap;
+  flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.ni:hover{color:var(--dark);background:rgba(0,0,0,0.03)}
 .ni.on{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* ── LAYOUT ── */
-.wrap{max-width:1180px;margin:0 auto;padding:22px 16px}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 16px;padding-top:20px}
 .tc{display:none}.tc.on{display:block;animation:fadeIn .2s var(--ease) both}
 .g2{display:grid;grid-template-columns:360px 1fr;gap:16px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
@@ -339,83 +357,8 @@ select option{background:#fff;color:var(--dark)}
 }
 
 /* Скрыть старую верхнюю навигацию на мобильном */
-@media(max-width:700px){
-  .nav { display: none !important; }
-  .hdr { padding-top: var(--safe-top); }
-  .wrap { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px); }
-}
 
-/* ── НИЖНЯЯ НАВИГАЦИЯ ── */
-.bottom-nav {
-  display: none; /* показываем только на мобильном */
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: calc(var(--nav-h) + var(--safe-bottom));
-  padding-bottom: var(--safe-bottom);
-  background: rgba(255,255,255,0.97);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--div);
-  z-index: 300;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-}
-@media(max-width:700px){
-  .bottom-nav { display: flex; }
-}
-.bn-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  cursor: pointer;
-  padding: 8px 4px;
-  position: relative;
-  transition: all .15s var(--ease);
-  -webkit-tap-highlight-color: transparent;
-  border: none; background: none;
-}
-.bn-item:active { transform: scale(0.9); }
-.bn-icon {
-  font-size: 22px;
-  line-height: 1;
-  transition: transform .2s var(--ease);
-}
-.bn-item.on .bn-icon { transform: scale(1.15); }
-.bn-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--light);
-  transition: color .15s;
-  line-height: 1;
-}
-.bn-item.on .bn-label { color: var(--blue); }
-.bn-dot {
-  position: absolute;
-  top: 6px; right: calc(50% - 16px);
-  width: 8px; height: 8px;
-  background: var(--blue);
-  border-radius: 50%;
-  border: 2px solid #fff;
-  display: none;
-}
 
-/* ── PWA INSTALL BANNER ── */
-.pwa-banner {
-  display: none;
-  position: fixed;
-  bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px);
-  left: 12px; right: 12px;
-  background: #1d1d1f;
-  color: #f5f5f7;
-  border-radius: var(--r2);
-  padding: 14px 16px;
-  z-index: 400;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  animation: slideUp .3s var(--ease);
-}
 @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
 .pwa-banner-inner { display:flex; align-items:center; gap:12px; }
 .pwa-icon { font-size:32px; flex-shrink:0; }
@@ -426,14 +369,7 @@ select option{background:#fff;color:var(--dark)}
 .pwa-btn-close { background:rgba(255,255,255,.1); color:#f5f5f7; border:none; border-radius:var(--r1); padding:9px 14px; font-family:inherit; font-size:13px; cursor:pointer; }
 
 /* ── MOBILE CARD IMPROVEMENTS ── */
-@media(max-width:700px){
-  .g2 { grid-template-columns: 1fr; gap: 12px; }
-  .sh { font-size: 20px; }
-  .card { border-radius: 16px; }
-  .hdr { height: 48px; }
-  /* Убрать hover эффекты на мобильном */
-  .card:hover { box-shadow: var(--sh1); transform: none; }
-}
+
 
 /* ── DISEASE ENGINE ALERTS ── */
 #de-alerts-adv { margin-bottom: 10px; }
@@ -479,10 +415,203 @@ select option{background:#fff;color:var(--dark)}
 .dc.pa-forbidden{opacity:.5}
 
 /* ── RESPONSIVE ── */
-@media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
-@media(max-width:600px){.wrap{padding:14px 12px}.card{padding:14px}.bbg{grid-template-columns:1fr}.cal-day{grid-template-columns:66px 34px 48px 1fr}.sh{font-size:18px}}
+
+
+
+
+
+
+
+
+/* PWA Guide */
+.pwa-guide{background:#E8F5E9;border-radius:16px;padding:20px;margin:16px 0}
+.pwa-guide h3{color:#2E7D32;margin:0 0 16px 0;font-size:16px}
+.pwa-guide .install-box{background:white;border-radius:12px;padding:16px;margin-bottom:12px}
+.pwa-guide .install-box h4{color:#2E7D32;margin:0 0 12px 0;font-size:14px}
+.pwa-guide ol{margin:0;padding-left:20px}
+.pwa-guide li{margin-bottom:8px;line-height:1.4;font-size:13px}
+.pwa-guide .benefits{background:white;border-radius:12px;padding:14px;margin-top:12px}
+.pwa-guide .benefits p{margin:6px 0;color:#2E7D32;font-size:13px}
+/* Scientific Models */
+.scientific-models{background:#FFF3E0;border-radius:16px;padding:16px;margin-top:12px}
+.scientific-models h3{color:#E65100;margin:0 0 14px 0;font-size:15px}
+.model-card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid #FF9800}
+.model-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700;font-size:13px}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.status-badge.critical,.status-badge.high{background:#FFEBEE;color:#C62828}
+.status-badge.warning,.status-badge.moderate{background:#FFF3E0;color:#E65100}
+.status-badge.medium{background:#FFFDE7;color:#F9A825}
+.status-badge.low,.status-badge.ok{background:#E8F5E9;color:#2E7D32}
+.inc-progress{height:10px;background:#E0E0E0;border-radius:6px;overflow:hidden;margin:10px 0}
+.inc-bar{height:100%;background:linear-gradient(90deg,#4CAF50,#8BC34A);border-radius:6px;transition:width .5s;width:0%}
+.inc-text{text-align:right;font-size:12px;color:#666}
+/* Export */
+.export-btn{background:#2E7D32;color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;margin:8px 0;display:inline-block}
+.export-btn:active{background:#1B5E20}
+
+/* ════════════════════════════════════════════
+   НИЖНЯЯ НАВИГАЦИЯ — мобильная
+   ════════════════════════════════════════════ */
+
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 6px 4px;
+  position: relative;
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+.bn-item:active { opacity: .6; }
+.bn-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.bn-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--light);
+  line-height: 1;
+}
+.bn-item.on .bn-label { color: var(--blue); }
+.bn-item.on .bn-icon { transform: scale(1.1); }
+
+/* More sheet */
+.more-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 350;
+  backdrop-filter: blur(2px);
+}
+.more-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 12px 0 calc(env(safe-area-inset-bottom, 0px) + 8px);
+  z-index: 360;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+  transform: translateY(100%);
+  transition: transform .3s cubic-bezier(.25,.46,.45,.94);
+}
+.more-sheet.open { transform: translateY(0); }
+
+/* PWA Banner */
+.pwa-banner {
+  display: none;
+  position: fixed;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 8px);
+  left: 12px; right: 12px;
+  background: #1d1d1f;
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  z-index: 290;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* ════════════════════════════════════════════
+   АДАПТИВ — мобильный
+   ════════════════════════════════════════════ */
+
+/* ════════ RESPONSIVE ════════ */
+/* ══════════════════════════════
+   RESPONSIVE — единый блок
+   ══════════════════════════════ */
+
+/* ═══ RESPONSIVE ═══ */
+
+/* ── НИЖНЯЯ НАВИГАЦИЯ ── */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  z-index: 9999;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.10);
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-around;
+}
+@media(max-width:960px){
+  .g2{grid-template-columns:1fr}
+  .logo-s{display:none}
+}
+@media(max-width:700px){
+  .bottom-nav { display: flex !important; }
+  .nav{display:none!important}
+  
+  .hdr{height:48px;padding-top:env(safe-area-inset-top,0px)}
+  .wrap{padding:12px;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 8px)}
+  .g2{grid-template-columns:1fr;gap:10px}
+  .bbg{grid-template-columns:1fr}
+  .sh{font-size:18px}
+  .card{padding:12px;border-radius:14px}
+  .card:hover{box-shadow:none;transform:none}
+  .logo-s,.donate-txt{display:none}
+}
+
+@media(max-width:480px){
+  .donate-txt{display:none}
+}
+
+/* ══════════════════════════════════
+   PWA GUIDE
+   ══════════════════════════════════ */
+.pwa-guide{background:#E8F5E9;border-radius:16px;padding:20px;margin:16px 0}
+.pwa-guide h3{color:#2E7D32;margin:0 0 16px 0;font-size:15px;font-weight:700}
+.pwa-guide .install-box{background:white;border-radius:12px;padding:16px;margin-bottom:12px}
+.pwa-guide .install-box h4{color:#2E7D32;margin:0 0 10px 0;font-size:13px;font-weight:700}
+.pwa-guide ol{margin:0;padding-left:18px}
+.pwa-guide li{margin-bottom:7px;line-height:1.5;font-size:13px;color:var(--dark)}
+.pwa-guide .benefits{background:white;border-radius:12px;padding:14px;margin-top:10px}
+.pwa-guide .benefits p{margin:5px 0;color:#2E7D32;font-size:13px}
+
+/* ══════════════════════════════════
+   SCIENTIFIC MODELS (Советник)
+   ══════════════════════════════════ */
+.scientific-models{background:#FFF3E0;border-radius:16px;padding:16px;margin-top:14px}
+.scientific-models h3{color:#E65100;margin:0 0 14px 0;font-size:14px;font-weight:700}
+.model-card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid #FF9800}
+.model-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700;font-size:13px}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.status-badge.critical,.status-badge.high{background:#FFEBEE;color:#C62828}
+.status-badge.warning,.status-badge.moderate{background:#FFF3E0;color:#E65100}
+.status-badge.medium{background:#FFFDE7;color:#F9A825}
+.status-badge.low,.status-badge.ok{background:#E8F5E9;color:#2E7D32}
+.inc-progress{height:10px;background:#E0E0E0;border-radius:6px;overflow:hidden;margin:10px 0}
+.inc-bar{height:100%;background:linear-gradient(90deg,#4CAF50,#8BC34A);border-radius:6px;transition:width .5s;width:0%}
+.inc-text{text-align:right;font-size:12px;color:var(--sec);margin-top:2px}
+
+/* ══════════════════════════════════
+   MOA WARNING
+   ══════════════════════════════════ */
+.moa-warning{background:#FFF3E0;border:2px solid #FF9800;border-radius:12px;padding:14px;margin-top:10px}
+.moa-warning p{margin:0 0 8px 0;font-size:13px}
+.alt-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.alt-buttons button{background:#FF9800;color:white;border:none;padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;-webkit-tap-highlight-color:transparent}
+.alt-buttons button:active{background:#E65100}
+
+/* ══════════════════════════════════
+   EXPORT BUTTON
+   ══════════════════════════════════ */
+.export-btn{background:#2E7D32;color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;margin:8px 0;display:inline-flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.export-btn:active{background:#1B5E20;transform:scale(0.97)}
 </style>
 </head>
+
 <body>
 
 <div class="hdr">
@@ -624,19 +753,43 @@ select option{background:#fff;color:var(--dark)}
 <div>
     <div id="res-e" class="card" style="text-align:center;padding:48px 20px">
     <div style="font-size:44px;margin-bottom:12px">🌿</div>
-    <div style="font-family:'Playfair Display',serif;font-size:17px;color:#1e6b33;margin-bottom:6px" data-i="adv-empty-t">Заполните данные слева</div>
+    <div style="font-family:'Playfair Display',serif;font-size:17px;color:#1e6b33;margin-bottom:6px" data-i="adv-empty-t">Заполните данные</div>
     <div style="font-size:12px;color:var(--light)" data-i="adv-empty-s">Советник определит систему защиты<br>и покажет список препаратов с дозами</div>
   </div>
   <!-- ════ DISEASE ENGINE ALERTS — показываются сразу ════ -->
   <div id="de-alerts-adv" style="margin-bottom:8px"></div>
-
-  <div id="de-alerts-adv" style="display:none;margin-bottom:8px"></div>
 <div id="res-m" style="display:none">
     <div class="card"><div class="ct">📊 <span data-i="sit-t">Ситуация</span></div><div id="ana"></div></div>
     <div id="sys-block"></div>
     <div class="card" id="hv-c" style="display:none"><div class="ct">🗓 <span data-i="hv-t">Сроки ожидания</span></div><div id="hbl"></div></div>
   </div>
 
+
+
+  <!-- ════ НАУЧНЫЕ МОДЕЛИ ПРОГНОЗИРОВАНИЯ ════ -->
+  <div class="scientific-models" id="sci-models" style="display:none">
+    <h3>🔬 Научные модели прогнозирования</h3>
+
+    <div class="model-card" id="rule310-result">
+      <div class="model-header"><span>🍇 Правило 3-10</span><span class="status-badge ok">—</span></div>
+      <p>Нажмите «Рассчитать» для анализа</p>
+    </div>
+
+    <div class="model-card">
+      <div class="model-header">
+        <span>🌿 Индекс Гоиданича (1957)</span>
+        <span class="status-badge ok" id="inc-status">—</span>
+      </div>
+      <div class="inc-progress"><div class="inc-bar" id="inc-bar"></div></div>
+      <div class="inc-text" id="inc-percent">Накопление: 0%</div>
+      <div id="inc-rec" style="margin-top:10px;font-size:13px"></div>
+    </div>
+
+    <div class="model-card" id="spor-result">
+      <div class="model-header"><span>🍄 Спороношение (Lalancette, 1988)</span><span class="status-badge ok">—</span></div>
+      <p>Нажмите «Рассчитать» для анализа</p>
+    </div>
+  </div>
 
   <!-- ═ DONATE ═ -->
   <div style="margin-top:12px;text-align:center;padding:14px;background:#fff8ec;border:1px solid #f5d790;border-radius:var(--r2)">
@@ -757,6 +910,9 @@ select option{background:#fff;color:var(--dark)}
 <div id="jrn" class="tc">
   <div class="sh" data-i="jrn-title">Журнал обработок</div>
   <div class="ss" data-i="jrn-sub">История сезона · Контроль ротации МОА</div>
+  <div style="margin-bottom:12px">
+    <button class="export-btn" onclick="exportJournalLocal()">📥 Экспорт журнала в CSV</button>
+  </div>
   <div class="g2">
     <div>
       <div class="card">
@@ -815,7 +971,7 @@ select option{background:#fff;color:var(--dark)}
       </div>
     </div>
     <div>
-      <div class="al rot-w" id="rot-w" style="display:none">
+      <div class="moa-warning" class="al rot-w" id="rot-w" style="display:none">
         <span class="ali">⚠️</span>
         <div><strong data-i="rot-warn">Внимание:</strong> <span data-i="rot-warn-d">Последние 2 обработки — один МОА. Смените класс.</span></div>
       </div>
@@ -1414,102 +1570,17 @@ select option{background:#fff;color:var(--dark)}
         </div>
       </div>
       <div style="background:var(--bg);border:1px solid var(--div);border-radius:var(--r2);padding:16px">
-        <div style="display:flex;align-items:flex-start;gap:12px">
-          <div style="font-size:22px;flex-shrink:0">🇯🇵</div>
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px">Отчёт Яманаси H29 — CPPU и сахаристость</div>
-            <div style="font-size:11px;font-style:italic;color:var(--sec);background:rgba(0,0,0,.04);border-radius:6px;padding:8px 10px;margin-bottom:8px;line-height:1.6">
-              «CPPU 加用により果粒肥大効果が認められるが、糖度は低下する傾向»<br>
-              <span style="color:var(--mid)">«CPPU увеличивает размер ягод, однако наблюдается тенденция к снижению сахаристости (Brix)»</span>
-            </div>
-            <a href="https://www.pref.yamanashi.jp/documents/79558/h29houkoku04.pdf" target="_blank"
-               style="display:inline-flex;align-items:center;gap:5px;color:var(--blue);font-size:12px;font-weight:600;text-decoration:none">
-              📄 Открыть PDF источника →
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:12px;padding:10px 13px;background:#eef5ff;border:1px solid #b2d0f5;border-radius:var(--r1);font-size:11px;color:#004080;line-height:1.6">
-      <strong>⚠️ Важно:</strong> CPPU увеличивает размер ягод, но при концентрации выше 5 ppm или при высоких температурах воздуха может снижать Brix и аромат. Протокол A (CPPU 5→3.5 ppm) — баланс между размером и вкусом согласно данным Яманаси.
-    </div>
-  </div>
+        <div style="display:flex;align-items:flex-start;gap:12px
+</div></div></div></div></div>
 
 </div>
-
-
-
 <div class="disc">
   <strong>⚠️ Отказ от ответственности</strong> — Инструмент носит информационный характер. Не является официальным агрономическим предписанием. Применение СЗР — в соответствии с законодательством вашей страны. Регистрации проверяйте на официальных ресурсах.
 </div>
-</div>
 
-<div class="footer"><strong>Andreus Logos</strong>Садовый Щит · Советник виноградаря фенофазной защиты · Для ви
-</div>
+<div class="footer"><strong>Andreus Logos</strong> · Садовый Щит · Советник виноградаря фенофазной защиты · Для виноградарей Крыма и юга России</div>
 
 <script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ═══ ОБРАБОТЧИК ОШИБОК ═══
 window.addEventListener('error', function(e) {
   if (typeof console !== 'undefined' && console.error) {
@@ -2022,20 +2093,86 @@ var DE_GOID_TABLE = [
 
 // ── Модель 1: Правило 3-10 (Baldacci, 1947) ──
 function de310Check(rainMm, tempC, bbchStr) {
+  // Валидация входных данных
+  rainMm = Math.max(0, (rainMm != null ? rainMm : 0));
+  tempC  = Math.max(-10, Math.min(45, (tempC != null ? tempC : 10)));
   var b = parseBbch ? parseBbch(bbchStr) : parseInt((bbchStr||'0').split('-')[0]);
-  return (rainMm >= 10 && tempC >= 10 && b >= 14);
+  var conds = {
+    temp:  tempC  >= 10,
+    precip: rainMm >= 10,
+    bbch:  b      >= 14
+  };
+  var allMet = conds.temp && conds.precip && conds.bbch;
+  var met = (conds.temp?1:0) + (conds.precip?1:0) + (conds.bbch?1:0);
+
+  if (allMet) {
+    return {
+      status:'critical', icon:'🔴🔴🔴',
+      title: TTXT('УСЛОВИЯ ДЛЯ ИНФЕКЦИИ ВЫПОЛНЕНЫ!', 'INFECTION CONDITIONS MET!'),
+      message: TTXT(
+        'Дождь '+Math.round(rainMm)+'мм при +'+Math.round(tempC)+'°C, BBCH '+bbchStr,
+        'Rain '+Math.round(rainMm)+'mm at +'+Math.round(tempC)+'°C, BBCH '+bbchStr
+      ),
+      recommendation: TTXT(
+        '🚨 СРОЧНАЯ обработка системным фунгицидом ДО дождя!',
+        '🚨 URGENT spray with systemic fungicide BEFORE rain!'
+      ),
+      met: 3, allMet: true
+    };
+  } else if (met >= 2) {
+    var tempIcon  = conds.temp   ? '✅' : '❄️';
+    var precipIcon= conds.precip ? '✅' : '☔';
+    var bbchIcon  = conds.bbch   ? '✅' : '🌱';
+    return {
+      status:'warning', icon:'⚠️',
+      title: TTXT('Частичные условия ('+met+'/3)', 'Partial conditions ('+met+'/3)'),
+      message: tempIcon+' '+TTXT('Температура','Temp')+' '+Math.round(tempC)+'°C · '
+               +precipIcon+' '+TTXT('Осадки','Rain')+' '+Math.round(rainMm)+'мм · '
+               +bbchIcon+' BBCH '+bbchStr,
+      recommendation: TTXT(
+        'Подготовьтесь к возможной обработке',
+        'Prepare for possible spray'
+      ),
+      met: met, allMet: false
+    };
+  } else {
+    return {
+      status:'ok', icon:'✅',
+      title: TTXT('Условия для инфекции НЕ выполнены','Infection conditions NOT met'),
+      message: TTXT(
+        'Маловероятно заражение ('+met+'/3 выполнено)',
+        'Low risk of infection ('+met+'/3 met)'
+      ),
+      recommendation: TTXT('Мониторинг в штатном режиме','Routine monitoring'),
+      met: met, allMet: false
+    };
+  }
 }
 
 // ── Модель 2: Гоиданич — суточная скорость инкубации ──
-function deGoidRate(tempC, rh) {
-  var rate = 0;
-  for (var i = 0; i < DE_GOID_TABLE.length; i++) {
-    var row = DE_GOID_TABLE[i];
-    if (tempC >= row[0] && tempC <= row[1]) { rate = row[2]; break; }
-  }
-  // Поправка на влажность
-  var rhMult = (rh >= 90) ? 1.0 : (rh >= 70) ? 0.7 : 0.3;
-  return rate * rhMult;
+function deGoidRate(tempC, rh, wetHours) {
+  // Goidanich (1957) — полная формула с gaussian по температуре
+  // Валидация и клампинг входных данных
+  tempC    = Math.max(-10, Math.min(45, (tempC    != null ? tempC    : 18)));
+  rh       = Math.max(0,   Math.min(100,(rh       != null ? rh       : 60)));
+  wetHours = Math.max(0,   Math.min(24, (wetHours != null ? wetHours : 8)));
+
+  // Минимальные условия
+  if (tempC < 10 || wetHours < 4) return 0;
+
+  // Температурный фактор (gaussian, пик при 21°C)
+  var tempFactor = Math.exp(-Math.pow(tempC - 21, 2) / 128);
+
+  // Влажность — плавная линейная (не ступенчатая)
+  var rhFactor = rh >= 90 ? 1 : Math.max(0, (rh - 50) / 40);
+
+  // Фактор влажных часов (насыщение при 8ч)
+  var wetFactor = Math.min(1, wetHours / 8);
+
+  // Тепловое ингибирование при t>27°C
+  var heatInhib = tempC > 27 ? Math.max(0, 1 - (tempC - 27) / 3) : 1;
+
+  return Math.round(20 * tempFactor * rhFactor * wetFactor * heatInhib * 10) / 10;
 }
 
 // ── Модель 3: Lalancette — ночное спороношение ──
@@ -2059,16 +2196,61 @@ function deLalancetteHourly(dateStr) {
 }
 
 function deLalancetteCheck(day) {
+  // Lalancette (1988) — возвращает число влажных ночных часов
+  var wetHours = 0;
   if (deHourlyData && deHourlyData.length) {
-    var wet = deLalancetteHourly(day.date);
-    return wet >= 3 ? wet : 0;
+    wetHours = deLalancetteHourly(day.date);
+  } else {
+    // Эмуляция по дневным данным
+    var t = day.tmax || 18;
+    var h = day.humid || 60;
+    var r = day.rain || day.rainMm || 0;
+    if ((h >= 90 || r > 0) && t >= 10 && t <= 30) wetHours = 8;
+    else if ((h >= 80) && t >= 10 && t <= 30) wetHours = 4;
   }
-  // Эмуляция по дневным данным
-  var t = day.tmax || 18;
-  var h = day.humid || 60;
-  var r = day.rain || 0;
-  if ((h >= 80 || r > 0) && t >= 10 && t <= 30) return 4; // условно
-  return 0;
+  return wetHours;
+}
+
+function deLalancetteEvaluate(wetHours, avgTemp) {
+  // Lalancette (1988) — оценка интенсивности спороношения
+  avgTemp = avgTemp || 18;
+  if (wetHours < 3 || avgTemp < 10 || avgTemp > 30) {
+    return {
+      status: 'none', icon: '✅',
+      message: TTXT(
+        'Спороношение маловероятно (' + wetHours + ' ч, T=' + avgTemp + '°C)',
+        'Sporulation unlikely (' + wetHours + 'h, T=' + avgTemp + '°C)'
+      ),
+      recommendation: TTXT('Мониторинг штатно', 'Routine monitoring'),
+      wetHours: wetHours
+    };
+  }
+
+  var intensity, icon;
+  if      (wetHours >= 18) { intensity = 'severe';   icon = '🔴🔴🔴'; }
+  else if (wetHours >= 12) { intensity = 'high';     icon = '🔴'; }
+  else if (wetHours >= 6)  { intensity = 'moderate'; icon = '🟠'; }
+  else                     { intensity = 'low';      icon = '🟢'; }
+
+  var msgs = {
+    low:      TTXT('Умеренные условия спороношения',      'Moderate sporulation conditions'),
+    moderate: TTXT('Хорошие условия спороношения',        'Good sporulation conditions'),
+    high:     TTXT('Высокая интенсивность спороношения!', 'High sporulation intensity!'),
+    severe:   TTXT('МАССОВОЕ спороношение!',              'MASSIVE sporulation!')
+  };
+  var recs = {
+    low:      TTXT('Усильте наблюдение',               'Increase monitoring'),
+    moderate: TTXT('Подготовьтесь к обработке',        'Prepare to spray'),
+    high:     TTXT('🔴 Профилактическая обработка', '🔴 Preventive spray'),
+    severe:   TTXT('🚨 СРОЧНАЯ обработка!',   '🚨 URGENT spray!')
+  };
+
+  return {
+    status: intensity, icon: icon,
+    message: icon + ' ' + msgs[intensity] + ' (' + wetHours + ' ' + TTXT('ч', 'h') + ')',
+    recommendation: recs[intensity],
+    wetHours: wetHours
+  };
 }
 
 // ── Модель 4: Magarey — минимальное время увлажнения ──
@@ -2185,7 +2367,7 @@ function deCalcAlerts(cropVal, bbchStr, weatherDays, manualRainDate, manualRainM
     var ds = d.date;
 
     // Ручной приоритет по дождю
-    var rainMm = d.rain || 0;
+    var rainMm = d.rain || d.rainMm || 0;  // поддержка обоих полей
     if (manual.rainDays.indexOf(ds) >= 0) rainMm = Math.max(rainMm, 12);
     if (manualRainDate && ds === manualRainDate) rainMm = Math.max(rainMm, manualRainMm || 10);
 
@@ -2248,21 +2430,17 @@ function deCalcMildew(days, bbchStr, bbchNum) {
   var infectionRain = 0;
   var infectionTemp = 0;
   var lalancetteWetHours = 0;
+  var infectionRule = null;
+  var partial310 = null;
 
   // Восстановить накопленную инкубацию из localStorage
   try {
     var saved = localStorage.getItem('de_incubation_total');
     var savedDate = localStorage.getItem('de_infection_date');
-    var lastCalc = localStorage.getItem('de_last_calc');
-    if (saved && savedDate) {
-      incubPct = parseFloat(saved) || 0;
-      incubActive = incubPct > 0;
+    if (saved && savedDate && parseFloat(saved) > 0) {
+      incubPct = parseFloat(saved);
+      incubActive = true;
       infectionDate = savedDate;
-      // Не пересчитывать чаще раза в сутки
-      var todayStr = new Date().toISOString().split('T')[0];
-      if (lastCalc === todayStr) {
-        // Только рендерить, не пересчитывать Гоиданича
-      }
     }
   } catch(e) {}
 
@@ -2270,19 +2448,25 @@ function deCalcMildew(days, bbchStr, bbchNum) {
     var d = days[i];
 
     // Правило 3-10 — сбрасываем если новое заражение
-    if (de310Check(d.rainMm, d.tempAvg, bbchStr)) {
+    var r310 = de310Check(d.rainMm, d.tempAvg, bbchStr);
+    if (r310.allMet) {
       if (!incubActive) {
         incubActive = true;
         incubPct = 0;
         infectionDate = d.date;
         infectionRain = d.rainMm;
         infectionTemp = d.tempAvg;
+        infectionRule = r310;
       }
+    } else if (r310.met >= 2 && !incubActive) {
+      // 2/3 условия — предупреждение без запуска инкубации
+      partial310 = r310;
     }
 
     // Гоиданич — накопление
     if (incubActive && d.isPast) {
-      var rate = deGoidRate(d.tempAvg, d.humid);
+      var wetH = deLalancetteCheck(d);
+      var rate = deGoidRate(d.tempAvg, d.humid, wetH || 8);
       incubPct = Math.min(100, incubPct + rate);
     }
 
@@ -2329,16 +2513,28 @@ function deCalcMildew(days, bbchStr, bbchNum) {
     } else if (incubPct >= DE_WARN_PCT) {
       deAlerts.push({
         level:'medium', icon:'🟡',
-        disease: LANG==='en' ? 'Downy mildew — monitoring' : 'Милдью — наблюдение',
-        what: LANG==='en'
-          ? 'Incubation ' + Math.round(incubPct) + '% · ' + daysAgo + ' days after infection'
-          : 'Инкубация ' + Math.round(incubPct) + '% · ' + daysAgo + ' дн. после заражения',
-        action: LANG==='en'
-          ? 'Plan spray before next rain'
-          : 'Планируй обработку до следующего дождя',
+        disease: TTXT('Милдью — наблюдение', 'Downy mildew — monitoring'),
+        what: TTXT(
+          'Инкубация ' + Math.round(incubPct) + '% · ' + daysAgo + ' дн. после ' + infDateFmt,
+          'Incubation ' + Math.round(incubPct) + '% · ' + daysAgo + ' days after infection'
+        ),
+        action: TTXT('Планируй обработку до следующего дождя', 'Plan spray before next rain'),
         pct: Math.round(incubPct), source:'Goidanich'
       });
-    } else if (incubPct > 0) {
+    } else if (incubPct >= 20) {
+      // Ранняя стадия (20-50%) — уровень low
+      deAlerts.push({
+        level:'low', icon:'🟢',
+        disease: TTXT('Милдью — ранняя инкубация', 'Downy mildew — early incubation'),
+        what: TTXT(
+          'Инкубация ' + Math.round(incubPct) + '% · ' + daysAgo + ' дн. после заражения',
+          'Incubation ' + Math.round(incubPct) + '% · ' + daysAgo + ' days after infection'
+        ),
+        action: TTXT('Плановая защита, усиль мониторинг', 'Routine protection, increase monitoring'),
+        pct: Math.round(incubPct), source:'Goidanich'
+      });
+    } else {
+      // incubPct=0: заражение только что произошло или раннее накопление
       deAlerts.push({
         level:'critical', icon:'🔴',
         disease: LANG==='en' ? 'Downy mildew — 3-10 triggered' : 'Милдью — правило 3-10',
@@ -2366,24 +2562,42 @@ function deCalcMildew(days, bbchStr, bbchNum) {
     });
   }
 
-  // Спороношение Lalancette
-  if (lalancetteWetHours >= 3 && bbchNum >= 14) {
-    var lastNightDays = [];
-    for (var li = 0; li < days.length && li < 3; li++) {
-      if (deLalancetteCheck(days[li]) >= 3) {
-        lastNightDays.push(days[li].tmax || 18);
-      }
-    }
-    var avgLalT = lastNightDays.length ? Math.round(lastNightDays.reduce(function(a,b){return a+b;},0)/lastNightDays.length) : 16;
+  // Частичные условия 3-10 (2/3) — предупреждение
+  if (!incubActive && partial310 && partial310.met >= 2) {
     deAlerts.push({
-      level:'medium', icon:'🟡',
-      disease: LANG==='en' ? 'Sporulation active' : 'Спороношение активно',
-      what: LANG==='en'
-        ? lalancetteWetHours + 'h wet conditions at night (+' + avgLalT + '°C)'
-        : 'Ночью ' + lalancetteWetHours + 'ч влажности при +' + avgLalT + '°C',
-      action: LANG==='en'
-        ? 'Check underside of leaves in the morning'
-        : 'Утром осмотри нижнюю сторону листьев',
+      level:'warning', icon:'⚠️',
+      disease: TTXT('Милдью — внимание', 'Downy mildew — attention'),
+      what: partial310.message,
+      action: partial310.recommendation,
+      pct: null, source:'3-10-partial'
+    });
+  }
+
+  // Спороношение Lalancette — deLalancetteEvaluate с градациями
+  if (lalancetteWetHours >= 3 && bbchNum >= 14) {
+    var avgLalT = 18;
+    var latDays = [];
+    for (var li = 0; li < days.length && li < 3; li++) {
+      if (deLalancetteCheck(days[li]) >= 3) latDays.push(days[li].tmax || 18);
+    }
+    if (latDays.length) avgLalT = Math.round(latDays.reduce(function(a,b){return a+b;},0)/latDays.length);
+
+    var lalEval = deLalancetteEvaluate(lalancetteWetHours, avgLalT);
+
+    // Уровень алерта зависит от интенсивности
+    var lalLevel = lalEval.status === 'severe' ? 'critical'
+                 : lalEval.status === 'high'   ? 'high'
+                 : lalEval.status === 'moderate' ? 'medium'
+                 : 'low';
+
+    deAlerts.push({
+      level: lalLevel, icon: lalEval.icon,
+      disease: TTXT('Спороношение милдью', 'Downy mildew sporulation'),
+      what: lalEval.message,
+      action: lalEval.recommendation + ' · ' + TTXT(
+        'Утром осмотри нижнюю сторону листьев',
+        'Check underside of leaves in the morning'
+      ),
       pct: null, source:'Lalancette'
     });
   }
@@ -2475,27 +2689,44 @@ function deCalcBotrytis(days, bbchNum) {
 // ── Построить HTML алертов ──
 function deBuildAlertsHTML() {
   if (!deAlerts || !deAlerts.length) return '';
+
+  var SRC = {
+    '3-10':         TTXT('Правило 3-10 · Baldacci (1947)',      'Rule 3-10 · Baldacci (1947)'),
+    '3-10-partial': TTXT('Правило 3-10 · Baldacci (1947)',      'Rule 3-10 · Baldacci (1947)'),
+    'Goidanich':    TTXT('Индекс Гоиданича · Goidanich (1957)', 'Incubation index · Goidanich (1957)'),
+    'Lalancette':   TTXT('Спороношение · Lalancette (1988)',     'Sporulation · Lalancette (1988)'),
+    'Magarey':      TTXT('Маппинг заражения · Magarey (2005)',   'Infection map · Magarey (2005)')
+  };
+
   var html = '';
   for (var i = 0; i < deAlerts.length; i++) {
     var a = deAlerts[i];
+    var src = SRC[a.source] || '';
+
     if (a.level === 'none') {
-      html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:#f0f9f3;border:1px solid #b6d9bf;margin-bottom:6px">'
-        + '<span style="font-size:16px">🟢</span>'
-        + '<div><div style="font-size:12px;font-weight:700;color:#1e6b33">' + a.disease + '</div>'
-        + '<div style="font-size:11px;color:var(--sec)">' + a.what + '</div></div></div>';
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#f0f9f3;border:1px solid #b6d9bf;margin-bottom:6px">'
+        + '<span style="font-size:18px;flex-shrink:0">🟢</span>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:12px;font-weight:700;color:#1e6b33">' + a.disease + '</div>'
+        + '<div style="font-size:11px;color:var(--sec)">' + a.what + '</div>'
+        + (src ? '<div style="font-size:10px;color:#b0b0b0;margin-top:2px">' + src + '</div>' : '')
+        + '</div></div>';
       continue;
     }
-    var bg     = a.level==='critical'?'#fff0ee':a.level==='high'?'#fff4ec':a.level==='medium'?'#fffbec':'#f0f9f3';
-    var border = a.level==='critical'?'#f5b8b2':a.level==='high'?'#f5ccaa':a.level==='medium'?'#f5e27a':'#b6d9bf';
-    var tc     = a.level==='critical'?'#9b2218':a.level==='high'?'#7a3000':a.level==='medium'?'#7a4b00':'#1e6b33';
-    html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:12px;padding:11px 14px;margin-bottom:8px">'
+
+    var bg = {critical:'#fff0ee',high:'#fff4ec',warning:'#fff4ec',medium:'#fffbec',low:'#f0f9f3'}[a.level] || '#f5f5f7';
+    var br = {critical:'#f5b8b2',high:'#f5ccaa',warning:'#f5ccaa',medium:'#f5e27a',low:'#b6d9bf'}[a.level] || '#d2d2d7';
+    var tc = {critical:'#9b2218',high:'#7a3000',warning:'#7a3000',medium:'#7a4b00',low:'#1e6b33'}[a.level] || '#333';
+
+    html += '<div style="background:' + bg + ';border:1px solid ' + br + ';border-radius:12px;padding:11px 14px;margin-bottom:8px">'
       + '<div style="display:flex;align-items:flex-start;gap:10px">'
       + '<span style="font-size:20px;line-height:1.2;flex-shrink:0">' + a.icon + '</span>'
       + '<div style="flex:1;min-width:0">'
       + '<div style="font-size:13px;font-weight:700;color:' + tc + ';margin-bottom:2px">'
       + a.disease + (a.pct !== null ? ' — ' + a.pct + '%' : '') + '</div>'
       + '<div style="font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:4px">' + a.what + '</div>'
-      + '<div style="font-size:12px;font-weight:600;color:' + tc + '">\u2192 ' + a.action + '</div>'
+      + '<div style="font-size:12px;font-weight:600;color:' + tc + '">→ ' + a.action + '</div>'
+      + (src ? '<div style="font-size:10px;color:#aaa;margin-top:5px;font-style:italic;border-top:1px solid ' + br + ';padding-top:4px">' + src + '</div>' : '')
       + '</div></div></div>';
   }
   return html;
@@ -2805,27 +3036,70 @@ function paRenderSmart(dr, dl) {
 
 // Рендер в режиме "По фазам"
 function paRenderPhases(dr, dl) {
+  // Получить дату сбора для расчёта СО-статуса
+  var harvestDate = paGetHarvestDate();
   var html = '';
+
   for (var pi = 0; pi < PA_PHASES.length; pi++) {
     var phase = PA_PHASES[pi];
+
+    // Препараты для этой фазы
     var inPhase = dr.filter(function(d) {
       var ranges = PA_BBCH[d.moa] || { opt:[9,89], pos:[9,89] };
-      // Попадает в диапазон если optimal или possible пересекается с фазой
       return ranges.pos[0] <= phase.max && ranges.pos[1] >= phase.min;
     });
     if (!inPhase.length) continue;
-    html += '<div class="pa-group-hdr">' + phase.label + '</div>';
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:4px">';
+
+    var bbchMid = Math.round((phase.min + phase.max) / 2);
+
+    // СОРТИРОВКА: ближе к сбору → меньше СО в приоритете
+    // Для поздних фаз (post, prehvst) — сортируем по w ASC
+    // Для ранних (early, flower) — по w DESC (системные важнее)
+    var isLatePhase = (phase.key === 'post' || phase.key === 'prehvst');
+    inPhase = inPhase.slice().sort(function(a, b) {
+      var bsA = paBBCHStatus(a, bbchMid);
+      var bsB = paBBCHStatus(b, bbchMid);
+      var bbchOrder = { optimal:0, possible:1, off_season:2 };
+      // Сначала оптимальные
+      if (bbchOrder[bsA] !== bbchOrder[bsB]) return bbchOrder[bsA] - bbchOrder[bsB];
+      // Потом: для поздних фаз — меньший СО первым; для ранних — не важно
+      return isLatePhase ? (a.w - b.w) : (a.n.localeCompare(b.n, 'ru'));
+    });
+
+    // Заголовок фазы с пояснением
+    var phaseNote = isLatePhase
+      ? ' <span style="font-size:11px;color:var(--sec);font-weight:400">· сортировка по СО ↑</span>'
+      : '';
+    html += '<div class="pa-group-hdr">' + phase.label + phaseNote + '</div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:16px">';
+
     for (var di = 0; di < inPhase.length; di++) {
       var dd = inPhase[di];
-      var bbchMid = Math.round((phase.min + phase.max) / 2);
       var bs = paBBCHStatus(dd, bbchMid);
+      var hs = paHarvestStatus(dd, harvestDate);
+      var isForbidden = hs.status === 'forbidden';
+
+      // Строка статуса: BBCH-статус + СО-статус
       var sl = '';
-      var optLabel = (bs === 'optimal') ? '<div class="pa-status pa-status-optimal">⭐ Оптимально для этой фазы</div>' : '';
-      html += paRenderCard(dd, optLabel + sl, false);
+      if (bs === 'optimal') {
+        sl = '<div class="pa-status pa-status-optimal">⭐ Оптимально для фазы';
+        if (hs.label) sl += ' · <span class="' + (hs.status==='last_chance'?'pa-status-deadline':'') + '">' + hs.label + '</span>';
+        sl += '</div>';
+      } else if (bs === 'possible') {
+        sl = '<div class="pa-status">';
+        sl += '<span class="pa-status-possible">✅ Допустимо</span>';
+        if (hs.label) sl += '<span style="color:var(--div)">·</span><span class="' + (hs.status==='last_chance'?'pa-status-deadline':'pa-status-possible') + '">' + hs.label + '</span>';
+        sl += '</div>';
+      }
+      if (isForbidden) {
+        sl = '<div class="pa-status pa-status-forbidden">' + hs.label + '</div>';
+      }
+
+      html += paRenderCard(dd, sl, isForbidden);
     }
     html += '</div>';
   }
+
   if (!html) html = '<div class="empty"><p>Ничего не найдено</p></div>';
   dl.innerHTML = html;
 }
@@ -2838,6 +3112,17 @@ window.onload=function(){
   var _jdt=document.getElementById('jdt');if(_jdt)_jdt.valueAsDate=new Date();
 
   renderBbg();
+  // Дефолтная фенофаза — BBCH 15-18 (5-8 листьев, начало сезона)
+  (function() {
+    var bbgEl = document.getElementById('bbg');
+    if (bbgEl) {
+      var defaultCard = bbgEl.querySelector('[data-bbch="15-18"]');
+      if (!defaultCard) defaultCard = bbgEl.querySelector('[data-bbch]');
+      if (defaultCard) {
+        defaultCard.click();
+      }
+    }
+  })();
     addW();rdrg();rjrn();
     // Disease engine
     // Немедленный расчёт при загрузке (+ повтор после возможной геолокации)
@@ -2860,6 +3145,17 @@ window.onload=function(){
     } catch(e) {}
     deUpdate();
   }, 300);
+
+  // Принудительное управление навигацией (резервный механизм)
+  function applyNavLayout() {
+    var isMobile = window.innerWidth <= 700;
+    var bn = document.getElementById('bottom-nav');
+    var nav = document.querySelector('.nav');
+    if (bn) bn.style.display = isMobile ? 'flex' : 'none';
+    if (nav) nav.style.display = isMobile ? 'none' : 'flex';
+  }
+  applyNavLayout();
+  window.addEventListener('resize', applyNavLayout);
 };
 
 function askLoc(){
@@ -3184,6 +3480,8 @@ function calc(){
   blockEl('res-m');
   // Disease engine
   deUpdate();
+  // Научные модели
+  showScientificModels();
 }
 
 
@@ -3544,6 +3842,14 @@ function addJ(){
   var dr=document.getElementById('jdr').value;if(!dr){alert('Укажите препарат');return;}
   var dr_v=document.getElementById('jdr').value;var e={id:Date.now(),dt:document.getElementById('jdt').value,bb:document.getElementById('jbb').value,dr:dr_v,dr2:document.getElementById('jdr2').value,mo:document.getElementById('jmo').value,no:document.getElementById('jno').value};
   journal.unshift(e);localStorage.setItem('vs4',JSON.stringify(journal));
+  // Проверка ротации MOA через Promise
+  var newMOA = e.mo;
+  if (newMOA) {
+    checkMOARotationLocal(newMOA).then(function(result) {
+      var rotEl = document.getElementById('rot-w');
+      if (result.warning && rotEl) { rotEl.style.display='flex'; }
+    }).catch(function(){});
+  }
   document.getElementById('jdr').value='';document.getElementById('jdr2').value='';document.getElementById('jno').value='';
   rjrn();
 }
@@ -3680,7 +3986,11 @@ function rdrg(){
   var dr=DR.slice();
   if(cfv==='contact') dr=dr.filter(function(d){return d.sys==='s1'||d.sys==='s2';});
   else if(cfv==='systemic') dr=dr.filter(function(d){return d.sys==='s3'||d.sys==='s4';});
-  else if(cfv!=='all') dr=dr.filter(function(d){return (d.t||[]).indexOf(cfv)>=0;});
+  else if(cfv!=='all' && ['fungicide','insecticide','acaricide','biofungicide','bioinsecticide'].indexOf(cfv)>=0) {
+    dr=dr.filter(function(d){return d.cat===cfv;});
+  } else if(cfv!=='all') {
+    dr=dr.filter(function(d){return (d.t||[]).indexOf(cfv)>=0;});
+  }
   if(q) dr=dr.filter(function(d){return d.n.toLowerCase().indexOf(q)>=0||d.ai.toLowerCase().indexOf(q)>=0;});
 
   // Sort
@@ -4368,51 +4678,142 @@ function TTXT(ru,en){return LANG==='en'?en:ru;}
 
 var I18N = {
   ru: {
-    'nav-adv':'🎯 Советник','nav-fct':'🌦 Прогноз','nav-diag':'🔬 Диагностика',
-    'nav-ai':'🤖 ИИ-консультант','nav-jrn':'📓 Журнал','nav-drg':'💊 Препараты',
-    'nav-mix':'🧪 Рецепты','nav-jadam':'🌿 JADAM',
-    'logo-sub':'Советник виноградаря · Немецкая система',
+    'nav-adv':'🎯 Советник','nav-fct':'🌦 Прогноз','nav-jrn':'📓 Журнал',
+    'nav-drg':'💊 Препараты','nav-jadam':'🌿 JADAM','nav-sm':'✨ Shine Muscat',
+    'logo-sub':'Советник виноградаря',
+    'adv-title':'Ввод данных',
+    'adv-empty-t':'Заполните данные',
+    'adv-empty-s':'Советник определит систему защиты и покажет препараты',
+    'how-title':'Как пользоваться:',
+    'crop-label':'Культура',
+    'bbch-label':'Фенофаза — что сейчас на лозе?',
+    'bbch-tip':'Найдите описание похожее на ваши кусты. Фенофаза определяет уязвимость и нужную систему защиты.',
+    'lr-label':'Дата последнего дождя',
+    'lr-tip':'Дождь = момент заражения. При +18°C инкубация ~10 дней.',
+    'hd-label':'Дата планируемого сбора',
+    'hd-hint':'Для расчёта допустимых препаратов по СО',
+    'lm-label':'Последний применённый МОА',
+    'lm-none':'— не применялось / не помню —',
+    'lm-tip':'МОА = механизм действия. Чередуйте классы, чтобы грибок не привыкал.',
+    'rain-label':'Прогноз осадков',
+    'rain-tip':'Добавьте дни с ожидаемым дождём. Обрабатывать нужно ДО дождя.',
+    'add-rain':'+ Добавить день',
+    'calc-btn':'Рассчитать рекомендацию',
+    'sit-t':'Ситуация','hv-t':'Сроки ожидания',
+    'rot-warn':'Внимание:',
+    'rot-warn-d':'Последние 2 обработки — один МОА. Смените класс.',
+    'fct-title':'Прогноз обработок',
+    'fct-sub':'Open-Meteo · Биологическая логика · Авторасчёт',
+    'fct-city-l':'Ваш город',
+    'fct-coord-hint':'Или координаты: 44.4952, 34.1663',
+    'find-btn':'Найти','locate-btn':'📍 Моё место',
+    'load-fct':'🌦 Загрузить прогноз',
+    'loading':'Загружаем прогноз...',
     'locating':'определяем...',
-    'diag-title':'Диагностика болезней','diag-sub':'Определите болезнь по симптомам · Фото · Рекомендации',
-    'ai-title':'ИИ-Консультант','ai-sub':'Опишите проблему или загрузите фото листа',
-    'ai-input-title':'Ваш вопрос или фото','ai-photo-label':'Фото листа (опционально)',
-    'ai-drop-hint':'Нажмите для выбора фото или перетащите сюда<br>Работает на мобильном — можно сделать фото прямо сейчас',
-    'remove-photo':'Убрать фото','ai-q-label':'Ваш вопрос',
-    'ai-ctx-label':'Контекст (BBCH и погода)','ai-send':'Спросить ИИ',
-    'ai-disclaimer':'ИИ-анализ основан на Claude (Anthropic). Рекомендации носят информационный характер. Для работы требуется интернет-соединение.',
-    'ai-empty-title':'Задайте вопрос','ai-empty-hint':'Опишите симптомы, загрузите фото листа или задайте любой вопрос по защите сада',
-    'ai-loading-text':'Анализирую...','ai-result-title':'Ответ ИИ-консультанта','ai-new':'Новый вопрос',
+    'fct-bbch-l':'Фенофаза',
+    'fct-empty-t':'Прогноз не загружен',
+    'fct-empty-s':'Укажите город и нажмите «Загрузить»',
+    'fct-cal-t':'📅 Календарь — 14 дней',
+    'jrn-title':'Журнал обработок',
+    'jrn-sub':'История сезона · Контроль ротации МОА',
+    'jrn-new':'Новая запись','jrn-empty':'Журнал пуст',
+    'j-date':'Дата','j-bbch':'BBCH','j-drug':'Препарат',
+    'j-drug2':'Баковая смесь (+)','j-moa':'МОА','j-note':'Примечание',
+    'j-add':'+ Записать',
+    'drg-title':'База препаратов',
+    'drg-sub':'Фунгициды · Инсектициды · Акарициды · Поиск по д.в.',
+    'f-all':'Все','f-fung':'🍃 Фунгициды','f-ins':'🦟 Инсектициды',
+    'f-acar':'🕷 Акарициды','f-jp':'🇯🇵 Япония','f-mil':'Мильдью',
+    'f-oid':'Оидиум','f-bot':'Серая гниль','f-bio':'🌿 Биофунгициды',
+    'f-bioins':'🦠 Биоинсектициды',
+    'sort-name':'По названию','sort-w':'По СО','sort-moa':'По МОА',
   },
   en: {
-    'nav-adv':'🎯 Advisor','nav-fct':'🌦 Forecast','nav-diag':'🔬 Diagnosis',
-    'nav-ai':'🤖 AI Consultant','nav-jrn':'📓 Journal','nav-drg':'💊 Products',
-    'nav-mix':'🧪 Recipes','nav-jadam':'🌿 JADAM',
-    'logo-sub':'Vineyard Advisor · German System',
+    'nav-adv':'🎯 Advisor','nav-fct':'🌦 Forecast','nav-jrn':'📓 Journal',
+    'nav-drg':'💊 Products','nav-jadam':'🌿 JADAM','nav-sm':'✨ Shine Muscat',
+    'logo-sub':'Vineyard Advisor',
+    'adv-title':'Input Data',
+    'adv-empty-t':'Fill in the data',
+    'adv-empty-s':'The advisor will determine the protection system and show products',
+    'how-title':'How to use:',
+    'crop-label':'Crop',
+    'bbch-label':'Phenostage — what do you see on the vine now?',
+    'bbch-tip':'Find the description closest to your vines. The phenostage determines vulnerability and the required protection system.',
+    'lr-label':'Date of last rain',
+    'lr-tip':'Rain = infection moment. At +18°C incubation ~10 days.',
+    'hd-label':'Planned harvest date',
+    'hd-hint':'To calculate allowed products by pre-harvest interval (PHI)',
+    'lm-label':'Last applied MOA',
+    'lm-none':'— not applied / don’t remember —',
+    'lm-tip':'MOA = mode of action. Rotate classes to prevent fungal resistance.',
+    'rain-label':'Rain forecast',
+    'rain-tip':'Add days with expected rain. Spray BEFORE rain — like opening an umbrella in advance.',
+    'add-rain':'+ Add day',
+    'calc-btn':'Calculate recommendation',
+    'sit-t':'Situation','hv-t':'Pre-harvest intervals',
+    'rot-warn':'Warning:',
+    'rot-warn-d':'Last 2 sprays — same MOA. Change the class.',
+    'fct-title':'Spray Forecast',
+    'fct-sub':'Open-Meteo · Biological logic · Auto-calculation',
+    'fct-city-l':'Your city',
+    'fct-coord-hint':'Or coordinates: 44.4952, 34.1663',
+    'find-btn':'Search','locate-btn':'📍 My location',
+    'load-fct':'🌦 Load forecast',
+    'loading':'Loading forecast...',
     'locating':'locating...',
-    'diag-title':'Disease Diagnosis','diag-sub':'Identify disease by symptoms · Photos · Recommendations',
-    'ai-title':'AI Consultant','ai-sub':'Describe the problem or upload a leaf photo',
-    'ai-input-title':'Your question or photo','ai-photo-label':'Leaf photo (optional)',
-    'ai-drop-hint':'Click to choose a photo or drag it here<br>Works on mobile — take a photo right now',
-    'remove-photo':'Remove photo','ai-q-label':'Your question',
-    'ai-ctx-label':'Context (BBCH and weather)','ai-send':'Ask AI',
-    'ai-disclaimer':'AI analysis is powered by Claude (Anthropic). Recommendations are informational only. Internet connection required.',
-    'ai-empty-title':'Ask a question','ai-empty-hint':'Describe symptoms, upload a leaf photo, or ask anything about plant protection',
-    'ai-loading-text':'Analysing...','ai-result-title':'AI Consultant Answer','ai-new':'New question',
+    'fct-bbch-l':'Phenostage',
+    'fct-empty-t':'Forecast not loaded',
+    'fct-empty-s':'Enter your city and press Load',
+    'fct-cal-t':'📅 Calendar — 14 days',
+    'jrn-title':'Spray Journal',
+    'jrn-sub':'Season history · MOA rotation control',
+    'jrn-new':'New entry','jrn-empty':'Journal is empty',
+    'j-date':'Date','j-bbch':'BBCH','j-drug':'Product',
+    'j-drug2':'Tank mix (+)','j-moa':'MOA','j-note':'Note',
+    'j-add':'+ Save',
+    'drg-title':'Product Database',
+    'drg-sub':'Fungicides · Insecticides · Acaricides · Search by a.i.',
+    'f-all':'All','f-fung':'🍃 Fungicides','f-ins':'🦟 Insecticides',
+    'f-acar':'🕷 Acaricides','f-jp':'🇯🇵 Japan','f-mil':'Downy mildew',
+    'f-oid':'Powdery mildew','f-bot':'Grey mould','f-bio':'🌿 Biofungicides',
+    'f-bioins':'🦠 Bioinsecticides',
+    'sort-name':'By name','sort-w':'By PHI','sort-moa':'By MOA',
   }
 };
 
 function setLang(lang){
   LANG = lang;
-  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('on', b.textContent===lang.toUpperCase()); });
-  var dict = I18N[lang];
-  Object.keys(dict).forEach(function(key){
-    document.querySelectorAll('[data-i="'+key+'"]').forEach(function(el){
-      el.innerHTML = dict[key];
-    });
+  // Кнопки языка
+  document.querySelectorAll('.lang-btn').forEach(function(b){
+    b.classList.toggle('on', b.textContent===lang.toUpperCase());
   });
-  // Re-render diseases if open
-  var diagEl = document.getElementById('diag');
-  // buildDiseases removed
+  // data-i элементы
+  var dict = I18N[lang];
+  if(dict) {
+    Object.keys(dict).forEach(function(key){
+      document.querySelectorAll('[data-i="'+key+'"]').forEach(function(el){
+        el.innerHTML = dict[key];
+      });
+    });
+  }
+  // Перерендерить динамический контент
+  try { renderBbg(); } catch(e){}
+  try { rdrg(); } catch(e){}
+  try { rjrn(); } catch(e){}
+  try { deRenderAlertsAdv(); } catch(e){}
+  // Перерендерить прогноз если загружен
+  if(fctDays && fctDays.length) {
+    try { renderNewCalendar(); } catch(e){}
+    try { renderMainRecommendation(); } catch(e){}
+    try { renderBioRisks(); } catch(e){}
+  }
+  // Если советник показывает результат — перерендерить
+  var resM = document.getElementById('res-m');
+  if(resM && resM.style.display !== 'none' && selBbch) {
+    try { calc(); } catch(e){}
+  }
+  // Перерендерить чипы быстрого ввода
+  try { deRenderChips(); } catch(e){}
 }
 
 // ════════════════════════════════════════
@@ -5030,70 +5431,357 @@ window.addEventListener('beforeinstallprompt', function(e) {
 
 
 
+
+// ═══ SERVICE WORKER ═══
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', function() {
+    var swPath = location.pathname.indexOf('/grape-helper') >= 0
+      ? '/grape-helper/service-worker.js'
+      : './service-worker.js';
+    navigator.serviceWorker.register(swPath)
+      .then(function(reg) { console.log('SW ok:', reg.scope); })
+      .catch(function(e)  { console.log('SW skip:', e.message); });
+  });
+}
+
+// ═══ INDEXEDDB — локальное хранилище обработок ═══
+var IDB_NAME = 'GrapeHelperDB';
+var IDB_VERSION = 1;
+var idb = null;
+
+function initDB() {
+  return new Promise(function(resolve, reject) {
+    if (!window.indexedDB) { resolve(null); return; }
+    var request = indexedDB.open(IDB_NAME, IDB_VERSION);
+    request.onerror = function(){ reject(request.error); };
+    request.onsuccess = function(){ idb = request.result; resolve(idb); };
+    request.onupgradeneeded = function(event) {
+      var db2 = event.target.result;
+      if (!db2.objectStoreNames.contains('treatments')) {
+        var store = db2.createObjectStore('treatments', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('date', 'date');
+        store.createIndex('moa', 'moa');
+      }
+      if (!db2.objectStoreNames.contains('settings')) {
+        db2.createObjectStore('settings', { keyPath: 'key' });
+      }
+    };
+  });
+}
+
+function saveTreatmentLocal(treatment) {
+  if (!idb) return;
+  var tx = idb.transaction('treatments', 'readwrite');
+  tx.objectStore('treatments').add(Object.assign({}, treatment, { createdAt: new Date().toISOString() }));
+}
+
+function getTreatmentsLocal() {
+  if (!idb) return Promise.resolve([]);
+  return new Promise(function(resolve, reject) {
+    try {
+      var tx = idb.transaction('treatments', 'readonly');
+      var request = tx.objectStore('treatments').getAll();
+      request.onsuccess = function(){ resolve(request.result || []); };
+      request.onerror = function(){
+        console.warn('IDB getTreatments error:', request.error);
+        resolve([]);
+      };
+    } catch(e) {
+      console.warn('IDB transaction error:', e);
+      resolve([]);
+    }
+  });
+}
+
+function getRecentMOAsLocal(limit) {
+  limit = limit || 3;
+  return getTreatmentsLocal().then(function(treatments) {
+    var sorted = treatments.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+    return sorted.slice(0, limit).map(function(t){ return t.moa; }).filter(Boolean);
+  });
+}
+
+function checkMOARotationLocal(newMOA) {
+  return getRecentMOAsLocal(2).then(function(recent) {
+    if (recent.length >= 2 && recent[0] === recent[1] && recent[1] === newMOA) {
+      return {
+        warning: true,
+        message: '⚠️ Последние 2 обработки — ' + newMOA + '. Смените группу!',
+        alternatives: getAlternativeMOAsLocal(newMOA)
+      };
+    }
+    return { warning: false };
+  });
+}
+
+function getAlternativeMOAsLocal(currentMOA) {
+  var groups = {
+    'Медьсодержащие': ['Фосфонаты', 'Мультисайт', 'Биопрепарат'],
+    'Фосфонаты': ['Медьсодержащие', 'CAA', 'Биопрепарат'],
+    'Дитиокарбаматы': ['Фениламиды', 'Триазолы', 'Биопрепарат'],
+    'CAA': ['Фосфонаты', 'Стробилурины', 'Биопрепарат'],
+    'Стробилурины': ['CAA', 'Триазолы', 'SDHI'],
+    'Триазолы': ['Стробилурины', 'Анилинопиримидины', 'Биопрепарат'],
+    'SDHI': ['Триазолы', 'Оксатиапипролин', 'Биопрепарат']
+  };
+  return groups[currentMOA] || ['Медьсодержащие', 'Биопрепарат', 'Мультисайт'];
+}
+
+function exportJournalLocal() {
+  // Экспортировать журнал обработок из localStorage (vs4) в CSV
+  var treatments = [];
+  try {
+    var saved = JSON.parse(localStorage.getItem('vs4') || '[]');
+    treatments = saved;
+  } catch(e) {}
+  var headers = ['Дата', 'BBCH', 'Препарат', 'Препарат 2', 'МОА', 'Примечание'];
+  var rows = treatments.map(function(t) {
+    return [t.dt||'', t.bb||'', t.dr||'', t.dr2||'', t.mo||'', t.no||''];
+  });
+  var csv = [headers].concat(rows).map(function(row) {
+    return row.map(function(cell) {
+      return '"' + String(cell).replace(/"/g, '""') + '"';
+    }).join(',');
+  }).join('\n');
+  var bom = '\uFEFF'; // BOM для корректного отображения кириллицы в Excel
+  var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url;
+  link.download = 'grape-journal-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// Инициализировать IndexedDB при загрузке
+if (window.indexedDB) { initDB().catch(function(){}); }
+
+// ═══ НАУЧНЫЕ МОДЕЛИ UI ═══
+function showScientificModels() {
+  var modelsDiv = document.getElementById('sci-models');
+  if (!modelsDiv) return;
+  modelsDiv.style.display = 'block';
+
+  // Данные из текущего состояния
+  var bbch = parseBbch ? parseBbch(selBbch || '15-18') : 16;
+  var lrEl = document.getElementById('lr');
+  var dsr = 0;
+  if (lrEl && lrEl.value) {
+    dsr = Math.round((new Date() - new Date(lrEl.value + 'T00:00:00')) / 86400000);
+  }
+  var manual = deLoadManualForecast ? deLoadManualForecast() : { temp: 18, rainDays: [] };
+  var temp = manual.temp || 18;
+  var hasRainYesterday = manual.rainDays && manual.rainDays.length > 0;
+  var precip = hasRainYesterday ? 12 : 0;
+
+  // 1. Правило 3-10
+  var r310El = document.getElementById('rule310-result');
+  if (r310El) {
+    var r310 = de310Check(precip, temp, selBbch || '15-18');
+    var status310 = r310 ? 'critical' : (precip > 0 ? 'warning' : 'ok');
+    var icon310 = r310 ? '🔴🔴🔴' : (precip > 0 ? '⚠️' : '✅');
+    var title310 = r310
+      ? 'УСЛОВИЯ ДЛЯ ИНФЕКЦИИ ВЫПОЛНЕНЫ!'
+      : 'Условия не выполнены';
+    var rec310 = r310
+      ? '🚨 СРОЧНАЯ ОБРАБОТКА до дождя!'
+      : 'Мониторинг штатно';
+    r310El.innerHTML = '<div class="model-header"><span>🍇 Правило 3-10 (Baldacci, 1947)</span><span class="status-badge ' + status310 + '">' + icon310 + '</span></div>'
+      + '<p><strong>' + title310 + '</strong></p>'
+      + '<p>T=' + temp + '°C, Осадки=' + precip + 'мм, BBCH ' + (selBbch || '15-18') + '</p>'
+      + '<p><strong>' + rec310 + '</strong></p>';
+  }
+
+  // 2. Гоиданич — накопленная инкубация из DE движка
+  var incubPct = 0;
+  try { incubPct = parseFloat(localStorage.getItem('de_incubation_total') || '0') || 0; } catch(e) {}
+  var incLevel = incubPct >= 100 ? 'critical' : incubPct >= 80 ? 'warning' : incubPct >= 50 ? 'medium' : incubPct >= 20 ? 'low' : 'ok';
+  var incText = incubPct >= 100 ? '🔴 ОЖИДАЕТСЯ ПОЯВЛЕНИЕ СИМПТОМОВ!'
+    : incubPct >= 80 ? '🟠 КРИТИЧЕСКИЙ ПЕРИОД!'
+    : incubPct >= 50 ? '🟡 Средняя инкубация'
+    : incubPct >= 20 ? '🟢 Ранняя стадия'
+    : '✅ Инфекция минимальна';
+  var incRec = incubPct >= 80 ? '⚠️ Обработайте СРОЧНО!' : incubPct >= 50 ? '👀 Усильте мониторинг' : '✅ Под контролем';
+  var incStatusEl = document.getElementById('inc-status');
+  var incBarEl = document.getElementById('inc-bar');
+  var incPctEl = document.getElementById('inc-percent');
+  var incRecEl = document.getElementById('inc-rec');
+  if (incStatusEl) { incStatusEl.textContent = incText; incStatusEl.className = 'status-badge ' + incLevel; }
+  if (incBarEl) incBarEl.style.width = Math.round(incubPct) + '%';
+  if (incPctEl) incPctEl.textContent = 'Накопление: ' + Math.round(incubPct) + '%';
+  if (incRecEl) incRecEl.innerHTML = '<strong>' + incRec + '</strong>';
+
+  // 3. Спороношение Lalancette
+  var sporEl = document.getElementById('spor-result');
+  if (sporEl) {
+    var wetH = hasRainYesterday ? 6 : 0;
+    if (deHourlyData && deHourlyData.length) {
+      // Использовать реальные данные если есть
+      var yesterday2 = new Date(); yesterday2.setDate(yesterday2.getDate()-1);
+      var yd2 = yesterday2.toISOString().split('T')[0];
+      var ywet = deLalancetteCheck ? deLalancetteCheck({date:yd2, tmax:temp, humid:hasRainYesterday?88:55, rain:precip}) : 0;
+      if (ywet) wetH = ywet;
+    }
+    var sporStatus = wetH >= 6 ? 'high' : wetH >= 3 ? 'moderate' : 'ok';
+    var sporIcon = wetH >= 6 ? '🔴' : wetH >= 3 ? '🟠' : '✅';
+    var sporMsg = wetH >= 6 ? '🔴 Высокая интенсивность (' + wetH + ' влажных часов)'
+      : wetH >= 3 ? '🟠 Умеренные условия (' + wetH + 'ч влажности)'
+      : '✅ Спороношение маловероятно';
+    var sporRec = wetH >= 3 ? '🔬 Утром осмотри нижнюю сторону листьев' : 'Мониторинг штатно';
+    sporEl.innerHTML = '<div class="model-header"><span>🍄 Модель спороношения (Lalancette, 1988)</span><span class="status-badge ' + sporStatus + '">' + sporIcon + '</span></div>'
+      + '<p>' + sporMsg + '</p>'
+      + '<p><strong>' + sporRec + '</strong></p>';
+  }
+}
+
+function bnMore() {
+  overlay.style.display = 'block';
+  sheet.style.display = 'block';
+  // Анимация появления
+  setTimeout(function(){ sheet.style.transform = 'translateY(0)'; }, 10);
+}
+
+function closeMore() {
+  var sheet = document.getElementById('more-sheet');
+  var overlay = document.getElementById('more-overlay');
+  if(!sheet || !overlay) return;
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(function(){
+    sheet.style.display = 'none';
+    overlay.style.display = 'none';
+  }, 300);
+}
+
+function showPwaInstall() {
+  var banner = document.getElementById('pwa-banner');
+  if(banner) banner.style.display = 'block';
+}
+
+function closePwaBanner() {
+  var banner = document.getElementById('pwa-banner');
+  if(banner) banner.style.display = 'none';
+  localStorage.setItem('pwa-dismissed', '1');
+}
+
+function installPwa() {
+  if(_deferredPrompt) {
+    _deferredPrompt.prompt();
+    _deferredPrompt.userChoice.then(function(){ _deferredPrompt = null; closePwaBanner(); });
+    return;
+  }
+  // Fallback — показать инструкцию в баннере
+  var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent || '');
+  var banner = document.getElementById('pwa-banner');
+  try {
+    var hint = banner ? banner.querySelector('.pwa-text span') : null;
+    if (hint) {
+      hint.textContent = isIos
+        ? 'Нажмите «Поделиться» (□↑) → «На экран «Домой»'
+        : 'Нажмите меню браузера (⋮) → Добавить на главный экран';
+    }
+  } catch(e_){}
+  if (banner) banner.style.display = 'block';
+}
+
+// Перехватить событие установки PWA
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _deferredPrompt = e;
+  // Показать баннер если не было отклонено ранее
+  if(!localStorage.getItem('pwa-dismissed')) {
+    setTimeout(showPwaInstall, 3000);
+  }
+});
+
+// bottom nav sync встроен в tab()
+
 </script>
 
 <!-- ════ НИЖНЯЯ НАВИГАЦИЯ (мобильная) ════ -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="bn-item on" onclick="bnTab('adv')" id="bn-adv">
     <span class="bn-icon">🎯</span>
-    <span class="bn-label">Советник</span>
+    <span class="bn-label" data-i="nav-adv">Советник</span>
   </button>
   <button class="bn-item" onclick="bnTab('fct')" id="bn-fct">
     <span class="bn-icon">🌦</span>
-    <span class="bn-label">Прогноз</span>
+    <span class="bn-label" data-i="nav-fct">Прогноз</span>
   </button>
   <button class="bn-item" onclick="bnTab('jrn')" id="bn-jrn">
     <span class="bn-icon">📓</span>
-    <span class="bn-label">Журнал</span>
+    <span class="bn-label" data-i="nav-jrn">Журнал</span>
   </button>
   <button class="bn-item" onclick="bnTab('drg')" id="bn-drg">
     <span class="bn-icon">💊</span>
-    <span class="bn-label">Препараты</span>
+    <span class="bn-label" data-i="nav-drg">Препараты</span>
   </button>
   <button class="bn-item" onclick="bnMore()" id="bn-more">
     <span class="bn-icon">⋯</span>
     <span class="bn-label">Ещё</span>
   </button>
 </nav>
+  <div class="pwa-guide" style="margin:0 16px 12px">
+    <h3>📲 Установить как приложение</h3>
+    <div class="install-box">
+      <h4>Android (Chrome)</h4>
+      <ol><li>Chrome → <strong>⋮</strong> → <strong>Добавить на главный экран</strong></li></ol>
+    </div>
+    <div class="install-box">
+      <h4>iOS (Safari)</h4>
+      <ol><li>Safari → <strong>Поделиться ↗</strong> → <strong>На экран Домой 🏠</strong></li></ol>
+    </div>
+    <div class="benefits">
+      <p>✅ Работает без интернета · ✅ Быстрый запуск</p>
+    </div>
+  </div>
 
-<!-- ════ MORE MENU (выдвижное меню) ════ -->
-<div id="more-overlay" onclick="closeMore()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:350;backdrop-filter:blur(4px)"></div>
+
+<!-- Оверлей для more-sheet -->
+<div id="more-overlay" onclick="closeMore()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:350"></div>
+
+<!-- MORE SHEET -->
 <div id="more-sheet" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:12px 0 calc(env(safe-area-inset-bottom,0px) + 8px);z-index:360;box-shadow:0 -8px 40px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.46,.45,.94)">
   <div style="width:36px;height:4px;background:var(--div);border-radius:2px;margin:0 auto 16px"></div>
   <div style="padding:0 16px;font-size:11px;font-weight:700;color:var(--light);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Ещё разделы</div>
-  <div onclick="bnTab('jadam');closeMore()" style="display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent" ontouchstart="this.style.background='#f5f5f7'" ontouchend="this.style.background=''">
+  <div onclick="bnTab('jadam');closeMore()" style="display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent">
     <span style="font-size:24px">🌿</span>
-    <div><div style="font-size:15px;font-weight:600;color:var(--dark)">JADAM</div><div style="font-size:12px;color:var(--sec)">Органические препараты</div></div>
+    <div>
+      <div style="font-size:15px;font-weight:600;color:var(--dark)">JADAM</div>
+      <div style="font-size:12px;color:var(--sec)">Корейский органический метод</div>
+    </div>
   </div>
-  <div onclick="bnTab('sm');closeMore()" style="display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent" ontouchstart="this.style.background='#f5f5f7'" ontouchend="this.style.background=''">
+  <div onclick="bnTab('sm');closeMore()" style="display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent">
     <span style="font-size:24px">✨</span>
-    <div><div style="font-size:15px;font-weight:600;color:var(--dark)">Shine Muscat</div><div style="font-size:12px;color:var(--sec)">GA₃ + CPPU протоколы</div></div>
+    <div>
+      <div style="font-size:15px;font-weight:600;color:var(--dark)">Shine Muscat</div>
+      <div style="font-size:12px;color:var(--sec)">Японский протокол GA₃</div>
+    </div>
   </div>
-  <div style="font-size:12px;color:var(--sec)">Проверка баковых смесей</div></div>
-  </div>
-  <div style="height:1px;background:var(--div);margin:8px 20px"></div>
-  <div onclick="showPwaInstall()" style="display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent" ontouchstart="this.style.background='#f5f5f7'" ontouchend="this.style.background=''">
-    <span style="font-size:24px">📲</span>
-    <div><div style="font-size:15px;font-weight:600;color:var(--dark)">Добавить на рабочий стол</div><div style="font-size:12px;color:var(--sec)">Работает как приложение</div></div>
-  </div>
-  <div onclick="window.open('https://pay.cloudtips.ru/p/122602e2','_blank');closeMore()" style="display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent" ontouchstart="this.style.background='#f5f5f7'" ontouchend="this.style.background=''">
-    <span style="font-size:24px">☕</span>
-    <div><div style="font-size:15px;font-weight:600;color:var(--dark)">Поддержать проект</div><div style="font-size:12px;color:var(--sec)">Садовый Щит остаётся бесплатным</div></div>
+  <div style="margin:8px 16px 0;padding-top:12px;border-top:1px solid var(--div)">
+    <div onclick="window.open('https://pay.cloudtips.ru/p/122602e2','_blank');closeMore()" style="display:flex;align-items:center;gap:14px;padding:10px 4px;cursor:pointer">
+      <span style="font-size:24px">☕</span>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--dark)">Поддержать проект</div>
+        <div style="font-size:12px;color:var(--sec)">Садовый Щит остаётся бесплатным</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- PWA BANNER -->
-<div class="pwa-banner" id="pwa-banner">
-  <div class="pwa-banner-inner">
-    <div class="pwa-icon">🍇</div>
-    <div class="pwa-text">
-      <strong>Садовый Щит</strong>
-      <span>Добавьте на рабочий стол — работает как приложение</span>
+<div class="pwa-banner" id="pwa-banner" style="display:none;position:fixed;bottom:calc(60px + env(safe-area-inset-bottom,0px) + 8px);left:12px;right:12px;background:#1d1d1f;color:#fff;border-radius:16px;padding:14px 16px;z-index:290;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+    <div style="font-size:32px">🍇</div>
+    <div>
+      <div style="font-weight:700;font-size:15px">Садовый Щит</div>
+      <div style="font-size:12px;opacity:.7">Добавьте на рабочий стол</div>
     </div>
   </div>
-  <div class="pwa-actions">
-    <button class="pwa-btn-install" onclick="installPwa()">📲 Установить</button>
-    <button class="pwa-btn-close" onclick="closePwaBanner()">Позже</button>
+  <div style="display:flex;gap:8px">
+    <button onclick="installPwa()" style="flex:1;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:600;cursor:pointer">📲 Установить</button>
+    <button onclick="closePwaBanner()" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer">Позже</button>
   </div>
 </div>
 

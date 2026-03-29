@@ -1,0 +1,26 @@
+{
+  "name": "Садовый Щит — Советник виноградаря",
+  "short_name": "Садовый Щит",
+  "description": "Фенофазный советник для защиты виноградников",
+  "start_url": "/grape-helper/",
+  "scope": "/grape-helper/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f5f7",
+  "theme_color": "#30a14e",
+  "lang": "ru-RU",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
