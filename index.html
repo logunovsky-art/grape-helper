@@ -443,11 +443,10 @@ select option{background:#fff;color:var(--dark)}
   .logo-s{display:none}
 }
 @media(max-width:700px){
-  
-  
-  
+  .nav{display:none!important}
+  .bottom-nav{display:flex!important}
   .hdr{height:48px;padding-top:env(safe-area-inset-top,0px)}
-  .wrap{padding:12px;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 8px)}
+  .wrap{padding:12px;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 20px)}
   .g2{grid-template-columns:1fr;gap:10px}
   .bbg{grid-template-columns:1fr}
   .sh{font-size:18px}
@@ -584,6 +583,26 @@ select option{background:#fff;color:var(--dark)}
   .logo-s, .donate-txt { display: none; }
 }
 </style>
+
+<script>
+// Навигация — выполняется немедленно при загрузке DOM
+(function(){
+  function _applyNav(){
+    var mobile = window.innerWidth <= 700;
+    var bn = document.getElementById('bottom-nav');
+    var nav = document.querySelector('.nav');
+    if(bn)  bn.style.display  = mobile ? 'flex' : 'none';
+    if(nav) nav.style.display = mobile ? 'none' : 'flex';
+  }
+  if(document.readyState !== 'loading') {
+    _applyNav();
+  } else {
+    document.addEventListener('DOMContentLoaded', _applyNav);
+  }
+  window.addEventListener('resize', _applyNav);
+  window.addEventListener('load', _applyNav);
+})();
+</script>
 </head>
 
 <body>
@@ -3090,8 +3109,8 @@ window.onload=function(){
   }
   applyNav();
   window.addEventListener('resize', applyNav);
-  // Повтор через 300мс — страховка от медленного рендера
-  setTimeout(applyNav, 300);
+  setTimeout(applyNav, 100);
+  setTimeout(applyNav, 500);
 
   var now=new Date();
   setTXT('hdate',now.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}));
