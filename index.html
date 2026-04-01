@@ -550,7 +550,7 @@ select option{background:#fff;color:var(--dark)}
 .ni.on{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* Нижняя навигация — скрыта по умолчанию, JS показывает на мобильном */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
+.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 2px;border:none;background:transparent;-webkit-tap-highlight-color:transparent;outline:none}
 .bn-item:active{opacity:.6}
 .bn-icon{font-size:24px;line-height:1;transition:transform .15s}
@@ -562,24 +562,25 @@ select option{background:#fff;color:var(--dark)}
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
 @media(max-width:700px){.nav{display:none!important}.bottom-nav{display:flex!important}.hdr{height:48px;padding-top:env(safe-area-inset-top,0px)}.wrap{padding:12px;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 24px)}.g2{grid-template-columns:1fr;gap:10px}.sh{font-size:18px}.card{padding:12px;border-radius:14px}.card:hover{box-shadow:none;transform:none}.logo-s,.donate-txt{display:none}}
 @media(max-width:480px){.donate-txt{display:none}}
-@media(min-width:701px){.bottom-nav{display:none!important}.nav{display:flex!important}}
+
 </style>
 
 <script>
-/* VineShield Nav v4 — единственный */
+/* VineShield Nav v5 */
 !function(){
-  var M=768;
   function n(){
-    var bn=document.getElementById('bottom-nav');
-    var tn=document.querySelector('.nav');
-    var mob=window.innerWidth<=M;
-    if(bn) bn.style.setProperty('display',mob?'flex':'none','important');
-    if(tn) tn.style.setProperty('display',mob?'none':'flex','important');
+    var mob = window.innerWidth <= 768;
+    var bn = document.getElementById('bottom-nav');
+    var tn = document.querySelector('.nav');
+    if (bn) bn.style.display = mob ? 'flex' : 'none';
+    if (tn) tn.style.display = mob ? 'none' : 'flex';
   }
   n();
-  ['DOMContentLoaded','load','resize'].forEach(function(e){window.addEventListener(e,n);});
-  [100,300,600,1000].forEach(function(t){setTimeout(n,t);});
-  window.__vnav=n;
+  document.addEventListener('DOMContentLoaded', n);
+  window.addEventListener('load', n);
+  window.addEventListener('resize', n);
+  setTimeout(n, 50); setTimeout(n, 200); setTimeout(n, 500);
+  window.__vnav = n;
 }();
 </script></head>
 
@@ -1573,6 +1574,9 @@ window.addEventListener('error', function(e) {
   }
   return false;
 });
+var LANG='ru';
+function TTXT(ru,en){return LANG==='en'?en:ru;}
+
 
 // ════ BBCH DATA ════
 var BBCHS=[
@@ -1771,8 +1775,7 @@ var CLS_L={'contact':'Контактный','contact+phosphonate':'Контак�
 var DIS_L={mildew:'Милдью',oidium:'Оидиум',botrytis:'Серая гниль',anthracnose:'Антракноз'};
 var PCLS_COLOR={syn:'#e8500a',bayer:'#0050a0',basf:'#003580',ru:'#b8922a',jp:'#c43a2a',other:'#8a9e7a'};
 
-var LANG='ru';
-function TTXT(ru,en){return LANG==='en'?en:ru;}
+// LANG и TTXT — в начале файла
 var cfv='all',PA_MODE='smart',fctLat=null,fctLon=null,fctInitialized=false;
 var deAlerts=[],deHourlyData=[],idb=null;
 var manualRowCount=0,_deferredPrompt=null,pickerTargetIdx=-1;
