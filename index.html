@@ -550,7 +550,7 @@ select option{background:#fff;color:var(--dark)}
 .ni.on{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* Нижняя навигация — скрыта по умолчанию, JS показывает на мобильном */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 2px;border:none;background:transparent;-webkit-tap-highlight-color:transparent;outline:none}
 .bn-item:active{opacity:.6}
 .bn-icon{font-size:24px;line-height:1;transition:transform .15s}
@@ -561,51 +561,27 @@ select option{background:#fff;color:var(--dark)}
 /* Responsive — nav hidden + bottom-nav shown on mobile */
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
 @media(max-width:700px){.nav{display:none!important}.bottom-nav{display:flex!important}.hdr{height:48px;padding-top:env(safe-area-inset-top,0px)}.wrap{padding:12px;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 24px)}.g2{grid-template-columns:1fr;gap:10px}.sh{font-size:18px}.card{padding:12px;border-radius:14px}.card:hover{box-shadow:none;transform:none}.logo-s,.donate-txt{display:none}}
-@media(max-width:480px){.donate-txt{display:none}}</style>
+@media(max-width:480px){.donate-txt{display:none}}
+@media(min-width:701px){.bottom-nav{display:none!important}.nav{display:flex!important}}
+</style>
 
 <script>
-// Навигация — выполняется немедленно при загрузке DOM
-(function(){
-  function _applyNav(){
-    var mobile = window.innerWidth <= 700;
-    var bn = document.getElementById('bottom-nav');
-    var nav = document.querySelector('.nav');
-    if(bn)  bn.style.display  = mobile ? 'flex' : 'none';
-    if(nav) nav.style.display = mobile ? 'none' : 'flex';
+/* VineShield Nav v4 — единственный */
+!function(){
+  var M=768;
+  function n(){
+    var bn=document.getElementById('bottom-nav');
+    var tn=document.querySelector('.nav');
+    var mob=window.innerWidth<=M;
+    if(bn) bn.style.setProperty('display',mob?'flex':'none','important');
+    if(tn) tn.style.setProperty('display',mob?'none':'flex','important');
   }
-  if(document.readyState !== 'loading') {
-    _applyNav();
-  } else {
-    document.addEventListener('DOMContentLoaded', _applyNav);
-  }
-  window.addEventListener('resize', _applyNav);
-  window.addEventListener('load', _applyNav);
-})();
-</script>
-
-<script>
-// ══ НАВИГАЦИЯ: запуск немедленно ══
-(function(){
-  function _applyNav(){
-    var mob = window.innerWidth <= 700;
-    var bn  = document.getElementById('bottom-nav');
-    var nav = document.querySelector('.nav');
-    if(bn)  bn.style.display  = mob ? 'flex' : 'none';
-    if(nav) nav.style.display = mob ? 'none' : 'flex';
-  }
-  // Сразу
-  _applyNav();
-  // При загрузке и ресайзе
-  window.addEventListener('DOMContentLoaded', _applyNav);
-  window.addEventListener('load', _applyNav);
-  window.addEventListener('resize', _applyNav);
-  // Страховочные таймеры
-  setTimeout(_applyNav, 50);
-  setTimeout(_applyNav, 200);
-  setTimeout(_applyNav, 600);
-})();
-</script>
-</head>
+  n();
+  ['DOMContentLoaded','load','resize'].forEach(function(e){window.addEventListener(e,n);});
+  [100,300,600,1000].forEach(function(t){setTimeout(n,t);});
+  window.__vnav=n;
+}();
+</script></head>
 
 <body>
 
@@ -1795,7 +1771,13 @@ var CLS_L={'contact':'Контактный','contact+phosphonate':'Контак�
 var DIS_L={mildew:'Милдью',oidium:'Оидиум',botrytis:'Серая гниль',anthracnose:'Антракноз'};
 var PCLS_COLOR={syn:'#e8500a',bayer:'#0050a0',basf:'#003580',ru:'#b8922a',jp:'#c43a2a',other:'#8a9e7a'};
 
-var selBbch='',wEvs=[],journal=JSON.parse(localStorage.getItem('vs4')||'[]'),cf='all';
+var LANG='ru';
+function TTXT(ru,en){return LANG==='en'?en:ru;}
+var cfv='all',PA_MODE='smart',fctLat=null,fctLon=null,fctInitialized=false;
+var deAlerts=[],deHourlyData=[],idb=null;
+var manualRowCount=0,_deferredPrompt=null,pickerTargetIdx=-1;
+var wEvs=[];
+var selBbch='',journal=JSON.parse(localStorage.getItem('vs4')||'[]'),cf='all';
 var fctDays=[];
 
 // Безопасное присвоение innerHTML
@@ -3154,7 +3136,12 @@ function paRenderPhases(dr, dl) {
   dl.innerHTML = html;
 }
 
+// Глобальная функция навигации
+function applyNav(){ if(window.__vnav) window.__vnav(); }
+window.addEventListener('resize', applyNav);
+
 window.onload=function(){
+  applyNav(); setTimeout(applyNav, 100); setTimeout(applyNav, 500);
   // Закрыть BBCH dropdown при клике вне него
   document.addEventListener('click', function(e){
     var pop = document.getElementById('bbch-popup');
@@ -3165,20 +3152,6 @@ window.onload=function(){
       }
     }
   });
-
-  // ══ НАВИГАЦИЯ: JS-управление (главный механизм) ══
-  // Работает всегда — независимо от CSS @media
-  function applyNav() {
-    var mobile = window.innerWidth <= 700;
-    var bn  = document.getElementById('bottom-nav');
-    var nav = document.querySelector('.nav');
-    if (bn)  { bn.style.display  = mobile ? 'flex' : 'none'; }
-    if (nav) { nav.style.display = mobile ? 'none' : 'flex'; }
-  }
-  applyNav();
-  window.addEventListener('resize', applyNav);
-  setTimeout(applyNav, 100);
-  setTimeout(applyNav, 500);
 
   var now=new Date();
   setTXT('hdate',now.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}));
@@ -3221,17 +3194,7 @@ window.onload=function(){
     deUpdate();
   }, 300);
 
-  // Принудительное управление навигацией (резервный механизм)
-  function applyNavLayout() {
-    var isMobile = window.innerWidth <= 700;
-    var bn = document.getElementById('bottom-nav');
-    var nav = document.querySelector('.nav');
-    if (bn) bn.style.display = isMobile ? 'flex' : 'none';
-    if (nav) nav.style.display = isMobile ? 'none' : 'flex';
-  }
-  applyNavLayout();
-  window.addEventListener('resize', applyNavLayout);
-};
+
 
 function askLoc(){
   if(!navigator.geolocation){setTXT('locn','📍 Геолокация недоступна');return;}
@@ -4748,8 +4711,8 @@ function getSystem(incubDay, bbch, hasUpcomingRain) {
 // ════════════════════════════════════════
 // i18n — LANGUAGE SYSTEM
 // ════════════════════════════════════════
-var LANG = 'ru';
-function TTXT(ru,en){return LANG==='en'?en:ru;}
+// LANG и TTXT объявлены в начале файла
+
 
 var I18N = {
   ru: {
@@ -5771,11 +5734,10 @@ window.addEventListener('beforeinstallprompt', function(e) {
 });
 
 // bottom nav sync встроен в tab()
-
-</script>
+}</script>
 
 <!-- ════ НИЖНЯЯ НАВИГАЦИЯ (мобильная) ════ -->
-<nav class="bottom-nav" id="bottom-nav">
+<nav class="bottom-nav" id="bottom-nav" style="display:flex">
   <button class="bn-item on" onclick="bnTab('adv')" id="bn-adv">
     <span class="bn-icon">🎯</span>
     <span class="bn-label" data-i="nav-adv">Советник</span>
