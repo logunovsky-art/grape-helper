@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style><style>
+<style>
 /* ═══════════════════════════════════════════════
    VINOSHIELD — Apple-style Design 2026
    Белый фон · Чёрный фон · Inter · Максимальный контраст
@@ -550,7 +550,7 @@ select option{background:#fff;color:var(--dark)}
 .ni.on{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* Нижняя навигация — скрыта по умолчанию, JS показывает на мобильном */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 2px;border:none;background:transparent;-webkit-tap-highlight-color:transparent;outline:none}
 .bn-item:active{opacity:.6}
 .bn-icon{font-size:24px;line-height:1;transition:transform .15s}
@@ -568,7 +568,7 @@ select option{background:#fff;color:var(--dark)}
 <script>
 /* VineShield Nav v4 — единственный */
 !function(){
-  var M=768;
+  var M=700;
   function n(){
     var bn=document.getElementById('bottom-nav');
     var tn=document.querySelector('.nav');
@@ -5737,7 +5737,7 @@ window.addEventListener('beforeinstallprompt', function(e) {
 }</script>
 
 <!-- ════ НИЖНЯЯ НАВИГАЦИЯ (мобильная) ════ -->
-<nav class="bottom-nav" id="bottom-nav" style="display:flex">
+<nav class="bottom-nav" id="bottom-nav">
   <button class="bn-item on" onclick="bnTab('adv')" id="bn-adv">
     <span class="bn-icon">🎯</span>
     <span class="bn-label" data-i="nav-adv">Советник</span>
