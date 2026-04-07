@@ -543,14 +543,14 @@ select option{background:#fff;color:var(--dark)}
    ║  НАВИГАЦИЯ — не изменять этот блок!         ║
    ╚══════════════════════════════════════════════╝ */
 
-/* Верхние вкладки — скрыты по умолчанию, только десктоп */
-.nav{display:none;background:rgba(255,255,255,.97);border-bottom:1px solid var(--div);padding:0 8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:52px;z-index:100;-webkit-overflow-scrolling:touch}
+/* Верхние вкладки — всегда видимы */
+.nav{display:flex;background:rgba(255,255,255,.97);border-bottom:1px solid var(--div);padding:0 8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:52px;z-index:100;-webkit-overflow-scrolling:touch}
 .nav::-webkit-scrollbar{display:none}
 .ni{padding:11px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--sec);border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s}
 .ni.on{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* Нижняя навигация — видима по умолчанию (мобильный first) */
-.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
+.bottom-nav{display:none!important;position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 2px;border:none;background:transparent;-webkit-tap-highlight-color:transparent;outline:none}
 .bn-item:active{opacity:.6}
 .bn-icon{font-size:24px;line-height:1;transition:transform .15s}
@@ -560,7 +560,7 @@ select option{background:#fff;color:var(--dark)}
 
 /* Мобильный: отступ снизу под навигацию */
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}}
-@media(max-width:700px){.hdr{height:48px;padding-top:env(safe-area-inset-top,0px)}.wrap{padding:12px;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 24px)}.g2{grid-template-columns:1fr;gap:10px}.sh{font-size:18px}.card{padding:12px;border-radius:14px}.card:hover{box-shadow:none;transform:none}.logo-s,.donate-txt{display:none}}
+@media(max-width:700px){.hdr{height:48px;padding-top:env(safe-area-inset-top,0px)}.wrap{padding:12px;padding-bottom:16px}.g2{grid-template-columns:1fr;gap:10px}.sh{font-size:18px}.card{padding:12px;border-radius:14px}.card:hover{box-shadow:none;transform:none}.logo-s,.donate-txt{display:none}}
 @media(max-width:480px){.donate-txt{display:none}}
 /* Десктоп: прячем bottom-nav, показываем верхние вкладки */
 @media(min-width:701px){.bottom-nav{display:none!important}.nav{display:flex!important}.wrap{padding-bottom:22px}}
