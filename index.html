@@ -565,23 +565,7 @@ select option{background:#fff;color:var(--dark)}
 @media(min-width:701px){.bottom-nav{display:none!important}.nav{display:flex!important}}
 </style>
 
-<script>
-/* VineShield Nav v4 — единственный */
-!function(){
-  var M=700;
-  function n(){
-    var bn=document.getElementById('bottom-nav');
-    var tn=document.querySelector('.nav');
-    var mob=window.innerWidth<=M;
-    if(bn) bn.style.setProperty('display',mob?'flex':'none','important');
-    if(tn) tn.style.setProperty('display',mob?'none':'flex','important');
-  }
-  n();
-  ['DOMContentLoaded','load','resize'].forEach(function(e){window.addEventListener(e,n);});
-  [100,300,600,1000].forEach(function(t){setTimeout(n,t);});
-  window.__vnav=n;
-}();
-</script></head>
+</head>
 
 <body>
 
