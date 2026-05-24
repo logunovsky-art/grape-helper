@@ -12,464 +12,53 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ============================================
-   Садовый Щит — Apple / iOS Weather redesign
-   Drop-in: меняется только <style>, JS не трогается.
-   Все классы и ID сохранены: .ni .ni.on, .tc .tc.on,
-   .bbc .bbc.on, .pill .pill.on, .lang-btn.on, .bn-item.on,
-   .je, .re, .dr-card (+ .syn .bayer .jp .bio),
-   .tag (+ .sys .phi .moa), .al (+ -ok -w -d -info -muted),
-   .prot (+ .active .weak .ending .expired .unknown), .rb (+ -ok -w -d -i)
-   ============================================ */
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  /* iOS / Apple base */
-  --blue:#0071e3;--blue-d:#0058b8;--blue-glow:rgba(0,113,227,.18);
-  --green:#34c759;--green-d:#248a3d;
-  --orange:#ff9500;--red:#ff3b30;--ok:#34c759;--warn:#ff9500;--err:#ff3b30;--info:#0071e3;
-
-  /* Ink / Surface */
-  --ink:#1d1d1f;--dark:#1d1d1f;--mid:#3a3a3c;--sec:#86868b;--light:#a1a1a6;
-  --div:rgba(0,0,0,.08);--div-strong:rgba(0,0,0,.12);
-  --bg:#fbfbfd;--bg-2:#f2f2f5;--card:#ffffff;--input:#f2f2f5;
-
-  /* Системы 1..4 — мягкая палитра в духе iOS */
-  --s1:#34c759;--s1b:rgba(52,199,89,.10);--s1bd:rgba(52,199,89,.28);
-  --s2:#ffcc00;--s2b:rgba(255,204,0,.10);--s2bd:rgba(255,204,0,.30);
-  --s3:#ff9500;--s3b:rgba(255,149,0,.10);--s3bd:rgba(255,149,0,.30);
-  --s4:#ff3b30;--s4b:rgba(255,59,48,.10);--s4bd:rgba(255,59,48,.30);
-
-  --r1:12px;--r2:16px;--r3:20px;--r4:28px;
-
-  /* Тонкие Apple-тени */
-  --sh1:0 1px 2px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.04);
-  --sh2:0 2px 6px rgba(0,0,0,.05), 0 12px 32px rgba(0,0,0,.06);
-  --sh3:0 8px 24px rgba(0,0,0,.08), 0 24px 80px rgba(0,0,0,.10);
-
-  --ease:cubic-bezier(.32,.72,0,1);
-  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --blue:#007AFF;--blue-d:#0056b3;--blue-glow:rgba(0,122,255,.22);
+  --green:#30a14e;--green-d:#1e7a38;
+  --ok:#30a14e;--warn:#ff9500;--err:#ff3b30;--info:#007AFF;
+  --dark:#1d1d1f;--mid:#424245;--sec:#6e6e73;--light:#a1a1a6;
+  --div:#d2d2d7;--bg:#f5f5f7;--card:#fff;--input:#fff;
+  --s1:#30a14e;--s1b:rgba(48,161,78,.10);--s1bd:rgba(48,161,78,.30);
+  --s2:#bf8f00;--s2b:rgba(191,143,0,.08);--s2bd:rgba(191,143,0,.28);
+  --s3:#c45000;--s3b:rgba(196,80,0,.08);--s3bd:rgba(196,80,0,.28);
+  --s4:#cc2200;--s4b:rgba(204,34,0,.08);--s4bd:rgba(204,34,0,.30);
+  --r1:8px;--r2:12px;--r3:18px;--r4:24px;
+  --sh1:0 2px 8px rgba(0,0,0,.08);--sh2:0 8px 24px rgba(0,0,0,.10);--sh3:0 20px 60px rgba(0,0,0,.12);
+  --ease:cubic-bezier(.25,.46,.45,.94);--safe-bottom:env(safe-area-inset-bottom,0px);
 }
-
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{
-  font-family:-apple-system,'SF Pro Text','SF Pro Display','Inter',BlinkMacSystemFont,'Helvetica Neue',sans-serif;
-  font-size:15px;line-height:1.45;color:var(--ink);
-  background:var(--bg);
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-  letter-spacing:-.01em;
-  font-feature-settings:"ss01","cv11";
-}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5;color:var(--dark);background:var(--bg);-webkit-font-smoothing:antialiased}
 a{text-decoration:none;color:inherit}
-button{font-family:inherit;letter-spacing:-.01em}
-
-/* ============== ХЕДЕР с blur (iOS-style) ============== */
-.hdr{
-  background:rgba(251,251,253,.72);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid var(--div);
-  padding:0 18px;display:flex;align-items:center;justify-content:space-between;
-  height:56px;position:sticky;top:0;z-index:200;
-}
-.logo-w{display:flex;align-items:center;gap:10px;padding:8px 0}
-.logo-icon{
-  width:32px;height:32px;
-  background:linear-gradient(135deg,#34c759,#248a3d);
-  border-radius:9px;display:flex;align-items:center;justify-content:center;
-  font-size:17px;box-shadow:0 1px 3px rgba(36,138,61,.35), inset 0 1px 0 rgba(255,255,255,.25);
-}
-.logo-t{font-size:17px;font-weight:700;letter-spacing:-.022em;color:var(--ink)}
-.logo-t em{color:var(--green-d);font-style:normal;font-weight:700}
-.logo-s{font-size:10px;color:var(--sec);letter-spacing:.6px;text-transform:uppercase;margin-top:1px;font-weight:500}
-
-.hdr-right{display:flex;align-items:center;gap:10px}
-.hdr-loc{text-align:right;font-size:11px;color:var(--sec);font-weight:500}
-.hdr-loc strong{display:block;font-size:12px;color:var(--ink);font-weight:600;letter-spacing:-.01em}
-.loc-n{cursor:pointer;opacity:.9;color:var(--blue);font-weight:500}
-
-.donate-btn{
-  display:inline-flex;align-items:center;gap:5px;
-  background:var(--orange);color:#fff;font-size:12px;font-weight:600;
-  padding:7px 14px;border-radius:980px;
-  box-shadow:0 1px 2px rgba(255,149,0,.3);
-  letter-spacing:-.01em;transition:transform .2s var(--ease);
-}
-.donate-btn:active{transform:scale(.96)}
-
-/* iOS segmented control для языка */
-.lang-sw{
-  display:flex;background:rgba(120,120,128,.16);
-  border:none;border-radius:9px;padding:2px;gap:0;
-}
-.lang-btn{
-  background:none;border:none;color:var(--ink);
-  font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px;
-  cursor:pointer;font-family:inherit;letter-spacing:-.01em;
-  transition:all .2s var(--ease);
-}
-.lang-btn.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08), 0 1px 1px rgba(0,0,0,.04)}
-
-/* ============== ТАБЫ (desktop nav) ============== */
-.nav{
-  background:rgba(251,251,253,.72);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid var(--div);
-  display:flex;padding:0 12px;overflow-x:auto;scrollbar-width:none;
-  position:sticky;top:56px;z-index:199;-webkit-overflow-scrolling:touch;
-}
-.nav::-webkit-scrollbar{display:none}
-.ni{
-  padding:13px 16px;cursor:pointer;font-size:14px;font-weight:500;
-  color:var(--sec);border-bottom:2px solid transparent;
-  white-space:nowrap;flex-shrink:0;letter-spacing:-.01em;
-  transition:color .2s var(--ease);
-}
-.ni:hover{color:var(--ink)}
-.ni.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
-
-/* ============== ОБЩАЯ СЕТКА ============== */
-.wrap{max-width:1080px;margin:0 auto;padding:24px 18px 100px}
-.tc{display:none}
-.tc.on{display:block;animation:fadeUp .35s var(--ease) both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.g2{display:grid;grid-template-columns:360px 1fr;gap:18px}
-
-/* ============== КАРТОЧКИ ============== */
-.card{
-  background:var(--card);
-  border:1px solid var(--div);
-  border-radius:var(--r3);
-  padding:22px;box-shadow:var(--sh1);
-  margin-bottom:16px;
-  transition:box-shadow .3s var(--ease), transform .3s var(--ease);
-}
-.card:hover{box-shadow:var(--sh2)}
-.ct{
-  font-size:13px;font-weight:600;color:var(--ink);
-  margin-bottom:18px;padding-bottom:14px;
-  border-bottom:1px solid var(--div);
-  display:flex;align-items:center;gap:8px;
-  letter-spacing:-.01em;text-transform:none;
-}
-.sh{font-size:32px;font-weight:700;color:var(--ink);margin-bottom:4px;letter-spacing:-.022em;line-height:1.1}
-.ss{font-size:14px;color:var(--sec);margin-bottom:20px;font-weight:400;letter-spacing:-.01em}
-
-/* ============== ФОРМЫ ============== */
-.field{margin-bottom:16px}
-label{
-  display:block;font-size:11px;font-weight:600;letter-spacing:.4px;
-  text-transform:uppercase;color:var(--sec);margin-bottom:7px;
-}
-input,select,textarea{
-  width:100%;background:var(--input);
-  border:1px solid transparent;color:var(--ink);
-  padding:12px 14px;font-family:inherit;font-size:15px;
-  border-radius:var(--r1);outline:none;
-  transition:all .2s var(--ease);appearance:none;-webkit-appearance:none;
-  letter-spacing:-.01em;
-}
-textarea{resize:vertical;min-height:80px}
-input:focus,select:focus,textarea:focus{
-  background:#fff;border-color:var(--blue);
-  box-shadow:0 0 0 4px var(--blue-glow);
-}
-select{
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-  background-repeat:no-repeat;background-position:right 14px center;
-  padding-right:38px;
-}
-
-/* ============== КНОПКИ ============== */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  padding:11px 20px;font-family:inherit;font-size:14px;font-weight:600;
-  letter-spacing:-.01em;cursor:pointer;border:none;border-radius:980px;
-  transition:all .2s var(--ease);-webkit-tap-highlight-color:transparent;
-}
-.btn:active{transform:scale(.97)}
-.btn-p{
-  background:var(--blue);color:#fff;width:100%;padding:14px;font-size:16px;
-  border-radius:14px;font-weight:600;letter-spacing:-.015em;
-  box-shadow:0 1px 2px rgba(0,113,227,.2);
-}
-.btn-p:hover{background:var(--blue-d)}
-.btn-g{
-  background:rgba(120,120,128,.12);color:var(--ink);border:none;
-  font-weight:500;
-}
-.btn-g:hover{background:rgba(120,120,128,.18)}
-.btn-sm{padding:7px 14px;font-size:12px;border-radius:980px}
-
-/* ============== BBCH селектор ============== */
-#bbch-dropdown{
-  display:flex;align-items:center;gap:12px;padding:14px 16px;
-  background:var(--input)!important;border:1px solid transparent!important;
-  border-radius:14px!important;cursor:pointer;transition:all .2s var(--ease);
-}
-#bbch-dropdown:hover{background:#ecedf1!important}
-#bbch-drop-icon{font-size:24px!important}
-#bbch-drop-code{font-size:10px!important;font-weight:600!important;color:var(--sec)!important;letter-spacing:.5px!important;text-transform:uppercase!important}
-#bbch-drop-name{font-size:15px!important;font-weight:600!important;color:var(--ink)!important;letter-spacing:-.01em!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bbch-drop-arrow{font-size:14px!important;color:var(--sec)!important}
-#bbch-popup{
-  background:rgba(255,255,255,.92)!important;
-  -webkit-backdrop-filter:saturate(180%) blur(30px);
-  backdrop-filter:saturate(180%) blur(30px);
-  border:1px solid var(--div);
-  border-radius:18px!important;
-  box-shadow:0 16px 60px rgba(0,0,0,.18)!important;
-  margin-top:6px!important;
-}
-.bbc{
-  display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;
-  border-bottom:1px solid var(--div);transition:background .15s;
-  -webkit-tap-highlight-color:transparent;
-}
-.bbc:last-child{border-bottom:none}
-.bbc:hover{background:rgba(120,120,128,.08)}
-.bbc.on{background:var(--blue-glow)}
-.bbc.on .bbc-name{color:var(--blue);font-weight:600}
-.bbc-em{font-size:22px;flex-shrink:0;width:32px;text-align:center}
-.bbc-code{font-size:10px;font-weight:600;color:var(--sec);letter-spacing:.5px;text-transform:uppercase}
-.bbc-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3;margin:2px 0;letter-spacing:-.01em}
-.bbc-desc{font-size:12px;color:var(--sec);line-height:1.4}
-.rdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(0,0,0,.04)}
-
-/* ============== ALERTS / RIBBONS ============== */
-.al{
-  padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.5;
-  margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;
-  letter-spacing:-.005em;border:1px solid transparent;
-}
-.ali{font-size:16px;flex-shrink:0;line-height:1.4}
-.al-ok{background:rgba(52,199,89,.10);border-color:rgba(52,199,89,.25);color:#1f6f37}
-.al-w{background:rgba(255,149,0,.10);border-color:rgba(255,149,0,.28);color:#7a4500}
-.al-d{background:rgba(255,59,48,.10);border-color:rgba(255,59,48,.28);color:#8b1f18}
-.al-info{background:rgba(0,113,227,.08);border-color:rgba(0,113,227,.22);color:#003e80}
-.al-muted{background:var(--bg-2);border-color:var(--div);color:var(--sec)}
-
-.rb{
-  display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
-  border-radius:980px;font-size:10px;font-weight:600;letter-spacing:.3px;
-  text-transform:uppercase;border:1px solid transparent;
-}
-.rb-ok{background:rgba(52,199,89,.12);color:#1f6f37;border-color:rgba(52,199,89,.25)}
-.rb-w{background:rgba(255,149,0,.12);color:#7a4500;border-color:rgba(255,149,0,.28)}
-.rb-d{background:rgba(255,59,48,.12);color:#8b1f18;border-color:rgba(255,59,48,.28)}
-.rb-i{background:rgba(0,113,227,.10);color:#003e80;border-color:rgba(0,113,227,.22)}
-
-.divl{height:1px;background:var(--div);margin:14px 0}
-.hint{font-size:12px;color:var(--sec);margin-top:6px;letter-spacing:-.005em}
-.empty{text-align:center;padding:40px 20px;color:var(--light)}
-.empty em{font-size:32px;display:block;margin-bottom:10px;font-style:normal}
-
-/* ============== СТАТЫ ============== */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
-.stat{
-  background:var(--bg-2);border:1px solid var(--div);
-  border-radius:14px;padding:12px 14px;
-}
-.stat-v{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.15}
-.stat-l{font-size:11px;color:var(--sec);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;font-weight:500}
-
-/* ============== ЗАЩИТНАЯ КАРТА (.prot) ============== */
-.prot{
-  border-radius:20px;padding:22px 22px;margin-bottom:14px;
-  border:1px solid;position:relative;overflow:hidden;
-}
-.prot::before{
-  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;
-}
-.prot.active{background:rgba(52,199,89,.08);border-color:rgba(52,199,89,.25)}
-.prot.active::before{background:var(--green)}
-.prot.weak{background:rgba(255,204,0,.10);border-color:rgba(255,204,0,.28)}
-.prot.weak::before{background:#ffcc00}
-.prot.ending{background:rgba(255,149,0,.10);border-color:rgba(255,149,0,.28)}
-.prot.ending::before{background:var(--orange)}
-.prot.expired{background:rgba(255,59,48,.08);border-color:rgba(255,59,48,.25)}
-.prot.expired::before{background:var(--red)}
-.prot.unknown{background:rgba(0,113,227,.06);border-color:rgba(0,113,227,.18)}
-.prot.unknown::before{background:var(--blue)}
-.prot-title{font-size:24px;font-weight:700;letter-spacing:-.022em;margin-bottom:8px;line-height:1.2}
-.prot-sub{font-size:14px;color:var(--mid);line-height:1.55;letter-spacing:-.005em}
-.prot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
-.prot-grid .stat{background:rgba(255,255,255,.6)}
-
-/* ============== КАРТЫ ПРЕПАРАТОВ ============== */
-.dr-card{
-  background:var(--card);border:1px solid var(--div);
-  border-radius:14px;padding:14px 16px;margin-bottom:8px;
-  border-left:3px solid var(--div);
-  transition:transform .2s var(--ease), box-shadow .2s var(--ease);
-}
-.dr-card:hover{transform:translateY(-1px);box-shadow:var(--sh1)}
-.dr-card.syn{border-left-color:#ff6f30}
-.dr-card.bayer{border-left-color:#0071e3}
-.dr-card.jp{border-left-color:#ff3b30}
-.dr-card.bio{border-left-color:var(--green)}
-.dr-name{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
-.dr-ai{font-size:12px;color:var(--sec);font-style:normal;margin-top:2px;letter-spacing:-.005em}
-.dr-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-.tag{
-  font-size:10px;padding:3px 9px;border-radius:980px;font-weight:600;
-  background:var(--bg-2);border:1px solid var(--div);color:var(--sec);
-  letter-spacing:.1px;
-}
-.tag.sys{background:rgba(0,113,227,.08);color:#003e80;border-color:rgba(0,113,227,.2)}
-.tag.phi{background:rgba(52,199,89,.10);color:#1f6f37;border-color:rgba(52,199,89,.25)}
-.tag.moa{background:rgba(255,149,0,.10);color:#7a4500;border-color:rgba(255,149,0,.28)}
-
-/* ============== ЖУРНАЛ ============== */
-.je,.re{
-  display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--div);
-  align-items:flex-start;
-}
-.je:last-child,.re:last-child{border-bottom:none}
-.jed{font-size:12px;color:var(--sec);min-width:84px;font-weight:600;letter-spacing:-.005em;padding-top:2px}
-.jdrug{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
-.jmeta{font-size:12px;color:var(--sec);margin-top:3px;line-height:1.5}
-.jdel{
-  cursor:pointer;color:var(--light);font-size:18px;margin-left:auto;
-  flex-shrink:0;width:30px;height:30px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s var(--ease);
-}
-.jdel:hover{color:var(--red);background:rgba(255,59,48,.1)}
-
-/* ============== PILLS (фильтры препаратов) ============== */
-.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.pill{
-  padding:7px 14px;border-radius:980px;font-size:13px;font-weight:500;
-  cursor:pointer;border:1px solid var(--div);background:var(--card);
-  color:var(--ink);letter-spacing:-.01em;
-  transition:all .2s var(--ease);
-}
-.pill:hover{background:var(--bg-2)}
-.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-
-/* ============== ПРОГНОЗ — ряды погоды ============== */
-.weather-row{
-  display:grid;grid-template-columns:84px 48px 60px 1fr;align-items:stretch;
-  margin-bottom:6px;border-radius:14px;overflow:hidden;
-  border:1px solid var(--div);background:var(--card);
-  transition:box-shadow .2s var(--ease);
-}
-.weather-row:hover{box-shadow:var(--sh1)}
-.weather-date{
-  padding:10px 12px;background:var(--bg-2);
-  font-size:13px;font-weight:600;letter-spacing:-.01em;
-}
-.weather-date small{
-  display:block;font-size:9px;text-transform:uppercase;
-  letter-spacing:.6px;color:var(--sec);font-weight:500;margin-bottom:2px;
-}
-.weather-icon{display:flex;align-items:center;justify-content:center;font-size:24px}
-.weather-rain{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-size:11px;color:var(--sec);font-weight:500;
-}
-.weather-action{padding:10px 12px;font-size:13px;display:flex;align-items:center;color:var(--mid);letter-spacing:-.005em}
-
-/* ============== DISCLAIMER + FOOTER ============== */
-.disc{
-  background:var(--bg-2);border:1px solid var(--div);
-  border-radius:16px;padding:16px 20px;font-size:12px;
-  color:var(--sec);line-height:1.7;margin-top:28px;letter-spacing:-.005em;
-}
-.disc strong{color:var(--red);font-weight:600}
-.footer{
-  background:transparent;color:var(--light);text-align:center;
-  padding:24px 20px;font-size:12px;margin-top:20px;
-}
-.footer strong{color:var(--ink);font-size:13px;font-weight:600;display:block;margin-bottom:4px;letter-spacing:-.01em}
-
-/* ============== BOTTOM NAV — iOS glass ============== */
-.bottom-nav{
-  display:none!important;position:fixed;
-  bottom:max(8px,var(--safe-bottom));left:10px;right:10px;
-  height:62px;padding:0;
-  background:rgba(255,255,255,.78);
-  -webkit-backdrop-filter:saturate(180%) blur(28px);
-  backdrop-filter:saturate(180%) blur(28px);
-  border:1px solid var(--div);
-  border-radius:24px;
-  box-shadow:0 8px 30px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.05);
-  z-index:9999;flex-direction:row;align-items:center;justify-content:space-around;
-}
-.bn-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;padding:8px 2px;border:none;background:transparent;
-  -webkit-tap-highlight-color:transparent;
-  transition:transform .2s var(--ease);
-}
-.bn-item:active{transform:scale(.92)}
-.bn-icon{font-size:22px;line-height:1;opacity:.55;transition:opacity .2s var(--ease)}
-.bn-label{font-size:10px;font-weight:600;color:var(--sec);line-height:1;letter-spacing:.1px}
-.bn-item.on .bn-icon{opacity:1}
-.bn-item.on .bn-label{color:var(--blue)}
-
-/* ============== RESPONSIVE ============== */
-@media(max-width:960px){
-  .g2{grid-template-columns:1fr}
-  .logo-s{display:none}
-  .stats{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:700px){
-  .hdr{height:54px;padding:0 14px}
-  .hdr-loc{display:none}
-  .wrap{padding:18px 14px 110px}
-  .sh{font-size:26px}
-  .ss{font-size:13px;margin-bottom:16px}
-  .card{padding:18px;border-radius:18px}
-  .nav{display:none!important}
-  .bottom-nav{display:flex!important}
-  .donate-txt,.logo-s{display:none}
-  .prot{padding:18px}
-  .prot-title{font-size:20px}
-  .prot-grid{grid-template-columns:1fr 1fr}
-  .g2{gap:12px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .weather-row{grid-template-columns:72px 40px 50px 1fr}
-}
-@media(min-width:701px){
-  .bottom-nav{display:none!important}
-  .nav{display:flex!important}
-}
-
-/* ============== DARK MODE (iOS) ============== */
-@media (prefers-color-scheme: dark){
-  :root{
-    --ink:#f5f5f7;--dark:#f5f5f7;--mid:#d1d1d6;--sec:#98989d;--light:#6e6e73;
-    --bg:#000000;--bg-2:#1c1c1e;--card:#1c1c1e;--input:#2c2c2e;
-    --div:rgba(255,255,255,.10);--div-strong:rgba(255,255,255,.16);
-    --blue:#0a84ff;--blue-d:#409cff;--blue-glow:rgba(10,132,255,.25);
-    --green:#30d158;--orange:#ff9f0a;--red:#ff453a;
-  }
-  .hdr,.nav{background:rgba(0,0,0,.72)}
-  .lang-sw{background:rgba(120,120,128,.32)}
-  .lang-btn.on{background:#48484a;color:#fff}
-  .bottom-nav{background:rgba(28,28,30,.78)}
-  input:focus,select:focus,textarea:focus{background:#3a3a3c}
-  .pill{background:var(--card);color:var(--ink)}
-  .pill.on{background:#fff;color:#000;border-color:#fff}
-  select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2398989d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>")}
-  .al-ok{background:rgba(48,209,88,.14);color:#7be0a0;border-color:rgba(48,209,88,.3)}
-  .al-w{background:rgba(255,159,10,.14);color:#ffc673;border-color:rgba(255,159,10,.3)}
-  .al-d{background:rgba(255,69,58,.14);color:#ff8a82;border-color:rgba(255,69,58,.3)}
-  .al-info{background:rgba(10,132,255,.14);color:#7eb6ff;border-color:rgba(10,132,255,.3)}
-  .al-muted{background:var(--bg-2);color:var(--sec);border-color:var(--div)}
-  .prot.active{background:rgba(48,209,88,.10)}
-  .prot.weak{background:rgba(255,204,0,.10)}
-  .prot.ending{background:rgba(255,159,10,.10)}
-  .prot.expired{background:rgba(255,69,58,.10)}
-  .prot.unknown{background:rgba(10,132,255,.10)}
-  .prot-grid .stat{background:rgba(255,255,255,.04)}
-  #bbch-popup{background:rgba(28,28,30,.92)!important}
-}
-
+.hdr{background:rgba(255,255,255,.98);border-bottom:1px solid var(--div);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200}
+.logo-w{display:flex;align-items:center;gap:10px;padding:10px 0}.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#248a3d,#30a14e);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}.logo-t{font-size:18px;font-weight:800;letter-spacing:-.3px}.logo-t em{color:var(--green);font-style:italic}.logo-s{font-size:9px;color:var(--sec);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:12px}.hdr-loc{text-align:right;font-size:11px;color:var(--sec)}.hdr-loc strong{display:block;font-size:12px;color:var(--dark);font-weight:700}.loc-n{cursor:pointer;text-decoration:underline dotted var(--div);opacity:.85}
+.donate-btn{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f5a623,#f0832a);color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;box-shadow:0 2px 8px rgba(245,166,35,.35);white-space:nowrap}
+.lang-sw{display:flex;background:var(--bg);border:1px solid var(--div);border-radius:20px;padding:2px;gap:2px}.lang-btn{background:none;border:none;color:var(--light);font-size:11px;font-weight:800;padding:4px 10px;border-radius:16px;cursor:pointer;font-family:inherit;letter-spacing:.5px}.lang-btn.on{background:var(--dark);color:#fff}
+.nav{background:rgba(255,255,255,.97);border-bottom:1px solid var(--div);display:flex;padding:0 8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:52px;z-index:201;-webkit-overflow-scrolling:touch}.nav::-webkit-scrollbar{display:none}.ni{padding:11px 14px;cursor:pointer;font-size:12px;font-weight:700;color:var(--sec);border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}.ni.on{color:var(--blue);border-bottom-color:var(--blue)}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 16px 80px}.tc{display:none}.tc.on{display:block;animation:fadeIn .2s var(--ease) both}.g2{display:grid;grid-template-columns:360px 1fr;gap:16px}@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--div);border-radius:var(--r3);padding:20px;box-shadow:var(--sh1);margin-bottom:14px;transition:box-shadow .25s}.card:hover{box-shadow:var(--sh2)}
+.ct{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--div);display:flex;align-items:center;gap:7px;letter-spacing:-.1px}
+.sh{font-size:24px;font-weight:800;color:var(--dark);margin-bottom:3px;letter-spacing:-.5px}.ss{font-size:11px;color:var(--sec);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:18px}
+.field{margin-bottom:13px}label{display:block;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--sec);margin-bottom:5px}
+input,select,textarea{width:100%;background:var(--input);border:1px solid var(--div);color:var(--dark);padding:9px 12px;font-family:inherit;font-size:13px;border-radius:var(--r1);outline:none;transition:all .25s var(--ease);appearance:none}textarea{resize:vertical;min-height:72px}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.2px;cursor:pointer;border:none;border-radius:var(--r1);transition:all .25s var(--ease)}.btn:active{transform:scale(.97)}.btn-p{background:var(--blue);color:#fff;width:100%;padding:13px;font-size:14px;border-radius:var(--r2);box-shadow:0 2px 8px rgba(0,122,255,.25)}.btn-p:hover{background:var(--blue-d)}.btn-g{background:var(--bg);color:var(--dark);border:1px solid var(--div)}.btn-sm{padding:6px 11px;font-size:11px;border-radius:var(--r1)}
+.bbc{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--bg);transition:background .1s;-webkit-tap-highlight-color:transparent}.bbc:last-child{border-bottom:none}.bbc:hover,.bbc.on{background:var(--s1b)}.bbc.on .bbc-name{color:var(--blue);font-weight:800}.bbc-em{font-size:22px;flex-shrink:0;width:32px;text-align:center}.bbc-code{font-size:10px;font-weight:800;color:var(--sec);letter-spacing:.5px;text-transform:uppercase}.bbc-name{font-size:13px;font-weight:700;color:var(--dark);line-height:1.3;margin:2px 0}.bbc-desc{font-size:11px;color:var(--light);line-height:1.4}.rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.al{padding:10px 12px;border-radius:var(--r1);font-size:13px;line-height:1.6;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}.ali{font-size:15px;flex-shrink:0}.al-ok{background:#edf7f0;border:1px solid #b6d9bf;color:#1e6b33}.al-w{background:#fff8ec;border:1px solid #f5d790;color:#7a4b00}.al-d{background:#fff0ee;border:1px solid #f5b8b2;color:#9b2218}.al-info{background:#eef5ff;border:1px solid #b2d0f5;color:#004080}.al-muted{background:var(--bg);border:1px solid var(--div);color:var(--sec)}
+.rb{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}.rb-ok{background:#edf7f0;color:#1e6b33;border:1px solid #b6d9bf}.rb-w{background:#fff8ec;color:#7a4b00;border:1px solid #f5d790}.rb-d{background:#fff0ee;color:#9b2218;border:1px solid #f5b8b2}.rb-i{background:#eef5ff;color:#004080;border:1px solid #b2d0f5}
+.divl{height:1px;background:var(--div);margin:13px 0}.hint{font-size:11px;color:var(--sec);margin-top:4px}.empty{text-align:center;padding:36px 20px;color:var(--light)}.empty em{font-size:32px;display:block;margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.stat{background:var(--bg);border:1px solid var(--div);border-radius:12px;padding:10px}.stat-v{font-size:18px;font-weight:900;color:var(--dark)}.stat-l{font-size:10px;color:var(--sec);text-transform:uppercase;letter-spacing:.7px;margin-top:2px}
+.prot{border-radius:18px;padding:18px 20px;margin-bottom:14px;border:2px solid}.prot.active{background:#edf7f0;border-color:#b6d9bf}.prot.weak{background:#fff8ec;border-color:#f5d790}.prot.ending{background:#fff4ec;border-color:#f5c09a}.prot.expired{background:#fff0ee;border-color:#f5b8b2}.prot.unknown{background:#eef5ff;border-color:#b2d0f5}.prot-title{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}.prot-sub{font-size:13px;color:var(--mid);line-height:1.7}.prot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.dr-card{background:var(--card);border:1px solid var(--div);border-radius:14px;padding:14px;margin-bottom:8px;border-left:4px solid var(--div)}.dr-card.syn{border-left-color:#e8500a}.dr-card.bayer{border-left-color:#0050a0}.dr-card.jp{border-left-color:#c43a2a}.dr-card.bio{border-left-color:#30a14e}.dr-name{font-size:14px;font-weight:900}.dr-ai{font-size:11px;color:var(--sec);font-style:italic;margin-top:2px}.dr-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.tag{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:900;background:var(--bg);border:1px solid var(--div);color:var(--sec)}.tag.sys{background:#eef5ff;color:#004080;border-color:#b2d0f5}.tag.phi{background:#edf7f0;color:#1e6b33;border-color:#b6d9bf}.tag.moa{background:#fff8ec;color:#7a4b00;border-color:#f5d790}
+.je,.re{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--div);align-items:flex-start}.je:last-child,.re:last-child{border-bottom:none}.jed{font-size:12px;color:var(--sec);min-width:82px;font-weight:800}.jdrug{font-size:13px;font-weight:900;color:var(--dark)}.jmeta{font-size:11px;color:var(--sec);margin-top:1px;line-height:1.5}.jdel{cursor:pointer;color:var(--light);font-size:15px;margin-left:auto;flex-shrink:0}.jdel:hover{color:var(--err)}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.pill{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:800;cursor:pointer;border:1px solid var(--div);background:var(--card);color:var(--sec)}.pill.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.weather-row{display:grid;grid-template-columns:72px 44px 54px 1fr;align-items:stretch;margin-bottom:4px;border-radius:10px;overflow:hidden;border:1px solid var(--div);background:var(--card)}.weather-date{padding:8px 10px;background:var(--bg);font-size:12px;font-weight:900}.weather-date small{display:block;font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--light)}.weather-icon{display:flex;align-items:center;justify-content:center;font-size:22px}.weather-rain{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--sec)}.weather-action{padding:8px 10px;font-size:11px;display:flex;align-items:center;color:var(--mid)}
+.disc{background:var(--bg);border:1px solid var(--div);border-radius:var(--r2);padding:14px 18px;font-size:11px;color:var(--sec);line-height:1.8;margin-top:24px}.disc strong{color:var(--err)}
+.footer{background:var(--bg);color:#a1a1a6;text-align:center;padding:20px;font-size:11px;margin-top:32px}.footer strong{color:var(--dark);font-size:13px;font-weight:700;display:block;margin-bottom:4px}
+.bottom-nav{display:none!important;position:fixed;bottom:0;left:0;right:0;height:60px;padding-bottom:var(--safe-bottom);background:#fff;border-top:1px solid rgba(0,0,0,.1);box-shadow:0 -4px 20px rgba(0,0,0,.07);z-index:9999;flex-direction:row;align-items:center;justify-content:space-around}.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 2px;border:none;background:transparent}.bn-icon{font-size:24px;line-height:1}.bn-label{font-size:10px;font-weight:800;color:#999;line-height:1}.bn-item.on .bn-label{color:var(--blue)}
+@media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.hdr{height:48px}.wrap{padding:12px 12px 90px}.sh{font-size:20px}.card{padding:14px;border-radius:14px}.nav{display:none!important}.bottom-nav{display:flex!important}.donate-txt,.logo-s{display:none}.prot-grid{grid-template-columns:1fr}.g2{gap:10px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:701px){.bottom-nav{display:none!important}.nav{display:flex!important}}
 </style>
 </head>
 <body>
@@ -561,14 +150,71 @@ select{
 <!-- ПРОГНОЗ -->
 <div id="fct" class="tc">
   <div class="sh">Прогноз обработок</div>
-  <div class="ss">Ручной ввод дождей · 14 дней · календарь риска</div>
-  <div class="card">
-    <div class="ct">🌦 Ожидаемые дожди</div>
-    <div id="fct-calendar"></div>
+  <div class="ss">Open-Meteo · 14 дней · ручная корректировка · без изменения научного слоя</div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="ct">📍 Источник прогноза</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+      <div style="flex:1;min-width:190px">
+        <label>Ваш город</label>
+        <input type="text" id="fct-city" placeholder="Ялта, Краснодар, Сочи..." value="Ялта">
+        <div class="hint">Можно ввести координаты: 44.4952, 34.1663</div>
+      </div>
+      <div style="width:160px">
+        <label>Фенофаза</label>
+        <select id="fct-bbch" onchange="selBbch=this.value;renderBbg();calc(false)">
+          <option value="00-07">00–07 Покой</option>
+          <option value="09-11">09–11 Зелёный конус</option>
+          <option value="13-14">13–14 3–4 листа</option>
+          <option value="15-18" selected>15–18 5–8 листьев</option>
+          <option value="53-55">53–55 Бутонизация</option>
+          <option value="60-69">60–69 Цветение</option>
+          <option value="71-75">71–75 Ягоды</option>
+          <option value="77-79">77–79 Смыкание</option>
+          <option value="79-83">79–83 Созревание</option>
+          <option value="83-89">83–89 Близко к сбору</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-g" onclick="autoLocateForecast()">📍 Моё место</button>
+        <button class="btn btn-p" style="width:auto;padding:10px 16px" onclick="loadForecastNew()">🌦 Загрузить прогноз</button>
+      </div>
+    </div>
+    <div id="fct-loc-status" class="hint" style="margin-top:8px">Источник по умолчанию: Ялта.</div>
   </div>
+
+  <div id="fct-loading" class="card" style="display:none;text-align:center;padding:36px 20px">
+    <div style="font-size:34px;margin-bottom:8px">⏳</div>
+    <div style="font-size:13px;color:var(--sec)">Загружаем прогноз...</div>
+  </div>
+
+  <div id="fct-empty" class="card" style="text-align:center;padding:44px 20px">
+    <div style="font-size:40px;margin-bottom:10px">🌦</div>
+    <div style="font-size:16px;font-weight:800;color:var(--dark);margin-bottom:6px">Прогноз не загружен</div>
+    <div style="font-size:13px;color:var(--sec)">Укажите город и нажмите «Загрузить прогноз»</div>
+  </div>
+
+  <div id="fct-result" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct">☁️ <span id="fct-city-label">Прогноз погоды</span></div>
+      <div id="fct-weather-strip" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none"></div>
+      <div class="hint">Нажмите на день, чтобы вручную включить/убрать дождь.</div>
+    </div>
+
+    <div id="fct-main-card" style="margin-bottom:14px"></div>
+
+    <div class="card">
+      <div class="ct">📅 Календарь риска — 14 дней</div>
+      <div id="fct-calendar"></div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="ct">🧭 Логика</div>
-    <div class="al al-info"><span class="ali">☂️</span><div>Ожидаемый дождь — это будущий риск. Отмеченный дождь в журнале дождей — это факт, который сокращает остаток защиты после обработки.</div></div>
+    <div class="al al-info">
+      <span class="ali">☂️</span>
+      <div><strong>Прогноз</strong> показывает будущий риск. <strong>Журнал дождей</strong> фиксирует фактические дожди после обработки и сокращает остаток фунгицидной защиты. Вредители в расчёте защиты не участвуют.</div>
+    </div>
   </div>
 </div>
 
@@ -652,7 +298,7 @@ select{
 </div>
 
 <div class="disc"><strong>⚠️ Отказ от ответственности</strong> — Инструмент носит информационный характер. Не является официальным агрономическим предписанием. Применение СЗР — только по регистрации, этикетке и законодательству вашей страны.</div>
-<div class="footer"><strong>Andreus Logos</strong> · Садовый Щит · мягкое обновление v5.0 · журнал дождей + расчёт остатка защиты</div>
+<div class="footer"><strong>Andreus Logos</strong> · Садовый Щит · v5.2 hotfix · Open-Meteo restored · только фунгицидная защита</div>
 </div>
 
 <nav class="bottom-nav" id="bottom-nav">
@@ -792,6 +438,9 @@ function getRainEventsAfter(dateStr){
   return {count:rains.length,impact:impact,items:rains};
 }
 function getUpcomingRain(){
+  if(typeof fctDays!=='undefined' && fctDays && fctDays.length){
+    return fctDays.filter(function(d){return d.rain>=1 || d.prob>=60;}).map(function(d){return {dt:d.date,tp:d.rain>=5?'rain':'possible',rain:d.rain,prob:d.prob,source:d.source||'forecast'};});
+  }
   return wEvs.map(function(id){return{dt:$('wd'+id).value,tp:$('wt'+id).value};}).filter(function(e){return e.dt;}).sort(function(a,b){return a.dt.localeCompare(b.dt);});
 }
 
@@ -822,13 +471,23 @@ function statusLabel(s){
   return {active:'✅ Защита действует',weak:'🟡 Защита ослабевает',ending:'🟠 Окно защиты закрывается',expired:'🔴 Защита закончилась',unknown:'ℹ️ Нет данных'}[s]||s;
 }
 
+function getPestReminderFromLastTankMix(){
+  var j=loadJournal();
+  if(!j.length) return 'При следующей баковой смеси проверьте клеща/листовёртку/цикадку по факту осмотра. Препараты от вредителей не заменяют фунгицидную защиту.';
+  var rec=j[0];
+  var drugs=rec.drugs&&rec.drugs.length?rec.drugs:drugSnapshots(rec.dr,rec.dr2);
+  var pests=drugs.filter(function(d){return d.targetType==='mite'||d.targetType==='insect';});
+  if(!pests.length) return 'В последней баковой смеси не было отдельного блока от вредителей. Осмотрите нижнюю сторону листьев и молодые побеги; при необходимости добавьте совместимый инсектицид/акарицид.';
+  return 'В прошлой баковой смеси был блок от вредителей: '+pests.map(function(d){return d.n;}).join(', ')+'. Это только напоминание для ротации и совместимости, в расчёт защиты от болезней не входит.';
+}
+
 function calc(showAlert){
   var crop=$('crop').value;
   if(crop!=='grape'){calcOther(crop);return;}
   var ph=BBCHS.find(function(p){return p.c===selBbch;})||BBCHS[3];
   var bb=parseBbch(selBbch);
   var prot=getLastProtectionStatus('disease');
-  var mite=getLastProtectionStatus('mite');
+  var pestReminder=getPestReminderFromLastTankMix();
   var upcoming=getUpcomingRain();
   var nextRain=upcoming.find(function(e){return new Date(e.dt+'T00:00:00')>=new Date(new Date().toDateString()) && (e.tp==='rain'||e.tp==='possible'||e.tp==='storm');});
   var nextRainDays=nextRain?daysBetween(todayISO(),nextRain.dt):999;
@@ -852,8 +511,8 @@ function calc(showAlert){
     else recSys='s1';
   }
 
-  renderProtectionCard(prot,mite,risk,recSys,nextRain,nextRainDays,reason);
-  renderAnalysis(ph,prot,mite,nextRain,nextRainDays,reason);
+  renderProtectionCard(prot,pestReminder,risk,recSys,nextRain,nextRainDays,reason);
+  renderAnalysis(ph,prot,pestReminder,nextRain,nextRainDays,reason);
   renderSystemRecommendation(recSys,prot);
   renderConfidence(prot,nextRain);
   renderPhi();
@@ -868,7 +527,7 @@ function calcOther(crop){
   $('sys-block').innerHTML='';$('confidence').innerHTML='';$('hbl').innerHTML='';
 }
 
-function renderProtectionCard(prot,mite,risk,recSys,nextRain,nextRainDays,reason){
+function renderProtectionCard(prot,pestReminder,risk,recSys,nextRain,nextRainDays,reason){
   var cls='unknown',title='ℹ️ Недостаточно данных',sub='Добавьте обработку в журнал, чтобы система считала остаток защиты.';
   if(prot){cls=prot.status;title=statusLabel(prot.status);sub='Последняя фунгицидная обработка: '+fmtDate(prot.rec.dt)+' · '+prot.drug.n+' · прошло '+prot.days+' дн.';}
   if(risk==='critical' && prot){cls='expired';title='🔴 Пора обновить защиту';}
@@ -886,14 +545,14 @@ function renderProtectionCard(prot,mite,risk,recSys,nextRain,nextRainDays,reason
   } else if(prot){
     html+='<div class="al al-muted" style="margin-top:12px;margin-bottom:0"><span class="ali">🌧</span><div>Дожди после обработки не отмечены. Расчёт выполнен по календарному сроку защиты.</div></div>';
   }
-  if(mite){
-    html+='<div class="al al-info" style="margin-top:8px;margin-bottom:0"><span class="ali">🕷</span><div>Клещ: '+mite.drug.n+' был '+mite.days+' дн. назад. Это не продлевает защиту от милдью/оидиума.</div></div>';
+  if(pestReminder){
+    html+='<div class="al al-info" style="margin-top:8px;margin-bottom:0"><span class="ali">🧪</span><div><strong>Напоминание по баковой смеси:</strong> '+pestReminder+'</div></div>';
   }
   html+='</div>';
   $('protection-card').innerHTML=html;
 }
 
-function renderAnalysis(ph,prot,mite,nextRain,nextRainDays,reason){
+function renderAnalysis(ph,prot,pestReminder,nextRain,nextRainDays,reason){
   var html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:28px">'+ph.e+'</span><div><div style="font-size:9px;color:var(--sec);text-transform:uppercase;letter-spacing:1px">Фенофаза</div><div style="font-size:15px;font-weight:900;color:var(--dark)">BBCH '+ph.c+' · '+ph.n+'</div></div></div>';
   html+='<div class="al al-info"><span class="ali">🌿</span><div>'+ph.d+'</div></div>';
   reason.forEach(function(r){html+='<div class="al al-w"><span class="ali">•</span><div>'+r+'</div></div>';});
@@ -1008,13 +667,154 @@ function rdrg(){
 }
 function ft(el,f){cfv=f;document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on');});el.classList.add('on');rdrg();}
 
+
+var fctLat=44.4952;
+var fctLon=34.1663;
+var fctDays=[];
+
+function wcToWeather(code){
+  var map=[
+    {codes:[0],icon:'☀️',label:'Ясно'},
+    {codes:[1,2],icon:'⛅',label:'Переменная облачность'},
+    {codes:[3],icon:'☁️',label:'Пасмурно'},
+    {codes:[45,48],icon:'🌫',label:'Туман'},
+    {codes:[51,53,55,56,57],icon:'🌦',label:'Морось'},
+    {codes:[61,63,65,80,81,82],icon:'🌧',label:'Дождь'},
+    {codes:[95,96,99],icon:'⛈',label:'Гроза'},
+    {codes:[71,73,75,77,85,86],icon:'🌨',label:'Снег'}
+  ];
+  for(var i=0;i<map.length;i++){ if(map[i].codes.indexOf(code)>=0)return map[i]; }
+  return {icon:'☁️',label:'Погода'};
+}
+
+function geocodeCityForecast(city){
+  city=(city||'').trim();
+  var status=$('fct-loc-status');
+  if(!city){if(status)status.textContent='Введите город';return Promise.reject('no city');}
+  var coord=city.match(/^(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)$/);
+  if(coord) return Promise.resolve({lat:parseFloat(coord[1]),lon:parseFloat(coord[2]),name:city});
+  var CITIES={
+    'ялта':{lat:44.4952,lon:34.1663,name:'Ялта'},'yalta':{lat:44.4952,lon:34.1663,name:'Ялта'},
+    'алушта':{lat:44.6764,lon:34.4100,name:'Алушта'},'симферополь':{lat:44.9521,lon:34.1024,name:'Симферополь'},
+    'севастополь':{lat:44.6166,lon:33.5254,name:'Севастополь'},'краснодар':{lat:45.0355,lon:38.9753,name:'Краснодар'},
+    'сочи':{lat:43.5992,lon:39.7257,name:'Сочи'},'анапа':{lat:44.8958,lon:37.3167,name:'Анапа'},
+    'геленджик':{lat:44.5620,lon:38.0773,name:'Геленджик'},'ростов':{lat:47.2357,lon:39.7015,name:'Ростов-на-Дону'},
+    'ростов на дону':{lat:47.2357,lon:39.7015,name:'Ростов-на-Дону'},'москва':{lat:55.7558,lon:37.6176,name:'Москва'},
+    'киев':{lat:50.4501,lon:30.5234,name:'Киев'},'одесса':{lat:46.4825,lon:30.7233,name:'Одесса'},
+    'кишинев':{lat:47.0105,lon:28.8638,name:'Кишинёв'},'тбилиси':{lat:41.6941,lon:44.8337,name:'Тбилиси'},
+    'ереван':{lat:40.1872,lon:44.5152,name:'Ереван'},'ташкент':{lat:41.2995,lon:69.2401,name:'Ташкент'},
+    'алматы':{lat:43.2551,lon:76.9126,name:'Алматы'}
+  };
+  var key=norm(city); if(CITIES[key]) return Promise.resolve(CITIES[key]);
+  if(status)status.textContent='⏳ Ищу город через OpenStreetMap...';
+  return fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(city)+'&format=json&limit=1&accept-language=ru')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data||!data.length) throw new Error('city not found');
+      return {lat:parseFloat(data[0].lat),lon:parseFloat(data[0].lon),name:(data[0].display_name||city).split(',')[0]};
+    });
+}
+
+function autoLocateForecast(){
+  var status=$('fct-loc-status');
+  if(!navigator.geolocation){ if(status)status.textContent='Геолокация недоступна'; return; }
+  if(status)status.textContent='⏳ Определяем координаты...';
+  navigator.geolocation.getCurrentPosition(function(pos){
+    fctLat=pos.coords.latitude; fctLon=pos.coords.longitude;
+    if($('fct-city'))$('fct-city').value=fctLat.toFixed(4)+', '+fctLon.toFixed(4);
+    if(status)status.textContent='✅ Координаты определены: '+fctLat.toFixed(4)+', '+fctLon.toFixed(4);
+    loadForecastNew();
+  },function(){ if(status)status.textContent='❌ Не удалось определить местоположение. Введите город вручную.'; });
+}
+
+function loadForecastNew(){
+  var city=$('fct-city')?$('fct-city').value:'Ялта';
+  var status=$('fct-loc-status');
+  if($('fct-empty'))$('fct-empty').style.display='none';
+  if($('fct-result'))$('fct-result').style.display='none';
+  if($('fct-loading'))$('fct-loading').style.display='block';
+  geocodeCityForecast(city).then(function(loc){
+    fctLat=loc.lat; fctLon=loc.lon;
+    if($('fct-city'))$('fct-city').value=loc.name;
+    if(status)status.textContent='✅ Источник: Open-Meteo · '+loc.name+' · '+fctLat.toFixed(4)+', '+fctLon.toFixed(4);
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(fctLat)+'&longitude='+encodeURIComponent(fctLon)+'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,relative_humidity_2m_max&forecast_days=14&timezone=auto';
+    return fetch(url).then(function(r){ if(!r.ok)throw new Error('forecast http '+r.status); return r.json(); }).then(function(data){
+      if(!data||!data.daily) throw new Error('bad forecast data');
+      var d=data.daily; fctDays=[];
+      for(var i=0;i<d.time.length;i++){
+        var code=(d.weather_code&&d.weather_code[i])||0;
+        var w=wcToWeather(code);
+        fctDays.push({date:d.time[i],icon:w.icon,label:w.label,rain:(d.precipitation_sum&&d.precipitation_sum[i])||0,prob:(d.precipitation_probability_max&&d.precipitation_probability_max[i])||0,humid:(d.relative_humidity_2m_max&&d.relative_humidity_2m_max[i])||60,tmax:(d.temperature_2m_max&&d.temperature_2m_max[i])||18,tmin:(d.temperature_2m_min&&d.temperature_2m_min[i])||10,source:'open-meteo',override:false});
+      }
+      if($('fct-loading'))$('fct-loading').style.display='none';
+      if($('fct-result'))$('fct-result').style.display='block';
+      if($('fct-city-label'))$('fct-city-label').textContent='Прогноз погоды · '+loc.name;
+      renderWeatherStrip(); renderForecastMainCard(); renderForecastCalendar(); calc(false);
+    });
+  }).catch(function(err){
+    console.error(err);
+    if($('fct-loading'))$('fct-loading').style.display='none';
+    if($('fct-empty'))$('fct-empty').style.display='block';
+    if(status)status.textContent='❌ Прогноз не загрузился. Проверьте интернет или введите координаты вручную.';
+  });
+}
+
+function renderWeatherStrip(){
+  var el=$('fct-weather-strip'); if(!el)return;
+  if(!fctDays.length){el.innerHTML='';return;}
+  el.innerHTML=fctDays.map(function(d,i){
+    var dt=new Date(d.date+'T12:00:00');
+    var dow=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][dt.getDay()];
+    var isRain=d.rain>=1 || d.prob>=60;
+    var bg=isRain?'#fff0ee':i===0?'#eef5ff':'var(--bg)';
+    var bd=isRain?'#f5b8b2':i===0?'#b2d0f5':'var(--div)';
+    return '<div onclick="toggleForecastRain('+i+')" style="min-width:62px;text-align:center;cursor:pointer;padding:8px 5px;border-radius:12px;background:'+bg+';border:1px solid '+bd+';flex-shrink:0"><div style="font-size:9px;font-weight:800;color:var(--sec);margin-bottom:2px">'+(i===0?'СЕГ':dow)+'</div><div style="font-size:9px;color:var(--light)">'+dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0')+'</div><div style="font-size:24px;line-height:1;margin:4px 0">'+d.icon+'</div><div style="font-size:10px;color:var(--dark);font-weight:800">'+Math.round(d.tmax)+'°</div><div style="font-size:9px;color:'+(isRain?'#9b2218':'var(--light)')+'">'+(d.rain?d.rain.toFixed(1)+'мм':d.prob+'%')+'</div>'+(d.override?'<div style="font-size:8px;color:var(--blue);font-weight:800">ручн.</div>':'')+'</div>';
+  }).join('');
+}
+
+function toggleForecastRain(i){
+  if(!fctDays[i])return;
+  var d=fctDays[i];
+  if(d.rain>=1 || d.prob>=60){ d.rain=0;d.prob=0;d.icon='☀️';d.label='Сухо';d.override=true; }
+  else{ d.rain=8;d.prob=90;d.icon='🌧';d.label='Дождь вручную';d.override=true; }
+  renderWeatherStrip(); renderForecastMainCard(); renderForecastCalendar(); calc(false);
+}
+
+function renderForecastMainCard(){
+  var el=$('fct-main-card'); if(!el)return;
+  var next=null,idx=999;
+  for(var i=0;i<fctDays.length;i++){ if(fctDays[i].rain>=1 || fctDays[i].prob>=60){next=fctDays[i];idx=i;break;} }
+  var prot=getLastProtectionStatus('disease');
+  var cls='unknown',title='ℹ️ Данных недостаточно',text='Добавьте обработку в журнал, чтобы оценить защиту перед дождём.';
+  if(!next){cls='active';title='✅ В ближайшие 14 дней значимых дождей не видно';text='Следите за прогнозом. Фактические дожди отмечайте в журнале дождей.';}
+  else if(!prot){cls='ending';title='⚠️ Дождь в прогнозе, защита неизвестна';text='Ближайший дождь: '+fmtDate(next.date)+' · через '+idx+' дн. Добавьте последнюю фунгицидную обработку.';}
+  else if(prot.status==='expired'||prot.status==='ending'){cls='expired';title='🔴 Перед дождём нужно обновить защиту';text='Ближайший дождь: '+fmtDate(next.date)+' · через '+idx+' дн. Последняя фунгицидная защита: '+prot.drug.n+' · '+prot.days+' дн. назад.';}
+  else if(idx<=2){cls='weak';title='🟡 Дождь близко — проверьте окно защиты';text='Ближайший дождь: '+fmtDate(next.date)+' · через '+idx+' дн. Остаток защиты: ~'+prot.daysLeft+' дн.';}
+  else{cls='active';title='✅ Защита и прогноз под контролем';text='Ближайший дождь: '+fmtDate(next.date)+' · через '+idx+' дн. Остаток защиты: ~'+prot.daysLeft+' дн.';}
+  el.innerHTML='<div class="prot '+cls+'"><div class="prot-title">'+title+'</div><div class="prot-sub">'+text+'</div></div>';
+}
+
 function renderForecastCalendar(){
   var el=$('fct-calendar'); if(!el)return;
-  var upcoming=getUpcomingRain();
-  if(!upcoming.length){el.innerHTML='<div class="empty"><em>🌦</em><p>Ожидаемые дожди не добавлены на главной</p></div>';return;}
+  if(fctDays.length){
+    var prot=getLastProtectionStatus('disease');
+    el.innerHTML=fctDays.map(function(d,i){
+      var rain=d.rain>=1 || d.prob>=60;
+      var action='Наблюдение'; var color='var(--green)';
+      if(rain){
+        if(!prot){action='Дождь · защита неизвестна';color='#7a4b00';}
+        else if(prot.status==='expired'||prot.status==='ending'){action='Дождь · обновить фунгицидную защиту ДО';color='#9b2218';}
+        else if(i<=2){action='Дождь близко · проверить защиту';color='#7a4b00';}
+        else{action='Дождь · планировать заранее';color='var(--mid)';}
+      }
+      return '<div class="weather-row"><div class="weather-date"><small>'+(i===0?'Сегодня':'+'+i+' дн.')+'</small>'+fmtDate(d.date)+'</div><div class="weather-icon">'+d.icon+'</div><div class="weather-rain"><strong>'+Math.round(d.tmax)+'°</strong><span>'+(d.rain?d.rain.toFixed(1)+'мм':d.prob+'%')+'</span></div><div class="weather-action" style="color:'+color+'">'+action+'</div></div>';
+    }).join('');
+    return;
+  }
+  var upcoming=wEvs.map(function(id){return{dt:$('wd'+id).value,tp:$('wt'+id).value};}).filter(function(e){return e.dt;}).sort(function(a,b){return a.dt.localeCompare(b.dt);});
+  if(!upcoming.length){el.innerHTML='<div class="empty"><em>🌦</em><p>Ожидаемые дожди не добавлены и прогноз не загружен</p></div>';return;}
   el.innerHTML=upcoming.map(function(e){
-    var dd=daysBetween(todayISO(),e.dt);
-    var icon=e.tp==='storm'?'⛈':e.tp==='possible'?'⛅':e.tp==='dry'?'☀️':'🌧';
+    var dd=daysBetween(todayISO(),e.dt); var icon=e.tp==='storm'?'⛈':e.tp==='possible'?'⛅':e.tp==='dry'?'☀️':'🌧';
     var action=e.tp==='dry'?'Сухо — наблюдение':(dd<=1?'Критично: защита должна быть до дождя':'Планировать защиту до этого дня');
     return '<div class="weather-row"><div class="weather-date"><small>'+(dd===0?'Сегодня':dd>0?'+'+dd+' дн.':'прошло')+'</small>'+fmtDate(e.dt)+'</div><div class="weather-icon">'+icon+'</div><div class="weather-rain">'+e.tp+'</div><div class="weather-action">'+action+'</div></div>';
   }).join('');
@@ -1026,7 +826,7 @@ function tab(n){
   document.querySelectorAll('.tc').forEach(function(c){c.classList.remove('on');});
   $(n).classList.add('on');
   ['adv','fct','jrn','drg'].forEach(function(id){var el=$('bn-'+id);if(el)el.classList.toggle('on',id===n);});
-  if(n==='fct') renderForecastCalendar();
+  if(n==='fct'){ if($('fct-bbch')) $('fct-bbch').value=selBbch; renderForecastCalendar(); renderForecastMainCard(); }
 }
 function bnTab(n){tab(n);}
 
