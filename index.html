@@ -59,6 +59,12 @@ input,select,textarea{width:100%;background:var(--input);border:1px solid var(--
 @media(max-width:960px){.g2{grid-template-columns:1fr}.logo-s{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.hdr{height:48px}.wrap{padding:12px 12px 90px}.sh{font-size:20px}.card{padding:14px;border-radius:14px}.nav{display:none!important}.bottom-nav{display:flex!important}.donate-txt,.logo-s{display:none}.prot-grid{grid-template-columns:1fr}.g2{gap:10px}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:701px){.bottom-nav{display:none!important}.nav{display:flex!important}}
+
+/* HOTFIX v5.3: Советник всегда видим при активной вкладке */
+#adv.tc.on{display:block!important}
+#adv .g2{display:grid}
+@media(max-width:960px){#adv .g2{display:grid;grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -850,8 +856,24 @@ function _init(){
   $('hdate').textContent=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
   $('jdt').value=todayISO();$('rdt').value=todayISO();
   var hv=new Date();hv.setMonth(hv.getMonth()+5);$('hd').value=hv.toISOString().split('T')[0];
-  renderBbg(); addW(); rjrn(); rdrg(); renderForecastCalendar();
-  setTimeout(function(){calc(false);},100);
+  try{renderBbg();}catch(e){console.error('renderBbg',e);}
+  try{addW();}catch(e){console.error('addW',e);}
+  try{rjrn();}catch(e){console.error('rjrn',e);}
+  try{rdrg();}catch(e){console.error('rdrg',e);}
+  try{renderForecastCalendar();}catch(e){console.error('renderForecastCalendar',e);}
+
+  // ВАЖНО: при открытии приложения Советник не должен быть пустым.
+  // Расчёт запускается только по кнопке пользователя.
+  try{
+    document.querySelectorAll('.tc').forEach(function(c){c.classList.remove('on');});
+    if($('adv')) $('adv').classList.add('on');
+    document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+    var firstNav=document.querySelector('.ni');
+    if(firstNav) firstNav.classList.add('on');
+    if($('res-e')) $('res-e').style.display='block';
+    if($('res-m')) $('res-m').style.display='none';
+  }catch(e){console.error('advisor init visibility',e);}
+
   document.addEventListener('click',function(e){var pop=$('bbch-popup'),btn=$('bbch-dropdown');if(pop&&btn&&pop.style.display==='block'&&!btn.contains(e.target)&&!pop.contains(e.target))closeBbchDropdown();});
 }
 
